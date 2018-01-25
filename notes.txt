@@ -1,0 +1,89 @@
+Notes for the game engine
+
+TODO:
+   1. Need a set of utilities that support the rest of the engine
+      a. Build a memory managemnet:
+         - stack based memory management (single and/or double sided)
+         - Pool based memory Management
+         - Allignment function (ensure memory allignment on all allocations)
+         - Single and double buffer wrappers (only have memory in a single frame or over two frames)
+         - Defragmentation
+      b. Logging system
+         - standard logging with levels
+         - assertions that kill the game if the error is fatal
+         - graphical logging (will display in the scene) - probably needs to be tied to renderer
+      c. Types (to facilitate cross platform/compiler issues)?
+         - OpenGL has inbuilt type, need a wrapper for this and directx?
+   2. File processing:
+      a. wrapper for file system accesses
+      b. streaming for resource management
+   3. Build a (run-time) resource manager:
+      DEP1. Memory Management needs to be completed
+      DEP2. Requires file management including streaming
+      a. a database of resources
+         - There should be a dictionary (key-value pair - GUID-pointer to resource)
+         - request of a resource returns based on dictionary. If not loaded, either start loading (bulk load) or return error (load can take a while so may stall game)
+      b. Load a model (or other composite resources) which will load each resource (checking it hasn't already been loaded).
+         - Need to have a async load and a sync load
+         - From a zip file (can still use internal data structure) - zlib
+         - GUID from a hash of "file path + resource name"
+         - A model file needs to have all dependant files paths in header (how do we figure out what has been loaded already?)
+         - Different types of lifetime (all game, level, shorter or even live streaming)
+            - A stack allocator for all game assets
+            - undecided for level and shorter assets
+         - Need to have a way to keep needed assets between bulk load and remove unneeded
+         - Need to have a reference (GUID in file, pointer in memory) to all child resource (e.g. mesh -> material) and a number of parent resources (this will be used to determine if a resource should be deleted)
+      c. delete resources
+         - Currently I think only models should be deleted (which will delete all child resources if numParents < 2)
+      d. handle linking between resources
+      e. check (and load) any sub-resources of a resource (e.g. mesh will often require a texture so both must be loaded)
+      f. May need some custom processing of resources
+   4. Build a Render Manager
+      a. first I just want something that will display what I am doing
+
+
+To think about:
+   - Byte endianess - will need to write a function to convert between endianess
+   - Assertion code - a good assertion macro is on page 133 in "game engine architecture"
+   - Need to also implement error catching for graceful error handling
+   - What the hell are dual quaternions?
+   - Do some research on the latest techniques for SSE/SIMD caluations
+   - Need to do research on memory cache missing
+   - Find out what an enum does (enum class as well)
+   - Would be call to be able to freeze game (camera still moveable) and step through frames
+   - Run at different frames speeds (i.e. half the frame time to appear in slow motion)
+   - Write a clock class which could have multiple instances (game time, real time, film time, etc.)
+   - Don't forget about branchy code (because I have already)
+   - Windows message pump in game loop
+   - Input system that can manage a range of input devices
+   - Need a good debuuggng API.
+      - Should be able to easily draw: text to a location, lines, spheres, points and bounded boxes
+      - sound be able to easily define colour, line width, radii, size of points
+      - in different spaces
+      - think about depth testng
+      - lifetimes
+      - will add to be drawn later as adding things immediately could be expensive
+   - Have button that can detach camera from player and view the current scene
+   - In game profiler (CPU, memory and GPU?)
+   - Write a tool a generate custom model files that:
+      - Have vertex cache optimisation
+   - Objects can have multiple textures and therefore multiple tex coordinates
+   - vertecies can have skinning weights that map a mesh to a set of joints (for skeleton)
+   - Blending needs a function to order fragments and render them back to front
+   - Look up COLLADA (an effect file format for opengl - ties shaders togeter into an effect)
+   - Pre-GPU culling (plus potentially a way of evaulating the usefulness of a culling method)
+      - frustrum culling
+      - occlusion and potentially visible sets
+      - portals (like windows, etc. - mostly indoor)
+      - occlusion volumes/anti-portal (mostly outdoors)
+   - Geometry sorting (should draw all geomtry of same type at once and should then draw closest to furthest to maximise early depth testng) - can be done by passing twice (once for simple depth, second for colour)
+   - Scene graphing
+   - shadows
+      - tag objects (cast, receive or produce no shadow) and lights (generate shadow or not)
+   - Particle effects (like smoke or fire), decals, skybox
+   - Need level of detail functionality of large outdoor areas
+   - Disable depth testing for 2d overlays
+   - Use normalised screen coordintes to obfuscate screen resolution
+      - 0-1 on y axis and 0-<apsect ratio> on x-axis e.g. 0 - 16/9 = 1.7777)
+      - positive coordinates should represent relative to top left, and negative should be relative to bottom right
+      - probably want some way to make a relative to an arbitrary position coordinates as well
