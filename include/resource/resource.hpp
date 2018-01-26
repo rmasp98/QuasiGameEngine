@@ -4,6 +4,7 @@
 
 namespace xxx {
    class RenderManager;
+   class Logger;
 
    // Template for data in function. Automatically has get and set built in
    template <typename T> class data {
@@ -34,12 +35,15 @@ namespace xxx {
       //addchild
       //add parent?
 
-      virtual void loadToGraphics();
+      static Logger* logger;
 
-      RenderManager* renderMan;
+
+      virtual void loadToGraphics(RenderManager* renderMan);
 
    protected:
       Resource();
+
+
 
       //numParents
       //vector of children pointers

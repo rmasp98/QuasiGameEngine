@@ -14,10 +14,10 @@ int main() {
    RenderManager* renderMan = new RenderManager();
    renderMan->initGraphics();
 
-   ResourceManager* resMan = new ResourceManager(renderMan);
-   Resource* picture = resMan->getResource(0, "assets/MenuBG.dds");
+   ResourceManager* resMan = new ResourceManager();
+   Resource* picture = resMan->getResource(0, "assets/test.dds");
    if (picture != NULL)
-      picture->loadToGraphics();
+      picture->loadToGraphics(renderMan);
 
 
 
@@ -77,5 +77,10 @@ int main() {
 
    } while (glfwGetKey(renderMan->getWindow(), GLFW_KEY_ESCAPE) != GLFW_PRESS &&
             glfwWindowShouldClose(renderMan->getWindow()) == 0);
+
+
+   delete picture;
+   delete resMan;
+   delete renderMan;
 
 }

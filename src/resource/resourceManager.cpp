@@ -1,12 +1,23 @@
 #include "resource/resourceManager.hpp"
 
 
+#include "resource/resourceFileManager.hpp"
+#include "resource/resource.hpp"
+#include "utils/memoryManager.hpp"
+#include "utils/logger.hpp"
+
 
 
 namespace xxx {
 
-   ResourceManager::ResourceManager(RenderManager* rendManIn) : renderMan(rendManIn) {
-      fileMan = new ResourceFileManager();
+   ResourceManager::ResourceManager() {
+
+      // Create logger and pass it to all resources
+      logger = new Logger();
+      Resource::logger = logger;
+
+      fileMan = new ResourceFileManager(logger);
+
 
       //need to start by creating memory for resources
 
@@ -28,6 +39,8 @@ namespace xxx {
       //delete memory
 
       //delete resource file manager
+
+      delete logger;
    }
 
 
@@ -163,8 +176,6 @@ namespace xxx {
 
       //This should just be an output of the reading of the file
       Resource* resourcePointer = fileMan->loadFile(fileLocation);
-      if (resourcePointer != NULL)
-         resourcePointer->renderMan = renderMan;
 
       return resourcePointer;
 

@@ -1,18 +1,19 @@
 #include "renderer/renderManager.hpp"
 #include "resource/texture.hpp"
+#include "utils/logger.hpp"
 
-#include <iostream>
 
 
 namespace xxx {
 
    RenderManager::RenderManager() {
-
+      logger = new Logger();
    }
 
 
    RenderManager::~RenderManager() {
-
+      glfwTerminate();
+      delete logger;
    }
 
 
@@ -24,10 +25,9 @@ namespace xxx {
 
    int RenderManager::initGraphics() {
 
-      if (!glfwInit()) {
-         std::cerr << "Failed to initialise GLFW\n";
-         return -1;
-      }
+      if (!glfwInit())
+         logger->log("Failed to initialise GLFW", LOG_FATAL);
+
 
       //glfwWindowHint(GLFW_SAMPLES, 4); //Antialiasing = 4 samples
       glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
@@ -58,19 +58,17 @@ namespace xxx {
       //window = glfwCreateWindow(mode->width, mode->height, "First Program", mode, NULL);
 
       //Checks to ensure a window was created properly
-      if (window == NULL) {
-          std::cerr << "Failed to open GLFW window\n";
-          return -1;
-      }
+      if (window == NULL)
+          logger->log("Failed to open GLFW window", LOG_FATAL);
+
       glfwMakeContextCurrent(window); //Makes this window the current window
 
 
       glewExperimental = true; //Find out what this means
       const GLenum glewErr = glewInit();
       if (glewErr != GLEW_OK) {
-          std::cerr << "Failed to initialise GLEW. "
-                    << glewGetErrorString(glewErr) << std::endl;
-          return -1;
+         // glewGetErrorString(glewErr) can give more information
+         logger->log("Failed to initialise GLEW", LOG_FATAL);
       }
 
       glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE); //Allows key presses to be detected in frame

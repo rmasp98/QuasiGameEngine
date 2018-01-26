@@ -1,23 +1,28 @@
-#ifndef XXX_FILE_MANAGER_HPP
-#define XXX_FILE_MANAGER_HPP
+#ifndef XXX_RESOURCE_FILE_MANAGER_HPP
+#define XXX_RESOURCE_FILE_MANAGER_HPP
 
-#include "resource/resource.hpp"
+#include "utils/fileManager.hpp"
+
 #include <string>
 #include <vector>
 
-#include <GL/glew.h>
-#include <GL/gl.h>
 
 
 namespace xxx {
-   class ResourceFileManager {
+   class Resource;
+   class Logger;
+
+   class ResourceFileManager : public FileManager {
    public:
-      ResourceFileManager();
+      ResourceFileManager(Logger* logIn);
       ~ResourceFileManager();
 
       Resource* loadFile(std::string fileLocation);
 
+
    protected:
+
+
       std::vector<std::string> freeimgExtensions, assimpExtensions;
 
       std::string getExtension(std::string fileLoction);
@@ -29,4 +34,4 @@ namespace xxx {
 }
 
 
-#endif // XXX_FILE_MANAGER_HPP
+#endif // XXX_RESOURCE_FILE_MANAGER_HPP

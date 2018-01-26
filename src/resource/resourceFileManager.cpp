@@ -1,12 +1,15 @@
 #include "resource/resourceFileManager.hpp"
 #include "resource/texture.hpp"
-#include <iostream>
+#include "utils/logger.hpp"
+
 #include <FreeImage.h>
 
 
 namespace xxx {
 
-   ResourceFileManager::ResourceFileManager() {
+   ResourceFileManager::ResourceFileManager(Logger* logIn) {
+
+      FileManager::setLogger(logIn);
 
       // True means extensions disabled
       FreeImage_Initialise(true);
@@ -25,55 +28,21 @@ namespace xxx {
    Resource* ResourceFileManager::loadFile(std::string fileLocation) {
 
       //determine what the file is and then call the relevant function
-      if (compareFileType(fileLocation, freeimgExtensions)) //need to make this case insensitive
+      if (FileManager::compareFileType(fileLocation, freeimgExtensions)) //need to make this case insensitive
          return loadImage(fileLocation);
-      else if (compareFileType(fileLocation, assimpExtensions))
+      else if (FileManager::compareFileType(fileLocation, assimpExtensions))
          return loadObject(fileLocation);
 
 
       //assert that this file type is not supported
-      std::cout << "The " << fileLocation << " file type is not supported" << '\n';
+      logger->log("The " + fileLocation + " file type is not supported", LOG_ERROR);
       return NULL;
    }
-
-
-
-
-   std::string ResourceFileManager::getExtension(std::string fileLoction) {
-      std::cout << "getting extension" << '\n';
-
-      size_t i = fileLoction.rfind('.', fileLoction.length());
-      if (i != std::string::npos) {
-         return fileLoction.substr(i+1, fileLoction.length() - i);
-      }
-
-      //assert that file does not have extension
-      std::cout << fileLoction << " does not have an extension. Cannot determine file type" << std::endl;
-      return NULL;
-   }
-
-
-
-   bool ResourceFileManager::compareFileType(std::string fileLoction,
-                                             std::vector<std::string> extensions) {
-
-      std::cout << "Finding loader for this file type" << std::endl;
-
-      std::string ext = getExtension(fileLoction);
-      for (uint iExt=0; iExt < extensions.size(); ++iExt) {
-         if (!ext.compare(extensions[iExt]))
-            return true;
-      }
-
-      return false;
-
-   }
-
 
 
 
    Resource* ResourceFileManager::loadImage(std::string fileLocation) {
-      std::cout << "loading image" << '\n';
+      logger->log("Loading image from " + fileLocation, LOG_TRACE);
 
       FREE_IMAGE_FORMAT filetype = FreeImage_GetFileType(fileLocation.c_str(), 0);
       if (filetype == FIF_UNKNOWN)
@@ -102,7 +71,11 @@ namespace xxx {
 
       }
 
-      std::cout << "Failed to load '" << fileLocation << "'" <<  std::endl;
+      logger->log("Failed to load " + fileLocation +
+                  ". Either FreeImage does not support this filetype" +
+                  ", the file is corrupt or does not exist",
+                  LOG_ERROR);
+
       return NULL;
    }
 
@@ -110,7 +83,7 @@ namespace xxx {
 
 
    Resource* ResourceFileManager::loadObject(std::string fileLocation) {
-      std::cout << "loading object" << '\n';
+      logger->log("Loading object from " + fileLocation, LOG_TRACE);
 
       return NULL;
    }

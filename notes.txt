@@ -9,21 +9,25 @@ TODO:
          - Single and double buffer wrappers (only have memory in a single frame or over two frames)
          - Defragmentation
       b. Logging system
-         - standard logging with levels
-         - assertions that kill the game if the error is fatal
+         - static variable for current log level
          - graphical logging (will display in the scene) - probably needs to be tied to renderer
       c. Types (to facilitate cross platform/compiler issues)?
          - OpenGL has inbuilt type, need a wrapper for this and directx?
-   2. File processing:
-      a. wrapper for file system accesses
-      b. streaming for resource management
-   3. Build a (run-time) resource manager:
+      d. File processing:
+         - wrapper for file system accesses
+         - streaming for resource management
+   2. Build a (run-time) resource manager:
       DEP1. Memory Management needs to be completed
       DEP2. Requires file management including streaming
-      a. a database of resources
+      a. Create resources
+         - create Objects
+         - create animation
+         - create skeleton
+         - etc.
+      b. a database of resources
          - There should be a dictionary (key-value pair - GUID-pointer to resource)
          - request of a resource returns based on dictionary. If not loaded, either start loading (bulk load) or return error (load can take a while so may stall game)
-      b. Load a model (or other composite resources) which will load each resource (checking it hasn't already been loaded).
+      c. Load a model (or other composite resources) which will load each resource (checking it hasn't already been loaded).
          - Need to have a async load and a sync load
          - From a zip file (can still use internal data structure) - zlib
          - GUID from a hash of "file path + resource name"
@@ -33,13 +37,13 @@ TODO:
             - undecided for level and shorter assets
          - Need to have a way to keep needed assets between bulk load and remove unneeded
          - Need to have a reference (GUID in file, pointer in memory) to all child resource (e.g. mesh -> material) and a number of parent resources (this will be used to determine if a resource should be deleted)
-      c. delete resources
+      d. delete resources
          - Currently I think only models should be deleted (which will delete all child resources if numParents < 2)
-      d. handle linking between resources
-      e. check (and load) any sub-resources of a resource (e.g. mesh will often require a texture so both must be loaded)
-      f. May need some custom processing of resources
-   4. Build a Render Manager
-      a. first I just want something that will display what I am doing
+      e. handle linking between resources
+      f. check (and load) any sub-resources of a resource (e.g. mesh will often require a texture so both must be loaded)
+      g. May need some custom processing of resources
+   3. Build a Render Manager
+
 
 
 To think about:
@@ -87,3 +91,19 @@ To think about:
       - 0-1 on y axis and 0-<apsect ratio> on x-axis e.g. 0 - 16/9 = 1.7777)
       - positive coordinates should represent relative to top left, and negative should be relative to bottom right
       - probably want some way to make a relative to an arbitrary position coordinates as well
+
+
+
+
+
+COMPLETED:
+   1. utilities
+      b. Logging system
+         - Logging class compelete (each major section has it's own instantiation of it)
+         - standard logging with levels
+         - assertions that kill the game if the error is fatal
+   2. Resource Manager
+      a. Create resources
+         - create images
+   3. Render Manager
+      a. first I just want something that will display what I am doing

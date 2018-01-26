@@ -1,10 +1,8 @@
 #include "resource/texture.hpp"
+
 #include "renderer/renderManager.hpp"
+#include "utils/logger.hpp"
 
-
-
-
-#include <iostream>
 
 
 namespace xxx {
@@ -21,8 +19,8 @@ namespace xxx {
    }
 
 
-   void Texture::loadToGraphics() {
-      std::cout << "test" << '\n';
+   void Texture::loadToGraphics(RenderManager* renderMan) {
+      Resource::logger->log("Test", LOG_INFO);
       renderMan->loadTexture(*this);
 
    }

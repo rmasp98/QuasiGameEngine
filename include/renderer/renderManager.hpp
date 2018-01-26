@@ -9,12 +9,11 @@
 #include <GL/gl.h>
 #include <GLFW/glfw3.h>
 
-//This may need to be better organised
-//#include "resource/texture.hpp"
 
 
 namespace xxx {
    class Texture;
+   class Logger;
 
    /*Notes----------------------------------------------------------------------
    - The should be a parent class with child classes for opengl and directx
@@ -31,6 +30,7 @@ namespace xxx {
 
    private:
       GLFWwindow* window;
+      Logger* logger;
 
    };
 

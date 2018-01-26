@@ -9,6 +9,7 @@ typedef unsigned int uint;
 typedef unsigned char byte;
 
 namespace xxx {
+   class RenderManager;
 
    class Texture : public Resource {
    public:
@@ -20,7 +21,7 @@ namespace xxx {
 
       uint getResource() { return textureID.get(); };
 
-      void loadToGraphics();
+      void loadToGraphics(RenderManager* renderMan);
 
       data<byte*> pixelMap;
       data<uint> width, height, depth, textureID;

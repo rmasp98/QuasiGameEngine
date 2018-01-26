@@ -1,16 +1,18 @@
 #ifndef XXX_RESOURCE_MANAGER_HPP
 #define XXX_RESOURCE_MANAGER_HPP
 
-#include "resource/resource.hpp"
-#include "resource/resourceFileManager.hpp"
-#include "utils/memoryManager.hpp"
-#include "renderer/renderManager.hpp"
-
-
 
 #include <string>
 
 namespace xxx {
+   class MemoryManager;
+   class Resource;
+   class Model;
+   class Mesh;
+   class ResourceFileManager;
+   class Logger;
+
+
    class ResourceManager {
       /*Notes----------------------------------------------------------------
       - Do we want to implemennt singleton?
@@ -21,7 +23,7 @@ namespace xxx {
       - may need to implement a way to find out if a resource has been used recently (can be used to delete unused resource)
       ----------------------------------------------------------------------*/
    public:
-      ResourceManager(RenderManager* rendManIn);
+      ResourceManager();
       virtual ~ResourceManager();
 
       Model* getModel(int guid, std::string fileLocation); // (check if has been loaded, if not load)
@@ -45,7 +47,7 @@ namespace xxx {
    protected:
       //resource reference table of resources type=map<int(GUID), pointer(to resource)>
 
-      MemoryManager* memMan;
+
 
       //bool checkResourceDB(int guid);
       //Resource* getResourceFromDB(int guid);
@@ -53,8 +55,8 @@ namespace xxx {
       // File manager (this will hopefully have versetile functions to load lots of different types of resource)
       //Need to find a way ro identify file types (custom loader for mine, assimp for models, SOIL for textures, etc.)
       ResourceFileManager* fileMan;
-
-      RenderManager* renderMan;
+      MemoryManager* memMan;
+      Logger* logger;
 
       Model* loadModel(int guid, std::string fileLocation);
       Resource* loadResource(int guid, std::string fileLocation);
