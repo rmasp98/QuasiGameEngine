@@ -5,8 +5,9 @@
 
 namespace xxx {
 
+
    std::string FileManager::getExtension(std::string fileLoction) {
-      logger->log("Getting file extension", LOG_TRACE);
+      LOG(LOG_TRACE, logger) << "Getting file extension";
 
       size_t i = fileLoction.rfind('.', fileLoction.length());
       if (i != std::string::npos) {
@@ -14,8 +15,8 @@ namespace xxx {
       }
 
       //assert that file does not have extension
-      logger->log(fileLoction + " does not have an extension. Cannot determine file type",
-                  LOG_WARN);
+      LOG(LOG_WARN, logger) << fileLoction
+                            << " does not have an extension. Cannot determine file type";
 
       return NULL;
    }
@@ -25,7 +26,7 @@ namespace xxx {
    bool FileManager::compareFileType(std::string fileLoction,
                                      std::vector<std::string> extensions) {
 
-      logger->log("Finding loader for this file type", LOG_TRACE);
+      LOG(LOG_TRACE, logger) << "Finding loader for this file type";
 
       std::string ext = getExtension(fileLoction);
       for (uint iExt=0; iExt < extensions.size(); ++iExt) {

@@ -22,7 +22,7 @@ namespace xxx {
    Resource::~Resource() {}
 
    void Resource::loadToGraphics(RenderManager* renderMan = NULL) {
-      logger->log("This resource can't load to graphics", LOG_ERROR);
+      LOG(LOG_ERROR, logger) << "This resource can't load to graphics";
    }
 
 
@@ -42,13 +42,51 @@ namespace xxx {
 
 
 
+   // Need to benchmark if this or just passing a reference would be quicker
+   Mesh::Mesh(float* vertsIn, float* normsIn,
+              float* uvsIn, uint* facesIn,
+              uint nVertsIn, uint nFacesIn)
+            : nVerts(nVertsIn), nFaces(nFacesIn) {
 
-   Mesh::Mesh() {
+      verts = new float[nVerts * 3];
+      std::copy(vertsIn, vertsIn + (nVerts * 3), verts);
+
+      norms = new float[nVerts * 3];
+      std::copy(normsIn, normsIn + (nVerts * 3), norms);
+
+      uvs = new float[nVerts * 3];
+      std::copy(uvsIn, uvsIn + (nVerts * 3), uvs);
+
+      faces = new uint[nFaces * 3];
+      std::copy(facesIn, facesIn + (nFaces * 3), faces);
+      printf("%i\n", nFaces);
 
    }
 
-   Mesh::~Mesh() {
 
+   Mesh::~Mesh() {
+      delete verts;
+      delete norms;
+      delete uvs;
+      delete faces;
+   }
+
+   //THis should eventually just put this on a queue
+   void Mesh::loadToGraphics(RenderManager* renderMan) {
+      renderMan->loadObject(*this);
+   }
+
+
+   void Mesh::getMesh(float** vertsOut, float** normsOut,
+                      float** uvsOut, uint** facesOut,
+                      uint &nVertsOut, uint &nFacesOut) {
+
+      *vertsOut = verts;
+      *normsOut = norms;
+      *uvsOut   = uvs;
+      *facesOut = faces;
+      nVertsOut = nVerts;
+      nFacesOut = nFaces;
    }
 
 

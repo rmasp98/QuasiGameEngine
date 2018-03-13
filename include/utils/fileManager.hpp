@@ -3,6 +3,8 @@
 
 #include <string>
 #include <vector>
+#include <fstream>
+
 
 
 namespace xxx {
@@ -10,17 +12,19 @@ namespace xxx {
 
    class FileManager {
    public:
-      FileManager() {};
-      ~FileManager() {};
+      virtual ~FileManager() {};
 
       void setLogger(Logger* logIn) { logger = logIn; };
 
    protected:
       Logger* logger;
 
+      FileManager() {};
       std::string getExtension(std::string fileLoction);
       bool compareFileType(std::string fileLoction, std::vector<std::string> extensions);
    };
+
+
 }
 
 

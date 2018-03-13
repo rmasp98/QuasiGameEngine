@@ -1,16 +1,17 @@
 #ifndef XXX_RESOURCE_MANAGER_HPP
 #define XXX_RESOURCE_MANAGER_HPP
 
-
 #include <string>
 
 namespace xxx {
    class MemoryManager;
    class Resource;
    class Model;
+   struct Asset;
    class Mesh;
    class ResourceFileManager;
    class Logger;
+   class LogWorker;
 
 
    class ResourceManager {
@@ -23,11 +24,14 @@ namespace xxx {
       - may need to implement a way to find out if a resource has been used recently (can be used to delete unused resource)
       ----------------------------------------------------------------------*/
    public:
-      ResourceManager();
+      ResourceManager(LogWorker* logWorkerIn);
       virtual ~ResourceManager();
 
       Model* getModel(int guid, std::string fileLocation); // (check if has been loaded, if not load)
-      Resource* getResource(int guid, std::string fileLocation); // (check if has been loaded, if not load)
+
+      Resource* getResource(const char* fileLocation, const char* assetName = NULL);
+      Resource* getResource(int guid);
+      Resource* getResource(Asset asset);
 
       //Asychronous loading - will probably need a mutex for this
       Model* asyncLoadModel(int guid, std::string fileLocation);
@@ -47,10 +51,7 @@ namespace xxx {
    protected:
       //resource reference table of resources type=map<int(GUID), pointer(to resource)>
 
-
-
-      //bool checkResourceDB(int guid);
-      //Resource* getResourceFromDB(int guid);
+      Resource* getResourceFromDB(int guid);
 
       // File manager (this will hopefully have versetile functions to load lots of different types of resource)
       //Need to find a way ro identify file types (custom loader for mine, assimp for models, SOIL for textures, etc.)
@@ -59,7 +60,7 @@ namespace xxx {
       Logger* logger;
 
       Model* loadModel(int guid, std::string fileLocation);
-      Resource* loadResource(int guid, std::string fileLocation);
+      Resource* loadResource(Asset asset);
 
    };
 }

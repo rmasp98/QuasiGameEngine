@@ -11,25 +11,22 @@
 namespace xxx {
    class Resource;
    class Logger;
+   struct Asset;
 
    class ResourceFileManager : public FileManager {
    public:
       ResourceFileManager(Logger* logIn);
       ~ResourceFileManager();
 
-      Resource* loadFile(std::string fileLocation);
-
+      Resource* loadFile(Asset asset);
+      uint calcGUID(std::string fileLocation, std::string assetName);
 
    protected:
-
-
       std::vector<std::string> freeimgExtensions, assimpExtensions;
 
-      std::string getExtension(std::string fileLoction);
-      bool compareFileType(std::string fileLoction, std::vector<std::string> extensions);
+      Resource* loadImage(Asset asset);
+      Resource* loadObject(Asset asset);
 
-      Resource* loadImage(std::string fileLocation);
-      Resource* loadObject(std::string fileLocation);
    };
 }
 

@@ -10,10 +10,10 @@
 
 namespace xxx {
 
-   ResourceManager::ResourceManager() {
+   ResourceManager::ResourceManager(LogWorker* logWorkerIn) {
 
       // Create logger and pass it to all resources
-      logger = new Logger();
+      logger = new Logger("[Resource Manager]", "logs/ResourceManager.log", logWorkerIn);
       Resource::logger = logger;
 
       fileMan = new ResourceFileManager(logger);
@@ -47,20 +47,10 @@ namespace xxx {
 
 
 
-   bool checkResourceDB(int guid) {
-      //search algorithm for db
-
-      return false;
-   }
-
-
-
-
-   Resource* getResourceFromDB(int guid) {
+   Resource* ResourceManager::getResourceFromDB(int guid) {
       //get the rosource from the db...
-      Resource* tempResourcePointer = new Mesh();
 
-      return tempResourcePointer;
+      return NULL;
    }
 
 
@@ -85,22 +75,41 @@ namespace xxx {
 
 
 
+   Resource* ResourceManager::getResource(int guid) {
 
+      return getResourceFromDB(guid);
+
+   }
 
    //get resource from DB, if not there either throw an error or load the resource
-   Resource* ResourceManager::getResource(int guid, std::string fileLocation) {
+   Resource* ResourceManager::getResource(Asset asset) {
 
       //check to see if it is loaded, if so return pointer
-      if (checkResourceDB(guid)) {
-         return getResourceFromDB(guid);
-      }
+      Resource* dbResource = getResourceFromDB(asset.guid);
+      if (dbResource != NULL)
+         return dbResource;
 
-// If we are in release mode we will throw an error here
-#if XXX_RELEASE_MODE
-      //assert that resource is not yet loaded, use asyncLoad first
-#endif
 
-      return loadResource(guid, fileLocation);
+      LOG(LOG_TRACE, logger) << "Resource has not been loaded yet! "
+                  << "In release mode, this will cause the game to exit";
+
+      return loadResource(asset);
+   }
+
+
+   Resource* ResourceManager::getResource(const char* fileLocation,
+                                          const char* assetName)
+   {
+      std::string name;
+      if (assetName == NULL)
+         name = "";
+      else
+         name = assetName;
+
+      Asset asset(fileLocation, name);
+      asset.guid = fileMan->calcGUID(asset.fileLocation, asset.assetName);
+      return getResource(asset);
+
    }
 
 
@@ -172,10 +181,10 @@ namespace xxx {
    }*/
 
 
-   Resource* ResourceManager::loadResource(int guid, std::string fileLocation) {
+   Resource* ResourceManager::loadResource(Asset asset) {
 
       //This should just be an output of the reading of the file
-      Resource* resourcePointer = fileMan->loadFile(fileLocation);
+      Resource* resourcePointer = fileMan->loadFile(asset);
 
       return resourcePointer;
 

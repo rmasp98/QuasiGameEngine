@@ -1,6 +1,7 @@
 #ifndef XXX_RESOURCE_HPP
 #define XXX_RESOURCE_HPP
 
+#include <string>
 
 namespace xxx {
    class RenderManager;
@@ -16,6 +17,15 @@ namespace xxx {
 
    private:
       T value;
+   };
+
+
+   struct Asset {
+      Asset(std::string fileLocIn, std::string assetNameIn = NULL, uint guidIn = 0)
+          : fileLocation(fileLocIn), assetName(assetNameIn), guid(guidIn) {}
+
+      std::string fileLocation, assetName;
+      uint guid;
    };
 
 
@@ -60,14 +70,25 @@ namespace xxx {
    //All of these have been assigned public, need to find out if this is correct
    class Mesh : public Resource {
    public:
-      Mesh();
+      Mesh(float* vertsIn, float* normsIn,
+           float* uvsIn, uint* facesIn,
+            uint nVertsIn, uint nFaceIn);
       ~Mesh();
 
-      unsigned int getResource() { return 0; };
+      inline uint getResource() { return VAO; };
+      void loadToGraphics(RenderManager* renderMan);
+
+      void getMesh(float** vertsOut, float** normsOut,
+                   float** uvsOut, uint** facesOut,
+                   uint &nVertsOut, uint &nFacesOut);
+
+      // This is a duplicate of getResource
+      inline uint getVAO() { return VAO; };
+      inline void setVAO(uint vaoIn) { VAO = vaoIn; };
 
    private:
-      //resources
-      //graphics ids
+      float *verts, *norms, *uvs;
+      uint *faces, nVerts, nFaces, VAO;
    };
 
    class Skeleton : public Resource {

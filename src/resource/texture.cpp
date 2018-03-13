@@ -20,7 +20,7 @@ namespace xxx {
 
 
    void Texture::loadToGraphics(RenderManager* renderMan) {
-      Resource::logger->log("Test", LOG_INFO);
+   
       renderMan->loadTexture(*this);
 
    }

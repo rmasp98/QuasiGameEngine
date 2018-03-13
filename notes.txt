@@ -5,17 +5,55 @@ TODO:
       a. Build a memory managemnet:
          - stack based memory management (single and/or double sided)
          - Pool based memory Management
+            - Pool should have a functionality to create new pool when run out of space
+            - Also shrink when required space decreases (e.g. back to 80% of one pool)
+            - Could implement a pool of double stacks (each pool thing can have up to two objects)
+            - Or many differnet pools of differnet sized blocks
+            - Potential debug mode that initialises a freed block to something particular
          - Allignment function (ensure memory allignment on all allocations)
          - Single and double buffer wrappers (only have memory in a single frame or over two frames)
          - Defragmentation
       b. Logging system
          - static variable for current log level
+         - Output time stamp in milliseconds/nanoseconds (could try and use game clock?)
+            - Could call to window manager to get clocktime?
+         - logging should be a FIFO queue that all systems pass to
+            - here is a good way to wait the queue reader (https://codereview.stackexchange.com/questions/149676/writing-a-thread-safe-queue-in-c)
+            - This should be a seperate thread dedicated to writing logs in order
+            - Need to make the queue thread safe
+         - Each system then has its own log passer that finds the queue
+
          - graphical logging (will display in the scene) - probably needs to be tied to renderer
       c. Types (to facilitate cross platform/compiler issues)?
          - OpenGL has inbuilt type, need a wrapper for this and directx?
       d. File processing:
          - wrapper for file system accesses
          - streaming for resource management
+      e. Queuing system (inter system communication)
+         - each manager should only be able pass to selected queues
+         - should be a priority value
+         - queue could have multiple subscribers (topic)
+            - Track which object each subscriber is on
+            - Delete objects in queue (time to live? - if so track number dropped without pickup?)
+         - The queue system is responsible for weighing up priority to put in queue:
+            - Should be a function of time since request and a priority value
+            - Needs quick calculator to check current priority (maybe time*priority)
+         - There are two potential types of queues:
+            - one to multiple (e.g. a system letting everyone know something is happening)
+            - mulitple to one (e.g. trigger a particular action like a sound)
+         - Needs a way to accept simultaneous new queue entries without breaking
+            - template queue->add(*object, enum) { get and increment queue pointer; add to queue; }
+         - Each system has a listener loop(s) to check for the next job in their queues
+            - This could mean the system threads can be scaled up
+            - Could have different listeners for each queue or one to check all
+         - Type of queue:
+            - linked list with a pool memory allocator
+            - ring buffer (really clever!!) - http://gameprogrammingpatterns.com/event-queue.html
+         - Need to think about feedback loops (multiple systems talking back and forth)
+         - Needs to put an object with information about the call in queue
+         - Need to identify what APIs can be put behind a queue and which can't (e.g. needs to return something)
+         - Find a way to make sure data is processed before it is used
+            - e.g. mesh is drawn before physics has moved it
    2. Build a (run-time) resource manager:
       DEP1. Memory Management needs to be completed
       DEP2. Requires file management including streaming
@@ -43,6 +81,26 @@ TODO:
       f. check (and load) any sub-resources of a resource (e.g. mesh will often require a texture so both must be loaded)
       g. May need some custom processing of resources
    3. Build a Render Manager
+      a. build a function(s) to load resources to graphics
+         - load image
+            - need to account for Antialiasing
+         - load object
+   4. Input system
+      a. input should have a message system?
+         - the subscribers will be input components?
+         - This is not that clever, already did it in entXGame...
+      b. create enum that has all wanted actions
+         - should have a struct that holds name, enum and key value(s)
+         - enum should be an index in the arrary of structs
+         - Maybe have a function for get key by name?
+      c. Should read in key mapping from file
+         - Need to figure out way of mapping enum name in file to enum value
+         - Write a Json file manager
+            - Functionality should be in a JsonFile class
+            - Use lambda function to access an array?
+            - Need to find a better way of hiding an array
+   5. Thread manager?
+      a. This would sit off main and spawn and manage the other threads
 
 
 
@@ -91,6 +149,29 @@ To think about:
       - 0-1 on y axis and 0-<apsect ratio> on x-axis e.g. 0 - 16/9 = 1.7777)
       - positive coordinates should represent relative to top left, and negative should be relative to bottom right
       - probably want some way to make a relative to an arbitrary position coordinates as well
+   - Should use queues for inter system communication (this shouldn't be global?)
+      - This information could be sent using commands (http://gameprogrammingpatterns.com/command.html)
+   - Graphics pipeline should try to identiy optimisations
+      - entities that can use geo shader (e.g. same mesh, texture, and shaders)
+      -
+   - Implement a way of easily handling finite state machines
+   - Consider allowing CPU to run for a frame, then GPU to run for a frame, and then display
+   - All resources should probably have private constructors with friend classes to construct them
+   - What systems can realistically be put in a seperate thread and what would they do:
+      - Threads:
+         - Renderer: should be processing draw calls placed on a queue a frame after
+         - FileManager: should be loading and writing to file asynchronously
+         - AI?: don't really know much about this
+         - Audio?: don't really know much about this
+         - Game loop?: need to think a bit more
+      - APIs:
+         - Input: this needs to be processed before most systems (part of game loop)
+         - Physics: needs to react to input and AI (should just be an API?)
+         - ResourceManager: only used when needed - most worked handed to filemanager
+      - Entities will need to be nested (e.g. an enemy will have a sword)
+         - Dirty flag/bit is a good way of updating transforms (http://gameprogrammingpatterns.com/dirty-flag.html)
+   - Really need to learn about shared and unique pointers!!!
+
 
 
 

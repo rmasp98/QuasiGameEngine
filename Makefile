@@ -2,7 +2,7 @@ CXX       := g++
 LD        := g++
 FLAGS	  := -std=c++11 -Wall -ggdb
 
-MODULES   := main resource utils renderer physics input
+MODULES   := main resource utils renderer physics input utils/jsonFileManager
 SRC_DIR   := $(addprefix src/,$(MODULES))
 BUILD_DIR := $(addprefix build/,$(MODULES))
 
@@ -11,7 +11,7 @@ OBJ       := $(patsubst src/%.cpp,build/%.o,$(SRC))
 EXE       := xxx
 
 INCLUDES   = -I include
-LIBS += -lfreeimage -lGL -lglfw -lGLEW
+LIBS +=  -lGL -lglfw -lGLEW -lfreeimage -lassimp -pthread
 
 vpath %.cpp $(SRC_DIR)
 
@@ -32,6 +32,10 @@ checkdirs: $(BUILD_DIR)
 
 $(BUILD_DIR):
 	@mkdir -p $@
+
+cppcheck:
+	cppcheck $(INCLUDES) --enable=all --cppcheck-build-dir=$(BUILD_DIR) --std=c++11 src/
+
 
 clean:
 	@rm -rf build
