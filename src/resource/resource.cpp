@@ -2,7 +2,7 @@
 
 
 #include "renderer/renderManager.hpp"
-#include "utils/logger.hpp"
+#include "utils/logging/logger.hpp"
 
 
 #include <cassert>
@@ -59,7 +59,6 @@ namespace xxx {
 
       faces = new uint[nFaces * 3];
       std::copy(facesIn, facesIn + (nFaces * 3), faces);
-      printf("%i\n", nFaces);
 
    }
 

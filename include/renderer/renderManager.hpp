@@ -7,7 +7,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 //#include <GL/gl.h>
-#include <GLFW/glfw3.h>
+
 
 
 
@@ -25,14 +25,12 @@ namespace xxx {
       RenderManager(LogWorker* logWorkerIn);
       ~RenderManager();
 
-      int initGraphics();
+      bool initGraphics();
       void draw();
-      GLFWwindow* getWindow() { return window; };
       void loadTexture(Texture& texture);
       void loadObject(Mesh& mesh);
 
    private:
-      GLFWwindow* window;
       Logger* logger;
 
    };

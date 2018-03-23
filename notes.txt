@@ -14,7 +14,7 @@ TODO:
          - Single and double buffer wrappers (only have memory in a single frame or over two frames)
          - Defragmentation
       b. Logging system
-         - static variable for current log level
+         - static variable for default log level?
          - Output time stamp in milliseconds/nanoseconds (could try and use game clock?)
             - Could call to window manager to get clocktime?
          - logging should be a FIFO queue that all systems pass to
@@ -22,7 +22,6 @@ TODO:
             - This should be a seperate thread dedicated to writing logs in order
             - Need to make the queue thread safe
          - Each system then has its own log passer that finds the queue
-
          - graphical logging (will display in the scene) - probably needs to be tied to renderer
       c. Types (to facilitate cross platform/compiler issues)?
          - OpenGL has inbuilt type, need a wrapper for this and directx?
@@ -85,6 +84,10 @@ TODO:
          - load image
             - need to account for Antialiasing
          - load object
+      b. Should have a stand-alone window Manager wrapper
+         - this will be the interface into the different window libraries
+      c. Should have a graphics manager
+         - this will be the interface into the different graphics libraries
    4. Input system
       a. input should have a message system?
          - the subscribers will be input components?

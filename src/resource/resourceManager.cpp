@@ -4,7 +4,7 @@
 #include "resource/resourceFileManager.hpp"
 #include "resource/resource.hpp"
 #include "utils/memoryManager.hpp"
-#include "utils/logger.hpp"
+#include "utils/logging/logger.hpp"
 
 
 

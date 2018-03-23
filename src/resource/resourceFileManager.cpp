@@ -1,6 +1,6 @@
 #include "resource/resourceFileManager.hpp"
 #include "resource/texture.hpp"
-#include "utils/logger.hpp"
+#include "utils/logging/logger.hpp"
 
 #include <FreeImage.h>
 #include <assimp/Importer.hpp>
@@ -63,7 +63,7 @@ namespace xxx {
 
 
    Resource* ResourceFileManager::loadImage(Asset asset) {
-      LOG(LOG_TRACE, logger) << "Loading image from " << asset.fileLocation;
+      LOG(LOG_TRACE, logger) << "Loading image from '" << asset.fileLocation << "'";
 
       FREE_IMAGE_FORMAT filetype = FreeImage_GetFileType(asset.fileLocation.c_str(), 0);
       if (filetype == FIF_UNKNOWN)
@@ -127,8 +127,8 @@ namespace xxx {
                uint* faces;
 
                if (mesh->HasFaces()) {
-                  LOG(LOG_TRACE, logger) << "Getting faces from " << asset.assetName <<
-                              ", in " << asset.fileLocation;
+                  LOG(LOG_TRACE, logger) << "Getting faces from '" << asset.assetName <<
+                              "', in '" << asset.fileLocation << "'";
 
                   faces = new uint[mesh->mNumFaces * mesh->mFaces[0].mNumIndices];
                   uint faceIndex = 0;
@@ -143,8 +143,8 @@ namespace xxx {
 
 
                if (mesh->HasPositions()) {
-                  LOG(LOG_TRACE, logger) << "Getting verticies from " << asset.assetName <<
-                              ", in " << asset.fileLocation;
+                  LOG(LOG_TRACE, logger) << "Getting verticies from '" << asset.assetName <<
+                              "', in '" << asset.fileLocation << "'";
 
                   verticies = new float[mesh->mNumVertices * 3];
                   uint vertIndex = 0;
@@ -158,8 +158,8 @@ namespace xxx {
                }
 
                if (mesh->HasNormals()) {
-                  LOG(LOG_TRACE, logger) << "Getting normals from " << asset.assetName <<
-                              ", in " << asset.fileLocation;
+                  LOG(LOG_TRACE, logger) << "Getting normals from '" << asset.assetName <<
+                              "', in '" << asset.fileLocation << "'";
 
                   normals = new float[mesh->mNumVertices * 3];
                   uint normIndex = 0;
@@ -173,8 +173,8 @@ namespace xxx {
                }
 
                if (mesh->HasTextureCoords(0)) {
-                  LOG(LOG_TRACE, logger) << "Getting texture coordinates from " <<
-                              asset.assetName << ", in " << asset.fileLocation;
+                  LOG(LOG_TRACE, logger) << "Getting texture coordinates from '" <<
+                              asset.assetName << "', in '" << asset.fileLocation << "'";
 
                   uint uvType = *mesh->mNumUVComponents;
                   textureCoords = new float[mesh->mNumVertices * uvType];

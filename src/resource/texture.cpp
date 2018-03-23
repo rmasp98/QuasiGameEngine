@@ -1,7 +1,7 @@
 #include "resource/texture.hpp"
 
 #include "renderer/renderManager.hpp"
-#include "utils/logger.hpp"
+#include "utils/logging/logger.hpp"
 
 
 
@@ -20,7 +20,7 @@ namespace xxx {
 
 
    void Texture::loadToGraphics(RenderManager* renderMan) {
-   
+
       renderMan->loadTexture(*this);
 
    }
