@@ -9,6 +9,9 @@
 
 #include "utils/shader.hpp"
 
+
+
+
 using namespace xxx;
 
 int main() {
@@ -47,7 +50,7 @@ int main() {
 
    glm::vec3 pos = glm::vec3(0.0f, 0.0f, 20.0f);
    double mouseSpeed = 0.01f, dT = 0.016;
-   glm::vec3 angle = glm::vec3(0.0f);
+   glm::vec2 angle = glm::vec2(3.14f, 0.0f);
 
    glViewport(0, 0, 2*1920, 2*1080);
    glm::mat4 proj = glm::perspective(glm::radians(45.0f), (float)(1920.0/1080.0), 0.1f, 100.0f);
@@ -69,21 +72,10 @@ int main() {
       }
 
       input->update();
-      if (input->isActive(KEY_UP))
-         pos.z -= 0.1;
-      if (input->isActive(KEY_DOWN))
-         pos.z += 0.1;
-      if (input->isActive(KEY_LEFT))
-         pos.x -= 0.1;
-      if (input->isActive(KEY_RIGHT))
-         pos.x += 0.1;
 
       //Determines the angle of the camera based on how far the cursor position has changed
-      angle.x += mouseSpeed * dT * GLfloat(input->winCen[0] - input->cursor[0]);
-      double dTheta = mouseSpeed * dT * GLfloat(input->winCen[1] - input->cursor[1]);
-
-      input->centerCursor();
-
+      angle.x += mouseSpeed * dT * GLfloat(input->lastPos[0] - input->cursor[0]);
+      double dTheta = mouseSpeed * dT * GLfloat(input->lastPos[1] - input->cursor[1]);
 
       //Makes sure that camera can't look up or down too far
       if (angle.y + dTheta <= -0.9 * glm::pi<GLfloat>() / 2.0f)
@@ -99,8 +91,21 @@ int main() {
                              cos(angle.y) * cos(angle.x));
 
       //Creates the movement (2D) vectors (posible should normalise)
-      glm::vec3 dir = glm::vec3(facing.x, 0, facing.z);
+      // this is for 2d movement
+      // glm::vec3 dir = glm::vec3(facing.x, 0, facing.z);
       glm::vec3 right = glm::vec3(facing.z, 0, -facing.x);
+
+      if (input->isActive(KEY_UP))
+         pos += facing * 0.1f;
+      if (input->isActive(KEY_DOWN))
+         pos -= facing * 0.1f;
+      if (input->isActive(KEY_LEFT))
+         pos += right * 0.1f;
+      if (input->isActive(KEY_RIGHT))
+         pos -= right * 0.1f;
+
+
+
 
 
 
@@ -122,6 +127,7 @@ int main() {
 
 
    delete picture;
+   delete object;
    delete resMan;
    delete renderMan;
 
@@ -129,5 +135,6 @@ int main() {
 
    //this should always be deleted last to ensure all logs are written
    delete logWorker;
+
 
 }

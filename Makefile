@@ -1,6 +1,6 @@
 CXX       := g++
 LD        := g++
-FLAGS	  := -std=c++11 -Wall -ggdb
+FLAGS	  := -std=c++11 -Wall -ggdb -rdynamic -fstack-check
 
 MODULES   := main resource utils renderer physics input utils/jsonFileManager utils/logging
 SRC_DIR   := $(addprefix src/,$(MODULES))
