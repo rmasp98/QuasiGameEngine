@@ -1,4 +1,4 @@
-#include "input/input.hpp"
+#include "interface/keyManager.hpp"
 
 #include "utils/logging/logger.hpp"
 
@@ -7,16 +7,16 @@
 
 namespace xxx {
 
-   Input::Input(LogWorker* logWorkerIn) {
-      logger = new Logger("[ Input  Manager ]", "logs/InputManager.log", logWorkerIn);
+   KeyManager::KeyManager(Logger* loggerIn) : logger(loggerIn) {
       jsonFileManager = new JsonFileManager(logger);
 
+      setInput = "keyboard"; //load from a config file
    }
 
 
 
 
-   void Input::setKey(ActionEnum actionIn, uint keyValueIn, bool isHoldIn,
+   void KeyManager::setKey(ActionEnum actionIn, uint keyValueIn, bool isHoldIn,
                       std::string nameIn) {
 
       if (validKey(keyValueIn)) {
@@ -34,7 +34,7 @@ namespace xxx {
    }
 
 
-   void Input::setKey(uint actionIn, uint keyValueIn, bool isHoldIn,
+   void KeyManager::setKey(uint actionIn, uint keyValueIn, bool isHoldIn,
                       std::string nameIn) {
 
       //This heavily relies on ActionEnums integrity
@@ -50,12 +50,12 @@ namespace xxx {
 
 
 
-   const Key* Input::getKey(ActionEnum actionIn) {
+   const Key* KeyManager::getKey(ActionEnum actionIn) {
       return &keys[actionIn];
    }
 
 
-   const Key* Input::getKey(std::string nameIn) {
+   const Key* KeyManager::getKey(std::string nameIn) {
       for (auto const &key : keys) {
          // Need to create a better string comparison
          if (key.second.name == nameIn)
@@ -67,19 +67,19 @@ namespace xxx {
    }
 
 
-   void Input::loadKeys(const char* configFileNameIn) {
+   void KeyManager::loadKeys(const char* configFileNameIn) {
       JsonFile* configFile = jsonFileManager->loadFile(configFileNameIn);
       parseKeys(configFile);
    }
 
 
-   void Input::reloadKeys() {
+   void KeyManager::reloadKeys() {
       JsonFile* configFile = jsonFileManager->loadFile();
       parseKeys(configFile);
    }
 
 
-   void Input::parseKeys(JsonFile* configFile) {
+   void KeyManager::parseKeys(JsonFile* configFile) {
 
       if (configFile != NULL) {
          //read in json config
@@ -121,7 +121,7 @@ namespace xxx {
 
 
    //THis is shit
-   bool Input::isActive(ActionEnum actionIn) {
+   bool KeyManager::isActive(ActionEnum actionIn) {
       //printf("%ld\n", activeKeys);
       return activeKeys & (int)pow(2, (int)actionIn);
    }

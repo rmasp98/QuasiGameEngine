@@ -1,4 +1,4 @@
-#include "input/glfwInput.hpp"
+#include "interface/glfw/glfwInterface.hpp"
 
 #include "utils/logging/logger.hpp"
 #include "utils/logging/logWorker.hpp"
@@ -8,19 +8,19 @@
 
 namespace xxx {
 
-   GLFWInput::GLFWInput(LogWorker* logWorkerIn)  : Input(logWorkerIn) {
+   GlfwInterface::GlfwInterface(LogWorker* logWorkerIn)  : DeviceInterface(logWorkerIn) {
       logWorkerIn->setTimeFunction(&glfwGetTime);
    };
 
 
-   GLFWInput::~GLFWInput() {
+   GlfwInterface::~GlfwInterface() {
+      delete keyMan;
+
       glfwTerminate();
    }
 
 
-   bool GLFWInput::init(const char* configFileNameIn) {
-
-
+   bool GlfwInterface::init(const char* configFileNameIn) {
       LOG(LOG_INFO, logger) << "Initialising GLFW";
       if (!glfwInit()) {
          LOG(LOG_FATAL, logger) << "Failed to initialise GLFW";
@@ -56,11 +56,6 @@ namespace xxx {
       //window = glfwCreateWindow(1680, 1050, "First Program", monitor, NULL);
 
 
-      //Do properly!
-      winCen[0] = 1920.0/2.0;
-      winCen[1] = 1080.0/2.0;
-
-
       //This one sets up full screen but there is currently a bug that produces a blue strip
       //window = glfwCreateWindow(mode->width, mode->height, "First Program", mode, NULL);
 
@@ -72,91 +67,51 @@ namespace xxx {
 
       glfwMakeContextCurrent(window); //Makes this window the current window
 
-      glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE); //Allows key presses to be detected in frame
-      //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); //Hide cursor
 
-      glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-
-      // Preset the last mouse position to prevent jumping at the begining
-      glfwGetCursorPos(window, &lastPos[0], &lastPos[1]);
-      //glfwSetCursorPosCallback(window, mouseCallback);
-
-
-      //Load keys from file
-      setInput = "keyboard"; //load from a config file
-      loadKeys(configFileNameIn);
+      keyMan = new GlfwKeyManager(logger, window);
+      keyMan->init(configFileNameIn);
 
       return true;
 
    }
 
 
-   void GLFWInput::swapBuffers() {
+   void GlfwInterface::swapBuffers() {
       glfwSwapBuffers(window);
    }
 
 
 
-   void GLFWInput::pollEvents() {
+   void GlfwInterface::pollEvents() {
       glfwPollEvents();
    }
 
-   bool GLFWInput::isWindowOpen() {
+   bool GlfwInterface::isWindowOpen() {
       return glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS
                && glfwWindowShouldClose(window) == 0;
    }
 
 
-   bool GLFWInput::validKey(uint keyValueIn) {
 
-      //this is to check input is a valid key on the keyboard
+   bool GlfwInterface::isKeyActive(ActionEnum action) {
+      return keyMan->isActive(action);
+   }
 
-      return true;
 
+
+   float* GlfwInterface::getMousePosDiff() {
+      return keyMan->diffPos;
    }
 
 
 
 
 
-   void GLFWInput::update() {
+   void GlfwInterface::update() {
 
-      keyState = 0;
-      GLuint it = 0;
-      for (auto const &ent1 : keys) {
-         if (isPressed(ent1.second))
-            keyState += pow(2,it);
-         it++;
-      }
-
-      // key state changed if keyState xor (not the same as) oldKeyState
-      uint stateChange = keyState ^ oldKeyState;
-      // active keys if the key is a hold key or has changed and is pressed down
-      activeKeys = (holdKeys | stateChange) & keyState;
-      oldKeyState = keyState;
-
-      //get cursor position
-      lastPos[0] = cursor[0]; lastPos[1] = cursor[1];
-      glfwGetCursorPos(window, &cursor[0], &cursor[1]);
-
-      //send active keys and cursor position out to everyone that needs it
+      keyMan->update();
 
    }
 
-
-
-
-   bool GLFWInput::isPressed(const Key keyIn) {
-
-      if (true) { //Is key
-         if (glfwGetKey(window, keyIn.keyValue) == GLFW_PRESS)
-            return true;
-      } else if (true) { //Is mouse
-         if (glfwGetMouseButton(window, keyIn.keyValue) == GLFW_PRESS)
-            return true;
-      }
-
-      return false;
-   }
 
 }

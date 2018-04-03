@@ -2,8 +2,8 @@
 #include "resource/resourceManager.hpp"
 #include "renderer/renderManager.hpp"
 #include "resource/texture.hpp"
-#include "input/input.hpp"
-#include "input/glfwInput.hpp" //this isn't great...
+#include "interface/deviceInterface.hpp"
+#include "interface/glfw/glfwInterface.hpp" //this isn't great...
 #include "utils/logging/logger.hpp"
 #include "utils/logging/logWorker.hpp"
 
@@ -21,7 +21,7 @@ int main() {
    LogWorker* logWorker = new LogWorker();
    logWorker->init();
 
-   Input* input = new GLFWInput(logWorker);
+   DeviceInterface* input = new GlfwInterface(logWorker);
    input->init("config/keyMap.cfg");
 
    //const Key* tempKey = input->getKey(KEY_LEFT);
@@ -49,7 +49,7 @@ int main() {
 
 
    glm::vec3 pos = glm::vec3(0.0f, 0.0f, 20.0f);
-   double mouseSpeed = 0.01f, dT = 0.016;
+   double mouseSpeed = 0.03f, dT = 0.016;
    glm::vec2 angle = glm::vec2(3.14f, 0.0f);
 
    glViewport(0, 0, 2*1920, 2*1080);
@@ -74,8 +74,9 @@ int main() {
       input->update();
 
       //Determines the angle of the camera based on how far the cursor position has changed
-      angle.x += mouseSpeed * dT * GLfloat(input->lastPos[0] - input->cursor[0]);
-      double dTheta = mouseSpeed * dT * GLfloat(input->lastPos[1] - input->cursor[1]);
+      float* mouseDiff = input->getMousePosDiff();
+      angle.x += mouseSpeed * dT * GLfloat(mouseDiff[0]);
+      double dTheta = mouseSpeed * dT * GLfloat(mouseDiff[1]);
 
       //Makes sure that camera can't look up or down too far
       if (angle.y + dTheta <= -0.9 * glm::pi<GLfloat>() / 2.0f)
@@ -95,13 +96,13 @@ int main() {
       // glm::vec3 dir = glm::vec3(facing.x, 0, facing.z);
       glm::vec3 right = glm::vec3(facing.z, 0, -facing.x);
 
-      if (input->isActive(KEY_UP))
+      if (input->isKeyActive(KEY_UP))
          pos += facing * 0.1f;
-      if (input->isActive(KEY_DOWN))
+      if (input->isKeyActive(KEY_DOWN))
          pos -= facing * 0.1f;
-      if (input->isActive(KEY_LEFT))
+      if (input->isKeyActive(KEY_LEFT))
          pos += right * 0.1f;
-      if (input->isActive(KEY_RIGHT))
+      if (input->isKeyActive(KEY_RIGHT))
          pos -= right * 0.1f;
 
 

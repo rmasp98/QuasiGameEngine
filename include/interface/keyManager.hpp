@@ -1,5 +1,5 @@
-#ifndef XXX_INPUT_HPP
-#define XXX_INPUT_HPP
+#ifndef XXX_KEY_MANAGER_HPP
+#define XXX_KEY_MANAGER_HPP
 
 #include "utils/jsonFileManager/jsonFileManager.hpp"
 
@@ -31,24 +31,18 @@ namespace xxx {
    };
 
    class logger;
-   class LogWorker;
 
 
-
-
-   class Input {
+   class KeyManager {
       /*Notes----------------------------------------------------------------
       - May need to handle memory of keys pressed?
       ----------------------------------------------------------------------*/
    public:
-      virtual ~Input() {};
+      KeyManager(Logger* loggerIn);
+      virtual ~KeyManager() {};
       virtual void update() = 0;
 
       virtual bool init(const char* configFileNameIn) = 0;
-
-      virtual void swapBuffers() = 0;
-      virtual void pollEvents() = 0;
-      virtual bool isWindowOpen() = 0;
 
       void loadKeys(const char* configFileNameIn);
       void reloadKeys();
@@ -61,14 +55,14 @@ namespace xxx {
       const Key* getKey(std::string nameIn);
 
 
-      double cursor[2];
-      double lastPos[2];
-      double winCen[2];
+      float diffPos[2];
    protected:
-      Input(LogWorker* logWorkerIn);
       long keyState, oldKeyState, holdKeys, activeKeys;
       std::map<ActionEnum, Key> keys;
+      double cursor[2];
+      double lastPos[2];
 
+      double winCen[2];
       const char* setInput;
 
       JsonFileManager* jsonFileManager;
@@ -82,4 +76,4 @@ namespace xxx {
 }
 
 
-#endif // XXX_INPUT_HPP
+#endif // XXX_DEVICE_INTERFACE_HPP

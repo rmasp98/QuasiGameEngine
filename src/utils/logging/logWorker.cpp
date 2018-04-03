@@ -69,8 +69,9 @@ namespace xxx {
       if (_logQueue.size() < _maxSize) {
          //This is currently not safe... If window not initialised it will crash
          log.time = getTime();
-         std::lock_guard<std::mutex> guard(_queueMutex);
-         _logQueue.push(log);
+         //std::lock_guard<std::mutex> guard(_queueMutex);
+         //_logQueue.push(log);
+         std::cout << log.prefix << " " << log.time << " " << log.msg << std::endl;
 
          //Notifies collectorLoop that something has been placed on queue
          cv.notify_all();

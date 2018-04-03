@@ -2,7 +2,7 @@ CXX       := g++
 LD        := g++
 FLAGS	  := -std=c++11 -Wall -ggdb -rdynamic -fstack-check
 
-MODULES   := main resource utils renderer physics input utils/jsonFileManager utils/logging
+MODULES   := main resource utils renderer physics interface interface/glfw utils/jsonFileManager utils/logging
 SRC_DIR   := $(addprefix src/,$(MODULES))
 BUILD_DIR := $(addprefix build/,$(MODULES))
 
