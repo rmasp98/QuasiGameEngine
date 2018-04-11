@@ -1,7 +1,7 @@
-#ifndef XXX_MAIN_HPP
-#define XXX_MAIN_HPP
-
-#include <iostream>
+#ifndef QGE_MAIN_HPP
+#define QGE_MAIN_HPP
 
 
-#endif // XXX_MAIN_HPP
+
+
+#endif // QGE_MAIN_HPP

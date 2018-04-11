@@ -1,13 +1,13 @@
-#include "interface/keyManager.hpp"
+#include "interface/input.hpp"
 
 #include "utils/logging/logger.hpp"
 
 #include <math.h>
 
 
-namespace xxx {
+namespace qge {
 
-   KeyManager::KeyManager(Logger* loggerIn) : logger(loggerIn) {
+   Input::Input(Logger* loggerIn) : logger(loggerIn) {
       jsonFileManager = new JsonFileManager(logger);
 
       setInput = "keyboard"; //load from a config file
@@ -16,7 +16,7 @@ namespace xxx {
 
 
 
-   void KeyManager::setKey(ActionEnum actionIn, uint keyValueIn, bool isHoldIn,
+   void Input::setKey(ActionEnum actionIn, uint keyValueIn, bool isHoldIn,
                       std::string nameIn) {
 
       if (validKey(keyValueIn)) {
@@ -26,6 +26,9 @@ namespace xxx {
          keys[actionIn].keyValue = keyValueIn;
          keys[actionIn].isHold = isHoldIn;
 
+         //If this is a new key assignment, it ensures order is maintained
+         setBitOrder();
+
          LOG(LOG_TRACE, logger) << "Setting key: Name = " << nameIn <<
                                    "; Key Value = " << keyValueIn <<
                                    "; action = " << actionIn;
@@ -34,7 +37,7 @@ namespace xxx {
    }
 
 
-   void KeyManager::setKey(uint actionIn, uint keyValueIn, bool isHoldIn,
+   void Input::setKey(uint actionIn, uint keyValueIn, bool isHoldIn,
                       std::string nameIn) {
 
       //This heavily relies on ActionEnums integrity
@@ -50,12 +53,12 @@ namespace xxx {
 
 
 
-   const Key* KeyManager::getKey(ActionEnum actionIn) {
+   const Key* Input::getKey(ActionEnum actionIn) {
       return &keys[actionIn];
    }
 
 
-   const Key* KeyManager::getKey(std::string nameIn) {
+   const Key* Input::getKey(std::string nameIn) {
       for (auto const &key : keys) {
          // Need to create a better string comparison
          if (key.second.name == nameIn)
@@ -67,19 +70,19 @@ namespace xxx {
    }
 
 
-   void KeyManager::loadKeys(const char* configFileNameIn) {
+   void Input::loadKeys(const char* configFileNameIn) {
       JsonFile* configFile = jsonFileManager->loadFile(configFileNameIn);
       parseKeys(configFile);
    }
 
 
-   void KeyManager::reloadKeys() {
+   void Input::reloadKeys() {
       JsonFile* configFile = jsonFileManager->loadFile();
       parseKeys(configFile);
    }
 
 
-   void KeyManager::parseKeys(JsonFile* configFile) {
+   void Input::parseKeys(JsonFile* configFile) {
 
       if (configFile != NULL) {
          //read in json config
@@ -101,18 +104,6 @@ namespace xxx {
                   }
                }
             }
-
-            //set location of key in bit state
-            uint it = 0; holdKeys = 0;
-            for (auto const &ent1 : keys) {
-               //If key should remain active when held down
-               if (keys[ent1.first].isHold)
-                  holdKeys += pow(2, it);
-
-               // Place where key is in the binary chain based on map order
-               keys[ent1.first].bitLocation = pow(2, it++);
-            }
-
          } catch (const char* msg) {
             //Throw a visible error in UI
          }
@@ -120,9 +111,25 @@ namespace xxx {
    }
 
 
+   void Input::setBitOrder() {
+      //set location of key in bit state
+      uint it = 0; holdKeys = 0;
+      for (auto const &ent1 : keys) {
+         //If key should remain active when held down
+         if (keys[ent1.first].isHold)
+            holdKeys += pow(2, it);
+
+         // Place where key is in the binary chain based on map order
+         keys[ent1.first].bitLocation = pow(2, it++);
+      }
+   }
+
+
    //THis is shit
-   bool KeyManager::isActive(ActionEnum actionIn) {
+   bool Input::isKeyActive(ActionEnum actionIn) {
       //printf("%ld\n", activeKeys);
       return activeKeys & (int)pow(2, (int)actionIn);
    }
-}
+
+
+} // namespave qge

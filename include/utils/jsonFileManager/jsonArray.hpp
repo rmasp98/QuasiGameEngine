@@ -1,5 +1,5 @@
-#ifndef XXX_JSON_ARRAY_HPP
-#define XXX_JSON_ARRAY_HPP
+#ifndef QGE_JSON_ARRAY_HPP
+#define QGE_JSON_ARRAY_HPP
 
 #include "utils/jsonFileManager/jsonUtils.hpp"
 #include "utils/logging/logger.hpp"
@@ -9,7 +9,7 @@
 namespace rj = rapidjson;
 
 
-namespace xxx {
+namespace qge {
    class JsonArrayObject {
       friend class JsonFile;
    public:
@@ -56,7 +56,7 @@ namespace xxx {
       }
 
    };
-}
+} // namespave qge
 
 
-#endif // XXX_JSON_ARRAY_HPP
+#endif // QGE_JSON_ARRAY_HPP

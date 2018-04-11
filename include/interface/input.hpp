@@ -1,5 +1,5 @@
-#ifndef XXX_KEY_MANAGER_HPP
-#define XXX_KEY_MANAGER_HPP
+#ifndef QGE_INPUT_HPP
+#define QGE_INPUT_HPP
 
 #include "utils/jsonFileManager/jsonFileManager.hpp"
 
@@ -9,7 +9,7 @@
 #include <map>
 
 
-namespace xxx {
+namespace qge {
 
    // KEY_MAX must always be last and equal to the penultimate KEY
    // Never set a value to the KEYS as will break functionlity
@@ -18,7 +18,8 @@ namespace xxx {
       KEY_DOWN,
       KEY_RIGHT,
       KEY_LEFT,
-      KEY_MAX = KEY_LEFT
+      KEY_ESC,
+      KEY_MAX = KEY_ESC
    };
 
    struct Key {
@@ -33,47 +34,46 @@ namespace xxx {
    class logger;
 
 
-   class KeyManager {
+   class Input {
       /*Notes----------------------------------------------------------------
       - May need to handle memory of keys pressed?
+      - There may be a bug if a key is not set in the file and then someone
+      tries to access that key...
       ----------------------------------------------------------------------*/
    public:
-      KeyManager(Logger* loggerIn);
-      virtual ~KeyManager() {};
+      Input(Logger *loggerIn);
+      virtual ~Input() {};
       virtual void update() = 0;
 
-      virtual bool init(const char* configFileNameIn) = 0;
-
-      void loadKeys(const char* configFileNameIn);
+      void loadKeys(const char *configFileNameIn);
       void reloadKeys();
 
-      bool isActive(ActionEnum actionIn);
+      bool isKeyActive(ActionEnum actionIn);
 
       void setKey(ActionEnum actionIn, uint keyValueIn, bool isHoldIn, std::string nameIn = "");
       void setKey(uint actionIn, uint keyValueIn, bool isHoldIn, std::string nameIn = "");
-      const Key* getKey(ActionEnum actionIn);
-      const Key* getKey(std::string nameIn);
+      const Key *getKey(ActionEnum actionIn);
+      const Key *getKey(std::string nameIn);
+      const double* getMouseMovement() { return diffPos; };
 
-
-      float diffPos[2];
    protected:
-      long keyState, oldKeyState, holdKeys, activeKeys;
+      long keyState, holdKeys, activeKeys;
       std::map<ActionEnum, Key> keys;
-      double cursor[2];
-      double lastPos[2];
+      double cursor[2], diffPos[2];
 
-      double winCen[2];
-      const char* setInput;
+      const char *setInput;
 
-      JsonFileManager* jsonFileManager;
-      Logger* logger;
+      JsonFileManager *jsonFileManager;
+      Logger *logger;
 
       virtual bool validKey(uint keyValueIn) = 0;
       void parseKeys(JsonFile* configFile);
 
+      void setBitOrder();
+
    };
 
-}
+} // namespave qge
 
 
-#endif // XXX_DEVICE_INTERFACE_HPP
+#endif // QGE_INPUT_HPP

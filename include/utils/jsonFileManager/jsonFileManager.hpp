@@ -1,11 +1,11 @@
-#ifndef XXX_JSON_FILE_MANAGER_HPP
-#define XXX_JSON_FILE_MANAGER_HPP
+#ifndef QGE_JSON_FILE_MANAGER_HPP
+#define QGE_JSON_FILE_MANAGER_HPP
 
 #include "utils/fileManager.hpp"
 #include "utils/jsonFileManager/jsonFile.hpp"
 
 
-namespace xxx {
+namespace qge {
    class JsonFileManager : public FileManager {
    public:
       JsonFileManager(Logger* logIn);
@@ -18,7 +18,8 @@ namespace xxx {
       const char* fileName;
 
    };
-}
+
+} // namespave qge
 
 
-#endif // XXX_JSON_FILE_MANAGER_HPP
+#endif // QGE_JSON_FILE_MANAGER_HPP

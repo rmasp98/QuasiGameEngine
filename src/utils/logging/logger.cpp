@@ -1,7 +1,6 @@
 #include "utils/logging/logger.hpp"
 #include "utils/logging/logWorker.hpp"
 
-#include <chrono>
 #include <cassert>
 
 //Will get rid of this later
@@ -9,7 +8,7 @@
 
 
 
-namespace xxx {
+namespace qge {
 
    //Need to try and remove this
    std::string strcmb(std::initializer_list<const char*> list) {
@@ -47,4 +46,4 @@ namespace xxx {
 
    }
 
-}
+} // ns qge

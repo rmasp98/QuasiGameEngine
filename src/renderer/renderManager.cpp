@@ -5,10 +5,10 @@
 
 
 
-namespace xxx {
+namespace qge {
 
    RenderManager::RenderManager(LogWorker* logWorkerIn) {
-      logger = new Logger("[ Render Manager ]", "logs/RenderManager.log", logWorkerIn);
+      logger = new Logger("[  Render Manager  ]", "logs/RenderManager.log", logWorkerIn);
    }
 
 
@@ -30,7 +30,7 @@ namespace xxx {
       if (glewErr != GLEW_OK) {
          LOG(LOG_FATAL, logger) << "Failed to initialise GLEW. "
                                 << glewGetErrorString(glewErr);
-                                
+
          return false;
       }
 
@@ -170,4 +170,4 @@ namespace xxx {
       }
    }
 
-} // namespace xxx
+} // namespace qge

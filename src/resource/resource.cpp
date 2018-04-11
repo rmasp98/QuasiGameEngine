@@ -11,7 +11,7 @@
 
 
 
-namespace xxx {
+namespace qge {
 
    Logger* Resource::logger;
 
@@ -99,13 +99,4 @@ namespace xxx {
 
    }
 
-
-
-
-
-
-
-
-
-
-}
+} // namespave qge

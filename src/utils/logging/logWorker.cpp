@@ -5,13 +5,13 @@
 #include <iostream>
 
 
-namespace xxx {
+namespace qge {
 
    LogWorker::~LogWorker() {
       _isRunning = false;
 
       // Releases collectorLoop in order to deconstruct
-      cv.notify_all();
+      _queueWaitCv.notify_all();
 
       if (_workerThread->joinable()) {
          _workerThread->join();
@@ -25,6 +25,7 @@ namespace xxx {
 
 
    bool LogWorker::init() {
+      //Currently prevents multiple threads from being created could theoretically have mulitple...
       if (!_isInit) {
          //initialise the class
          _isRunning = true;
@@ -42,10 +43,10 @@ namespace xxx {
 
    void LogWorker::collectorLoop() {
       while (_isRunning || !_logQueue.empty()) {
-         //put a block if queue empty (cv_something?)
+         //put a block if queue empty
          if (_logQueue.empty()) {
             std::unique_lock<std::mutex> lk(_loopMutex);
-            cv.wait(lk);
+            _queueWaitCv.wait(lk);
          }
 
          Log log;
@@ -67,14 +68,17 @@ namespace xxx {
 
    void LogWorker::push(Log log) {
       if (_logQueue.size() < _maxSize) {
-         //This is currently not safe... If window not initialised it will crash
-         log.time = getTime();
-         //std::lock_guard<std::mutex> guard(_queueMutex);
-         //_logQueue.push(log);
-         std::cout << log.prefix << " " << log.time << " " << log.msg << std::endl;
+         if (getTime != nullptr)
+            log.time = getTime();
+         else
+            log.time = 0.0f;
+
+         // Locks queue so that log can be added
+         std::lock_guard<std::mutex> guard(_queueMutex);
+         _logQueue.push(log);
 
          //Notifies collectorLoop that something has been placed on queue
-         cv.notify_all();
+         _queueWaitCv.notify_one();
       }
    }
 
@@ -89,6 +93,9 @@ namespace xxx {
    bool LogWorker::pop(Log& log) {
       if (!_logQueue.empty()) {
          log = _logQueue.front();
+
+         //Need to check if queue is already thread safe?
+         std::lock_guard<std::mutex> guard(_queueMutex);
          _logQueue.pop();
          return true;
       }
@@ -96,4 +103,4 @@ namespace xxx {
    }
 
 
-}
+} // ns qge

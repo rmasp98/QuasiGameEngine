@@ -6,28 +6,19 @@
 #include <math.h>
 
 
-namespace xxx {
+namespace qge {
 
-   GlfwInterface::GlfwInterface(LogWorker* logWorkerIn)  : DeviceInterface(logWorkerIn) {
-      logWorkerIn->setTimeFunction(&glfwGetTime);
-   };
+   GlfwInterface::GlfwInterface(LogWorker* logWorkerIn, const char* configFileNameIn)
+                              : DeviceInterface(logWorkerIn) {
 
-
-   GlfwInterface::~GlfwInterface() {
-      delete keyMan;
-
-      glfwTerminate();
-   }
-
-
-   bool GlfwInterface::init(const char* configFileNameIn) {
       LOG(LOG_INFO, logger) << "Initialising GLFW";
       if (!glfwInit()) {
          LOG(LOG_FATAL, logger) << "Failed to initialise GLFW";
-         return false;
       }
 
+      logWorkerIn->setTimeFunction(&glfwGetTime);
 
+      // Need to read this in from config file
       //glfwWindowHint(GLFW_SAMPLES, 4); //Antialiasing = 4 samples
       glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
       glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3); //Pointing to version of openGL
@@ -61,19 +52,21 @@ namespace xxx {
 
       //Checks to ensure a window was created properly
       if (window == NULL) {
-          LOG(LOG_FATAL, logger) << "Failed to open GLFW window";
-          return false;
+         LOG(LOG_FATAL, logger) << "Failed to open GLFW window";
       }
 
       glfwMakeContextCurrent(window); //Makes this window the current window
 
 
-      keyMan = new GlfwKeyManager(logger, window);
-      keyMan->init(configFileNameIn);
+      input = new GlfwInput(logger, window, configFileNameIn);
+   };
 
-      return true;
 
+   GlfwInterface::~GlfwInterface() {
+      glfwTerminate();
    }
+
+
 
 
    void GlfwInterface::swapBuffers() {
@@ -86,32 +79,29 @@ namespace xxx {
       glfwPollEvents();
    }
 
+
+
    bool GlfwInterface::isWindowOpen() {
-      return glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS
-               && glfwWindowShouldClose(window) == 0;
+      //This is tempoary and should be changed later
+      return !input->isKeyActive(KEY_ESC) && glfwWindowShouldClose(window) == 0;
    }
-
-
-
-   bool GlfwInterface::isKeyActive(ActionEnum action) {
-      return keyMan->isActive(action);
-   }
-
-
-
-   float* GlfwInterface::getMousePosDiff() {
-      return keyMan->diffPos;
-   }
-
 
 
 
 
    void GlfwInterface::update() {
 
-      keyMan->update();
+      //May need to update window
+
+      input->update();
 
    }
 
 
-}
+
+   void setApiVersion(short major, short minor, bool isCore) {
+
+   }
+
+
+}  // namespave qge

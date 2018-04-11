@@ -1,5 +1,5 @@
-#ifndef XXX_LOG_WORKER_HPP
-#define XXX_LOG_WORKER_HPP
+#ifndef QGE_LOG_WORKER_HPP
+#define QGE_LOG_WORKER_HPP
 
 #include <vector>
 #include <fstream>
@@ -9,7 +9,7 @@
 #include <condition_variable>
 
 
-namespace xxx {
+namespace qge {
    class Log;
    class Logger;
 
@@ -32,8 +32,8 @@ namespace xxx {
    private:
       std::queue<Log> _logQueue;
       std::mutex _queueMutex, _loopMutex, _filesMutex;
-      std::thread* _workerThread;
-      std::condition_variable cv;
+      std::thread *_workerThread;
+      std::condition_variable _queueWaitCv;
       std::vector<std::ofstream> _fileStreams;
       bool _isRunning, _isInit;
       uint _maxSize;
@@ -43,9 +43,9 @@ namespace xxx {
 
    };
 
-}
+} // ns qge
 
 
 
 
-#endif // XXX_LOG_WORKER_HPP
+#endif // QGE_LOG_WORKER_HPP

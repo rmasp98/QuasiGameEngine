@@ -1,12 +1,14 @@
-#ifndef SHADER_HPP
-#define SHADER_HPP
+#ifndef QGE_SHADER_HPP
+#define QGE_SHADER_HPP
 
+#include <GL/glew.h>
 #include <string>
 #include <vector>
-#include <iostream>
-#include <fstream>
-#include <GL/glew.h>
 
-GLuint LoadShaders(std::vector<std::string> filePaths);
+namespace qge {
 
-#endif
+   GLuint LoadShaders(std::vector<std::string> filePaths);
+
+} // namespae qge
+
+#endif // QGE_SHADER_HPP

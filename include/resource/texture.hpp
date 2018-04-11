@@ -1,5 +1,5 @@
-#ifndef XXX_TEXTURE_HPP
-#define XXX_TEXTURE_HPP
+#ifndef QGE_TEXTURE_HPP
+#define QGE_TEXTURE_HPP
 
 
 #include "resource/resource.hpp"
@@ -8,7 +8,7 @@
 typedef unsigned int uint;
 typedef unsigned char byte;
 
-namespace xxx {
+namespace qge {
    class RenderManager;
 
    class Texture : public Resource {
@@ -36,7 +36,7 @@ namespace xxx {
       // bool compressed
 
    };
-}
+} // namespave qge
 
 
-#endif // XXX_TEXTURE_HPP
+#endif // QGE_TEXTURE_HPP

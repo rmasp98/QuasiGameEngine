@@ -1,7 +1,7 @@
-#ifndef XXX_MEMORY_MANAGER_HPP
-#define XXX_MEMORY_MANAGER_HPP
+#ifndef QGE_MEMORY_MANAGER_HPP
+#define QGE_MEMORY_MANAGER_HPP
 
-namespace xxx {
+namespace qge {
    /* Notes -------------------------------------------------
       - Maybe have a seperate class for the block itself
       - Probably then need a class for single/double stack and pool based allocators
@@ -23,7 +23,7 @@ namespace xxx {
 
    };
 
-}
+} // ns qge
 
 
-#endif // XXX_MEMORY_MANAGER_HPP
+#endif // QGE_MEMORY_MANAGER_HPP

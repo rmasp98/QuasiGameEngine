@@ -12,17 +12,17 @@
 
 
 
-using namespace xxx;
+using namespace qge;
 
 int main() {
 
-   std::cout << "It has begun!" << std::endl;
+   printf("%s\n", "It has begun!");
 
-   LogWorker* logWorker = new LogWorker();
+   LogWorker *logWorker = new LogWorker();
    logWorker->init();
 
-   DeviceInterface* input = new GlfwInterface(logWorker);
-   input->init("config/keyMap.cfg");
+   DeviceInterface* interface = new GlfwInterface(logWorker, "config/keyMap.cfg");
+   Input* input = interface->getInput();
 
    //const Key* tempKey = input->getKey(KEY_LEFT);
    //input->setKey(KEY_LEFT, 100, true);
@@ -59,7 +59,7 @@ int main() {
 
     do {
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //Clear screen
-      input->pollEvents(); //Check for key and mouse events
+      interface->pollEvents(); //Check for key and mouse events
 
       //update the game
 
@@ -71,12 +71,12 @@ int main() {
          glBindTexture(GL_TEXTURE_2D, picture->getResource());
       }
 
-      input->update();
+      interface->update();
 
       //Determines the angle of the camera based on how far the cursor position has changed
-      float* mouseDiff = input->getMousePosDiff();
-      angle.x += mouseSpeed * dT * GLfloat(mouseDiff[0]);
-      double dTheta = mouseSpeed * dT * GLfloat(mouseDiff[1]);
+      const double* mouseDiff = input->getMouseMovement();
+      angle.x += mouseSpeed * dT * mouseDiff[0];
+      double dTheta = mouseSpeed * dT * mouseDiff[1];
 
       //Makes sure that camera can't look up or down too far
       if (angle.y + dTheta <= -0.9 * glm::pi<GLfloat>() / 2.0f)
@@ -122,9 +122,9 @@ int main() {
       glBindVertexArray(0);
 
       //Swap second buffer
-      input->swapBuffers();
+      interface->swapBuffers();
 
-   } while (input->isWindowOpen());
+   } while (interface->isWindowOpen());
 
 
    delete picture;
@@ -132,7 +132,7 @@ int main() {
    delete resMan;
    delete renderMan;
 
-   delete input;
+   delete interface;
 
    //this should always be deleted last to ensure all logs are written
    delete logWorker;

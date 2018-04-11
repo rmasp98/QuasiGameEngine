@@ -2,7 +2,7 @@
 #include "utils/jsonFileManager/jsonFileManager.hpp"
 #include "utils/logging/logger.hpp"
 
-namespace xxx {
+namespace qge {
 
 
    JsonFileManager::JsonFileManager(Logger* logIn) : fileName("") {
@@ -37,4 +37,4 @@ namespace xxx {
          return nullptr;
    }
 
-}
+} // namespace qge

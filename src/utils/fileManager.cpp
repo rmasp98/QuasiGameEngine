@@ -3,7 +3,7 @@
 
 
 
-namespace xxx {
+namespace qge {
 
 
    std::string FileManager::getExtension(std::string fileLoction) {
@@ -37,4 +37,4 @@ namespace xxx {
       return false;
    }
 
-}
+} // namespace qge

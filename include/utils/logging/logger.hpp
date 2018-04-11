@@ -1,9 +1,9 @@
-#ifndef XXX_LOG_MANAGER_HPP
-#define XXX_LOG_MANAGER_HPP
+#ifndef QGE_LOGGER_HPP
+#define QGE_LOGGER_HPP
 
 #include <sstream>
 
-namespace xxx {
+namespace qge {
    class RenderManager;
    class LogWorker;
 
@@ -62,7 +62,7 @@ namespace xxx {
 #define LOG(level, logger) LogCapture(level, logger).stream()
 
 
-}
+} // ns qge
 
 
-#endif // XXX_LOG_MANAGER_HPP
+#endif // QGE_LOGGER_HPP

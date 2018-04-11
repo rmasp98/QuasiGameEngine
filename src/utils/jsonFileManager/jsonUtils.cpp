@@ -3,7 +3,7 @@
 #include "utils/jsonFileManager/jsonArray.hpp"
 #include "utils/logging/logger.hpp"
 
-namespace xxx {
+namespace qge {
    namespace json {
 
       template<>
@@ -79,5 +79,5 @@ namespace xxx {
       }
 
 
-   }
-}
+   } // ns json
+} // ns qge

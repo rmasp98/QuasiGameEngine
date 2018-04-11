@@ -1,6 +1,6 @@
 CXX       := g++
 LD        := g++
-FLAGS	  := -std=c++11 -Wall -ggdb -rdynamic -fstack-check
+FLAGS	  := -std=c++17 -Wall -ggdb -rdynamic -fstack-check
 
 MODULES   := main resource utils renderer physics interface interface/glfw utils/jsonFileManager utils/logging
 SRC_DIR   := $(addprefix src/,$(MODULES))
@@ -8,7 +8,7 @@ BUILD_DIR := $(addprefix build/,$(MODULES))
 
 SRC       := $(foreach sdir,$(SRC_DIR),$(wildcard $(sdir)/*.cpp))
 OBJ       := $(patsubst src/%.cpp,build/%.o,$(SRC))
-EXE       := xxx
+EXE       := quasi
 
 INCLUDES   = -I include
 LIBS +=  -lGL -lglfw -lGLEW -lfreeimage -lassimp -pthread

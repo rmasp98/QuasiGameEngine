@@ -9,7 +9,7 @@
 #include <fstream>
 
 
-namespace xxx {
+namespace qge {
 
    bool JsonFile::parseFile(const char *cfgFileName) {
       LOG(LOG_INFO, logger) << "Parsing json schema from '" << cfgFileName << "'";
@@ -39,4 +39,4 @@ namespace xxx {
       return nullptr;
    }
 
-}
+}  // namespave qge

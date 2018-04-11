@@ -8,12 +8,12 @@
 
 
 
-namespace xxx {
+namespace qge {
 
    ResourceManager::ResourceManager(LogWorker* logWorkerIn) {
 
       // Create logger and pass it to all resources
-      logger = new Logger("[Resource Manager]", "logs/ResourceManager.log", logWorkerIn);
+      logger = new Logger("[ Resource Manager ]", "logs/ResourceManager.log", logWorkerIn);
       Resource::logger = logger;
 
       fileMan = new ResourceFileManager(logger);
@@ -190,4 +190,4 @@ namespace xxx {
 
    }
 
-}
+} // namespave qge

@@ -1,5 +1,5 @@
-#ifndef XXX_JSON_FILE_HPP
-#define XXX_JSON_FILE_HPP
+#ifndef QGE_JSON_FILE_HPP
+#define QGE_JSON_FILE_HPP
 
 #include "utils/jsonFileManager/jsonArray.hpp"
 #include "utils/jsonFileManager/jsonUtils.hpp"
@@ -8,7 +8,7 @@
 #include "utils/jsonFileManager/rapidjson/document.h"
 namespace rj = rapidjson;
 
-namespace xxx {
+namespace qge {
    class Logger;
 
    class JsonFile {
@@ -46,8 +46,8 @@ namespace xxx {
       rj::Value* extractKey(const char* newKey);
 
    };
-}
+} // namespave qge
 
 
 
-#endif // XXX_JSON_FILE_HPP
+#endif // QGE_JSON_FILE_HPP

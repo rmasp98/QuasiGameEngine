@@ -1,5 +1,5 @@
-#ifndef XXX_FILE_MANAGER_HPP
-#define XXX_FILE_MANAGER_HPP
+#ifndef QGE_FILE_MANAGER_HPP
+#define QGE_FILE_MANAGER_HPP
 
 #include <string>
 #include <vector>
@@ -7,7 +7,7 @@
 
 
 
-namespace xxx {
+namespace qge {
    class Logger;
 
    class FileManager {
@@ -25,7 +25,7 @@ namespace xxx {
    };
 
 
-}
+} // ns qge
 
 
-#endif // XXX_FILE_MANAGER_HPP
+#endif // QGE_FILE_MANAGER_HPP

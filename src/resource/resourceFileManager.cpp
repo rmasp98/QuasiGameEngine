@@ -10,7 +10,7 @@
 #include <iostream>
 
 
-namespace xxx {
+namespace qge {
 
    ResourceFileManager::ResourceFileManager(Logger* logIn) {
 
@@ -216,4 +216,4 @@ namespace xxx {
 
    }
 
-}
+}  // namespave qge

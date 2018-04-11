@@ -1,22 +1,16 @@
-#include "interface/glfw/glfwKeyManager.hpp"
+#include "interface/glfw/glfwInput.hpp"
 
 #include "utils/logging/logger.hpp"
 
 #include <math.h>
 
 
-namespace xxx {
+namespace qge {
 
-   GlfwKeyManager::GlfwKeyManager(Logger* loggerIn, GLFWwindow* windowIn)
-                               : KeyManager(loggerIn), window(windowIn) {}
-
-
-   GlfwKeyManager::~GlfwKeyManager() {
-
-   }
-
-   //This can probably be moved to the constructor
-   bool GlfwKeyManager::init(const char* configFileNameIn) {
+   GlfwInput::GlfwInput(Logger* loggerIn, GLFWwindow* windowIn,
+                                  const char* configFileNameIn)
+                               : Input(loggerIn), window(windowIn)
+   {
 
       //Load keys from file
       setInput = "keyboard"; //load from a config file
@@ -29,17 +23,22 @@ namespace xxx {
       glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
       // Preset the last mouse position to prevent jumping at the begining
-      glfwGetCursorPos(window, &lastPos[0], &lastPos[1]);
+      glfwGetCursorPos(window, &cursor[0], &cursor[1]);
 
 
       //May need to determine center of window
 
-      return true;
+   }
+
+
+   GlfwInput::~GlfwInput() {
 
    }
 
 
-   bool GlfwKeyManager::validKey(uint keyValueIn) {
+
+
+   bool GlfwInput::validKey(uint keyValueIn) {
 
       //this is to check input is a valid key on the keyboard
 
@@ -51,10 +50,12 @@ namespace xxx {
 
 
 
-   void GlfwKeyManager::update() {
+   void GlfwInput::update() {
+
+      long oldKeyState = keyState;
 
       keyState = 0;
-      GLuint it = 0;
+      uint it = 0;
       for (auto const &ent1 : keys) {
          if (isPressed(ent1.second))
             keyState += pow(2,it);
@@ -65,10 +66,9 @@ namespace xxx {
       uint stateChange = keyState ^ oldKeyState;
       // active keys if the key is a hold key or has changed and is pressed down
       activeKeys = (holdKeys | stateChange) & keyState;
-      oldKeyState = keyState;
 
       //get cursor position
-      lastPos[0] = cursor[0]; lastPos[1] = cursor[1];
+      double lastPos[2] = {cursor[0], cursor[1]};
       glfwGetCursorPos(window, &cursor[0], &cursor[1]);
 
       diffPos[0] = lastPos[0] - cursor[0]; diffPos[1] = lastPos[1] - cursor[1];
@@ -80,7 +80,7 @@ namespace xxx {
 
 
 
-   bool GlfwKeyManager::isPressed(const Key keyIn) {
+   bool GlfwInput::isPressed(const Key keyIn) {
 
       if (true) { //Is key
          if (glfwGetKey(window, keyIn.keyValue) == GLFW_PRESS)
@@ -93,4 +93,4 @@ namespace xxx {
       return false;
    }
 
-}
+} // namespave qge

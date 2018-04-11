@@ -5,7 +5,7 @@
 
 
 
-namespace xxx {
+namespace qge {
 
    Texture::Texture(byte* pixelMapIn, uint widthIn, uint heightIn)
                   : pixelMap(pixelMapIn), width(widthIn), height(heightIn) {}
@@ -25,4 +25,4 @@ namespace xxx {
 
    }
 
-}
+} // namespave qge

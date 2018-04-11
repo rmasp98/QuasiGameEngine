@@ -1,9 +1,9 @@
-#ifndef XXX_RESOURCE_MANAGER_HPP
-#define XXX_RESOURCE_MANAGER_HPP
+#ifndef QGE_RESOURCE_MANAGER_HPP
+#define QGE_RESOURCE_MANAGER_HPP
 
 #include <string>
 
-namespace xxx {
+namespace qge {
    class MemoryManager;
    class Resource;
    class Model;
@@ -63,7 +63,7 @@ namespace xxx {
       Resource* loadResource(Asset asset);
 
    };
-}
+} // namespave qge
 
 
-#endif // XXX_RESOURCE_MANAGER_HPP
+#endif // QGE_RESOURCE_MANAGER_HPP

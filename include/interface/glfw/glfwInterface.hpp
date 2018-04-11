@@ -1,9 +1,8 @@
-#ifndef XXX_GLFW_INTERFACE_HPP
-#define XXX_GLFW_INTERFACE_HPP
+#ifndef QGE_GLFW_INTERFACE_HPP
+#define QGE_GLFW_INTERFACE_HPP
 
 #include "interface/deviceInterface.hpp"
-#include "interface/glfw/glfwKeyManager.hpp"
-#include "utils/jsonFileManager/jsonFileManager.hpp"
+#include "interface/glfw/glfwInput.hpp"
 
 #include <GLFW/glfw3.h>
 
@@ -11,31 +10,37 @@
 #include <map>
 
 
-namespace xxx {
+namespace qge {
    class LogWorker;
 
    class GlfwInterface : public DeviceInterface {
+   /* NOTES --------------------------------------------------------------------
+   - Will need to tidy up constructor when I understand other interfaces better
+   - need to implement so of the functionality of window if we decide to use more than one:
+      - set to current window
+      - set size, position, title, anti-aliasing
+   - need to read in config from file
+   - Might need to split option settings in APIs but unlikely
+   - Need to think about an initial pop up window to define final window settings
+   ---------------------------------------------------------------------------*/
    public:
-      GlfwInterface(LogWorker* logWorkerIn);
+      GlfwInterface(LogWorker *logWorkerIn, const char *configFileNameIn);
       ~GlfwInterface();
-      bool init(const char* configFileNameIn);
+
 
    protected:
-      GLFWwindow* window;
+      GLFWwindow *window;
 
-      KeyManager* keyMan;
-
+      double getTime() { return glfwGetTime(); };
       void swapBuffers();
       void pollEvents();
       bool isWindowOpen();
 
-      bool isKeyActive(ActionEnum action);
-      float* getMousePosDiff();
-
       void update();
+
    };
 
-}
+} // namespave qge
 
 
-#endif // XXX_GLFW_INTERFACE_HPP
+#endif // QGE_GLFW_INTERFACE_HPP

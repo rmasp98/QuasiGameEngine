@@ -1,5 +1,5 @@
-#ifndef XXX_RESOURCE_FILE_MANAGER_HPP
-#define XXX_RESOURCE_FILE_MANAGER_HPP
+#ifndef QGE_RESOURCE_FILE_MANAGER_HPP
+#define QGE_RESOURCE_FILE_MANAGER_HPP
 
 #include "utils/fileManager.hpp"
 
@@ -8,7 +8,7 @@
 
 
 
-namespace xxx {
+namespace qge {
    class Resource;
    class Logger;
    struct Asset;
@@ -28,7 +28,7 @@ namespace xxx {
       Resource* loadObject(Asset asset);
 
    };
-}
+} // namespave qge
 
 
-#endif // XXX_RESOURCE_FILE_MANAGER_HPP
+#endif // QGE_RESOURCE_FILE_MANAGER_HPP

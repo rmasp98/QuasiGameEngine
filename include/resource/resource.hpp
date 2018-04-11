@@ -1,9 +1,9 @@
-#ifndef XXX_RESOURCE_HPP
-#define XXX_RESOURCE_HPP
+#ifndef QGE_RESOURCE_HPP
+#define QGE_RESOURCE_HPP
 
 #include <string>
 
-namespace xxx {
+namespace qge {
    class RenderManager;
    class Logger;
 
@@ -143,10 +143,10 @@ namespace xxx {
       //graphics ids
    };
 
-}
+} // namespave qge
 
 
 
 
 
-#endif // XXX_RESOURCE_HPP
+#endif // QGE_RESOURCE_HPP

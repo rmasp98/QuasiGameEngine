@@ -1,5 +1,5 @@
-#ifndef XXX_RENDER_MANAGER_HPP
-#define XXX_RENDER_MANAGER_HPP
+#ifndef QGE_RENDER_MANAGER_HPP
+#define QGE_RENDER_MANAGER_HPP
 
 
 //Graphics libraries
@@ -11,7 +11,7 @@
 
 
 
-namespace xxx {
+namespace qge {
    class Texture;
    class Mesh;
    class Logger;
@@ -42,6 +42,6 @@ namespace xxx {
 
 
 
-}
+} // namespave qge
 
-#endif // XXX_RENDER_MANAGER_HPP
+#endif // QGE_RENDER_MANAGER_HPP

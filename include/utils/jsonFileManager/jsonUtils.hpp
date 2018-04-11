@@ -1,11 +1,11 @@
-#ifndef XXX_JSON_UTILS_HPP
-#define XXX_JSON_UTILS_HPP
+#ifndef QGE_JSON_UTILS_HPP
+#define QGE_JSON_UTILS_HPP
 
 #include "utils/jsonFileManager/rapidjson/document.h"
 #include "utils/jsonFileManager/rapidjson/istreamwrapper.h"
 namespace rj = rapidjson;
 
-namespace xxx {
+namespace qge {
    class Logger;
 
    namespace json {
@@ -14,8 +14,7 @@ namespace xxx {
       void getKey(rj::Value* keyIn, TYPE& keyOut, Logger* logger);
 
    }
-}
 
+} // ns qge
 
-
-#endif // XXX_JSON_UTILS_HPP
+#endif // QGE_JSON_UTILS_HPP
