@@ -1,26 +1,27 @@
 CXX       := g++
 LD        := g++
-FLAGS	  := -std=c++17 -Wall -ggdb -rdynamic -fstack-check
+FLAGS	  := -std=c++17 -Wall -ggdb
 
-MODULES   := main resource utils renderer physics interface interface/glfw utils/jsonFileManager utils/logging
+MODULES   := main resource utils renderer physics interface interface/glfw interface/ui interface/ui/imgui utils/jsonFileManager utils/logging
 SRC_DIR   := $(addprefix src/,$(MODULES))
 BUILD_DIR := $(addprefix build/,$(MODULES))
 
-SRC       := $(foreach sdir,$(SRC_DIR),$(wildcard $(sdir)/*.cpp))
-OBJ       := $(patsubst src/%.cpp,build/%.o,$(SRC))
+SRC       := $(foreach sdir,$(SRC_DIR),$(wildcard $(sdir)/*.cc))
+OBJ       := $(patsubst src/%.cc,build/%.o,$(SRC))
 EXE       := quasi
 
-INCLUDES   = -I include
+INCLUDES   = -I include -I include/interface/ui/imgui
 LIBS +=  -lGL -lglfw -lGLEW -lfreeimage -lassimp -pthread
+TEST_LIBS  = -lgtest
 
-vpath %.cpp $(SRC_DIR)
+vpath %.cc $(SRC_DIR)
 
 define make-goal
-$1/%.o: %.cpp
+$1/%.o: %.cc
 	$(CXX) $(FLAGS) $(INCLUDES) -c $$< -o $$@
 endef
 
-.PHONY: all checkdirs clean
+.PHONY: all checkdirs clean test
 
 all: checkdirs $(EXE)
 
@@ -32,6 +33,13 @@ checkdirs: $(BUILD_DIR)
 
 $(BUILD_DIR):
 	@mkdir -p $@
+
+
+
+test:
+	$(CXX) $(FLAGS) $(INCLUDES) test/interface/deviceInterfaceTest.cc -o test/interface/deviceInterface.test $(LIBS) $(TEST_LIBS)
+
+
 
 cppcheck:
 	cppcheck $(INCLUDES) --enable=all --cppcheck-build-dir=$(BUILD_DIR) --std=c++11 src/
