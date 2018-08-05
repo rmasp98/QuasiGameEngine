@@ -10,14 +10,14 @@
 namespace quasi_game_engine {
    class Logger;
    class LogWorker;
-   class RenderManager;
+   class Renderer;
 
    class UiTest {
    /* NOTES --------------------------------------------------------------------
 
    ---------------------------------------------------------------------------*/
    public:
-      UiTest(LogWorker *log_worker, GLFWwindow *window, RenderManager* render_manager);
+      UiTest(LogWorker *log_worker, GLFWwindow *window, Renderer* render_manager);
       ~UiTest();
 
       void Update();

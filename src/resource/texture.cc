@@ -1,6 +1,6 @@
 #include "resource/texture.h"
 
-#include "renderer/render_manager.h"
+#include "renderer/renderer.h"
 #include "utils/logging/logger.h"
 
 
@@ -15,8 +15,8 @@ namespace quasi_game_engine {
 
    Texture::~Texture() {}
 
-   void Texture::LoadToGraphics(RenderManager* render_manager) {
-      render_manager->LoadImage(&texture_id_, pixel_map_, width_, height_, true);
+   void Texture::LoadToGraphics(Renderer* render_manager) {
+      render_manager->LoadImage(pixel_map_, width_, height_, true, &texture_id_);
    }
 
 

@@ -1,6 +1,16 @@
-#include "interface/glfw/glfw_input.h"
+/*------------------------------------------------------------------------------
+   Copyright (C) 2018 Ross Maspero <rossmaspero@gmail.com>
+   All rights reserved.
 
-#include "utils/logging/logger.h"
+   This software is licensed as described in the file LICENSE.md, which
+   you should have received as part of this distribution.
+
+   Author: Ross Maspero <rossmaspero@gmail.com>
+------------------------------------------------------------------------------*/
+
+// Description of the file
+
+#include "interface/glfw/glfw_input.h"
 
 #include <cmath>
 
@@ -9,28 +19,14 @@ namespace quasi_game_engine {
 GlfwInput::GlfwInput(Logger logger, GLFWwindow* window,
                      const char* config_file_name)
                      : logger_(logger), window_(window), action_list_(logger_) {
-
   //Load actions from file
   action_list_.LoadActionMapping(config_file_name);
   glfwSetInputMode(window_, GLFW_STICKY_KEYS, GL_TRUE); //Allows button presses to be detected in frame
+  //TODO: this should probably be a public function
   //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); //Hide cursor
 
   // Preset the last mouse position to prevent jumping at the beginning
   glfwGetCursorPos(window_, &cursor_[0], &cursor_[1]);
-
-}
-
-
-bool GlfwInput::ValidButton(const int button_value) const {
-
-  //this is to check input is a valid button on the keyboard
-
-  return true;
-}
-
-
-bool GlfwInput::IsActionActive(const ActionEnum action) const {
-  return action_list_.IsActionActive(action);
 }
 
 
@@ -44,17 +40,14 @@ void GlfwInput::Update() {
 
     it++;
   }
-
   action_list_.Update(action_state);
 
-  //get cursor position
-  double last_pos[2] = {cursor_[0], cursor_[1]};
+  double last_pos[2] = { cursor_[0], cursor_[1] };
   glfwGetCursorPos(window_, &cursor_[0], &cursor_[1]);
   diff_pos_[0] = last_pos[0] - cursor_[0];
   diff_pos_[1] = last_pos[1] - cursor_[1];
 
-  //send active buttons and cursor position out to everyone that needs it
-
+  //TODO: send active buttons and cursor position out to everyone that needs it?
 }
 
 
@@ -69,10 +62,18 @@ bool GlfwInput::IsPressed(const Action action) const {
         return true;
     } else if (button.button_type == BUTTON_NULL) {
       LOG(LOG_WARN, &logger_) << "Action: '" << action.GetName()
-                                                   << "' has not been set!";
+                              << "' has not been set!";
       return false;
     }
   }
+  return false;
+}
+
+
+bool GlfwInput::ValidButton(int button_value) {
+  //this is to check input is a valid button on the keyboard
+  if (button_value)
+    return true;
   return false;
 }
 

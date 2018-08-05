@@ -52,7 +52,9 @@
 
 
 #include "utils/shader.h"
-#include "renderer/render_manager.h"
+#include "renderer/renderer.h"
+#include "renderer/render_config.h"
+#include "renderer/glfw/glfw_render_config.h"
 
 
 
@@ -71,8 +73,8 @@ static int          g_AttribLocationPosition = 0, g_AttribLocationUV = 0, g_Attr
 static unsigned int g_VboHandle = 0, g_ElementsHandle = 0;
 
 
-static quasi_game_engine::RenderManager* renderManager;
-static quasi_game_engine::RenderConfig uiRenderConfig;
+static quasi_game_engine::Renderer* renderManager;
+static quasi_game_engine::RenderConfig* uiRenderConfig;
 
 // OpenGL3 Render function.
 // (this used to be set in io.RenderDrawListsFn and called by ImGui::Render(), but you can now call this directly from your main loop)
@@ -91,7 +93,9 @@ void ImGui_ImplGlfwGL3_RenderDrawData(ImDrawData* draw_data)
     GLint last_viewport[4]; glGetIntegerv(GL_VIEWPORT, last_viewport);
 
     // Setup render state: alpha-blending enabled, no face culling, no depth testing, scissor enabled, polygon fill
-   renderManager->SetRenderConfig(uiRenderConfig);
+    // This can fail but will sort later
+   if (uiRenderConfig != nullptr)
+    uiRenderConfig->ApplyConfig();
 
     // Setup viewport, orthographic projection matrix
     glViewport(0, 0, (GLsizei)fb_width, (GLsizei)fb_height);
@@ -238,7 +242,7 @@ bool ImGui_ImplGlfwGL3_CreateDeviceObjects()
     int width, height;
     io.Fonts->GetTexDataAsRGBA32(&pixels, &width, &height);   // Load as RGBA 32-bits (75% of the memory is wasted, but default font is so small) because it is more likely to be compatible with user's existing shaders. If your ImTextureId represent a higher-level concept than just a GL texture id, consider calling GetTexDataAsAlpha8() instead to save on GPU memory.
 
-    renderManager->LoadImage(&g_FontTexture, pixels, width, height, false);
+    renderManager->LoadImage(pixels, width, height, false, &g_FontTexture);
 
     io.Fonts->TexID = (void *)(intptr_t)g_FontTexture;
 
@@ -278,16 +282,12 @@ static void ImGui_ImplGlfw_InstallCallbacks(GLFWwindow* window)
 }
 
 bool    ImGui_ImplGlfwGL3_Init(GLFWwindow* window, bool install_callbacks,
-                               quasi_game_engine::RenderManager* renderManagerIn,
-                               const char* glsl_version)
+                               quasi_game_engine::Renderer* renderManagerIn,
+                               Logger logger, const char* glsl_version)
 {
    g_Window = window;
    renderManager = renderManagerIn;
-
-
-   uiRenderConfig = quasi_game_engine::RenderConfig(false, false, true, true,
-                                                    GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA,
-                                                    GL_FUNC_ADD, GL_FILL);
+   uiRenderConfig = new GlfwRenderConfig(logger, RC_IMGUI);
 
    // Store GL version string so we can refer to it later in case we recreate shaders.
    if (glsl_version == NULL)

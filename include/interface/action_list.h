@@ -3,6 +3,7 @@
 
 #include "interface/action.h"
 #include "utils/jsonFileManager/json_file_manager.h"
+#include "utils/logging/logger.h"
 
 #include <string>
 #include <map>

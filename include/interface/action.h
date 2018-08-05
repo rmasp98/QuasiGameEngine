@@ -2,6 +2,7 @@
 #define QGE_ACTION_H
 
 #include "utils/jsonFileManager/json_file_manager.h"
+#include "utils/logging/logger.h"
 
 #include <string>
 #include <map>
@@ -26,7 +27,6 @@ struct Button {
 
 // All used buttons must have an associated action defined in this struct
 // Each action is then mapped to a bit-chain - its location is defined by bit_location
-class logger; // Allows below class to send logs
 class Action {
  public:
   Action(const char* name, bool is_hold, Button button)

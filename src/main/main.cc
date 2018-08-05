@@ -1,7 +1,11 @@
 
+#include <renderer/render_config.h>
 #include "main/main.h"
 #include "resource/resource_manager.h"
-#include "renderer/render_manager.h"
+#include "renderer/renderer.h"
+#include "renderer/glfw/glfw_renderer.h"
+#include "renderer/render_config.h"
+#include "renderer/glfw/glfw_render_config.h"
 #include "resource/texture.h"
 #include "interface/device_interface.h"
 #include "interface/glfw/glfw_interface.h" //this isn't great...
@@ -28,7 +32,7 @@ int main() {
   DeviceInterface* interface = new GlfwInterface(log_worker, "/home/rmaspero/graphics/quasiGameEngine/config/action_map.cfg");
   const Input* input = interface->GetInput();
 
-  auto render_manager = new RenderManager(log_worker);
+  Renderer* render_manager = new GlfwRenderer(log_worker);
   render_manager->InitGraphics();
 
   auto ui = new UiTest(log_worker, interface->GetWindow(), render_manager);
@@ -44,10 +48,7 @@ int main() {
   if (object != nullptr)
     object->LoadToGraphics(render_manager);
 
-  RenderConfig main_render_config(true, true, false, false, GL_ONE, GL_ONE,
-                         GL_FUNC_ADD, GL_FILL);
-  printf("%i\n", main_render_config.scissor_test);
-
+  RenderConfig* main_render_config = new GlfwRenderConfig(Logger("[     Renderer     ]", "logs/Renderer.log", log_worker), RC_DEFAULT);
 
   // This should be in rendermanager!
   std::vector<std::string> shaders(2, "");
@@ -73,7 +74,7 @@ int main() {
     //update the game
 
     glUseProgram(program_id);
-    render_manager->SetRenderConfig(main_render_config);
+    main_render_config->ApplyConfig();
 
     if (picture != nullptr) {
       glActiveTexture(GL_TEXTURE0);
@@ -83,7 +84,7 @@ int main() {
     interface->Update();
 
     //Determines the angle of the camera based on how far the cursor position has changed
-    const float* mouse_diff = input->GetMouseMovement();
+    const double* mouse_diff = input->GetMouseMovement();
     angle.x += mouse_speed * dt * mouse_diff[0];
     double d_theta = mouse_speed * dt * mouse_diff[1];
 

@@ -16,7 +16,7 @@
 
 namespace quasi_game_engine {
 
-   UiTest::UiTest(LogWorker *log_worker, GLFWwindow *window, RenderManager* render_manager)
+   UiTest::UiTest(LogWorker *log_worker, GLFWwindow *window, Renderer* render_manager)
                 : logger_("[    UI  Manager   ]", "logs/UI.log", log_worker),
                   window_(window) {
 
@@ -25,7 +25,7 @@ namespace quasi_game_engine {
       ImGuiIO& io = ImGui::GetIO(); (void)io;
       //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;  // Enable Keyboard Controls
       //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;   // Enable Gamepad Controls
-      ImGui_ImplGlfwGL3_Init(window_, true, render_manager);
+      ImGui_ImplGlfwGL3_Init(window_, true, render_manager, logger_);
 
       // Setup style
       ImGui::StyleColorsDark();

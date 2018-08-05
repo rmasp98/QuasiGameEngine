@@ -1,7 +1,7 @@
 #include "resource/resource.h"
 
 
-#include "renderer/render_manager.h"
+#include "renderer/renderer.h"
 #include "utils/logging/logger.h"
 
 
@@ -21,7 +21,7 @@ namespace quasi_game_engine {
 
    Resource::~Resource() {}
 
-   void Resource::LoadToGraphics(RenderManager* render_manager) {
+   void Resource::LoadToGraphics(Renderer* render_manager) {
       LOG(LOG_ERROR, logger_) << "This resource cannot be loaded to graphics!";
    }
 
@@ -86,7 +86,7 @@ namespace quasi_game_engine {
       num_faces = num_faces_;
    }
 
-   void Mesh::LoadToGraphics(RenderManager* render_manager) {
+   void Mesh::LoadToGraphics(Renderer* render_manager) {
       //renMan->loadObject(*this);
 
       LOG(LOG_INFO, logger_) << "Loading mesh for '" << asset_.asset_name
@@ -95,16 +95,19 @@ namespace quasi_game_engine {
       //check if indices have been generated
 
       LOG(LOG_INFO, logger_) << "Loading verticies to graphics";
-      render_manager->LoadVertexAttribute(vao_, verts_, num_verts_, 3, 0);
+      render_manager->LoadVertexAttribute(verts_, num_verts_,
+                                          Attribute(0, 3), &vao_);
 
       LOG(LOG_INFO, logger_) << "Loading normals to graphics";
-      render_manager->LoadVertexAttribute(vao_, norms_, num_verts_, 3, 1);
+      render_manager->LoadVertexAttribute(norms_, num_verts_,
+                                          Attribute(1, 3), &vao_);
 
       LOG(LOG_INFO, logger_) << "Loading texture coordinates to graphics";
-      render_manager->LoadVertexAttribute(vao_, uvs_, num_verts_, 2, 2);
+      render_manager->LoadVertexAttribute(uvs_, num_verts_,
+                                          Attribute(2, 2), &vao_);
 
       LOG(LOG_INFO, logger_) << "Loading VBO indices to graphics";
-      render_manager->LoadVertexIndices(vao_, faces_, num_faces_, 3);
+      render_manager->LoadVertexIndices(faces_, num_faces_, 3, &vao_);
    }
 
 

@@ -12,12 +12,16 @@ namespace quasi_game_engine {
 class LogWorker;
 
 class GlfwInterface : public DeviceInterface {
-/* NOTES --------------------------------------------------------------------
+/*------------------------------------------------------------------------------
+  Glfw implementation of the device interface. Apart from construction, it should
+  never be used directly. This class will initialise GLFW, act as a wrapper for
+  key functions and update the input class
+Notes:
 - Will need to tidy up constructor when I understand other interfaces better
-- need to implement so of the functionality of window if we decide to use more than one:
-- set to current window
-- set size, position, title, anti-aliasing
-- need to read in config from file
+- need to implement some of the functionality of window if we decide to use more than one:
+  - set to current window
+  - set size, position, title, anti-aliasing (this should be in a setting struct)
+  - need to read in config from file
 - Might need to split option settings in APIs but unlikely
 - Need to think about an initial pop up window to define final window settings
 ---------------------------------------------------------------------------*/
@@ -39,12 +43,13 @@ class GlfwInterface : public DeviceInterface {
   void SwapBuffers() final;
   void PollEvents() final;
   bool IsWindowOpen() const final;
+  // Input can only be deleted by this class (no need to smart pointers)
   const Input* GetInput() const final { return input_; };
 
  private:
   Logger logger_;
-  Input* input_;
-  GLFWwindow* window_;
+  Input* input_;       // This is a pointer to a GlfwInput class
+  GLFWwindow* window_; // GLFW requires this being a pointer and is managed by GLFW
 
   void CreateWindow(const char* name, int width, int height, bool full_screen);
 };

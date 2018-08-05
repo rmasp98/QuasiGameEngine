@@ -4,7 +4,7 @@
 #include <string>
 
 namespace quasi_game_engine {
-   class RenderManager;
+   class Renderer;
    class Logger;
 
    // Template for data in function. Automatically has get and set built in
@@ -42,7 +42,7 @@ namespace quasi_game_engine {
       //getNumParents
       //getChildren
 
-      virtual void LoadToGraphics(RenderManager* render_manager);
+      virtual void LoadToGraphics(Renderer* render_manager);
 
       //addchild
       //add parent?
@@ -82,7 +82,7 @@ namespace quasi_game_engine {
                    float** uvs, int** faces,
                    int &num_verts, int &num_faces);
 
-      void LoadToGraphics(RenderManager* render_manager);
+      void LoadToGraphics(Renderer* render_manager);
 
       inline void SetVAO(int vao) { vao_ = vao; };
 

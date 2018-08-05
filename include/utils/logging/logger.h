@@ -4,7 +4,7 @@
 #include <sstream>
 
 namespace quasi_game_engine {
-   class RenderManager;
+   class Renderer;
    class LogWorker;
 
    enum LogLevel {

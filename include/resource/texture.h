@@ -5,7 +5,7 @@
 #include "resource/resource.h"
 
 namespace quasi_game_engine {
-   class RenderManager;
+   class Renderer;
 
    class Texture : public Resource {
    public:
@@ -19,7 +19,7 @@ namespace quasi_game_engine {
       //should probably check that it has been loaded to graphics
       uint GetResource() { return texture_id_; };
 
-      virtual void LoadToGraphics(RenderManager* render_manager);
+      virtual void LoadToGraphics(Renderer* render_manager);
 
       //data<byte*> pixelMap;
       //data<uint> width, height, depth, textureID;

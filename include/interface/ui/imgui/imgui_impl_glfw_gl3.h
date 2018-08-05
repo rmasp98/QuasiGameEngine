@@ -16,11 +16,12 @@
 struct GLFWwindow;
 
 namespace quasi_game_engine {
-   class RenderManager;
+   class Renderer;
+   class Logger;
 }
 using namespace quasi_game_engine;
 
-IMGUI_API bool        ImGui_ImplGlfwGL3_Init(GLFWwindow* window, bool install_callbacks, RenderManager* renderManagerIn, const char* glsl_version = NULL);
+IMGUI_API bool        ImGui_ImplGlfwGL3_Init(GLFWwindow* window, bool install_callbacks, Renderer* renderManagerIn, Logger logger, const char* glsl_version = NULL);
 IMGUI_API void        ImGui_ImplGlfwGL3_Shutdown();
 IMGUI_API void        ImGui_ImplGlfwGL3_NewFrame();
 IMGUI_API void        ImGui_ImplGlfwGL3_RenderDrawData(ImDrawData* draw_data);

@@ -10,7 +10,11 @@
 namespace quasi_game_engine {
 
 class DeviceInterface {
-/*Notes-------------------------------------------------------------------------
+/*------------------------------------------------------------------------------
+  Interface class for overall interaction with different window managers.
+  Responsible for presenting a unified interface into any supported wm.
+  All sub classes should have a window, a logger, and an input class
+Notes
 - Notes go here
 ------------------------------------------------------------------------------*/
  public:
@@ -22,9 +26,9 @@ class DeviceInterface {
   DeviceInterface(DeviceInterface&&) = delete;
   DeviceInterface& operator=(DeviceInterface&&) = delete;
 
-  virtual void Update() = 0;
-  virtual void SwapBuffers() = 0;
-  virtual void PollEvents() = 0;
+  virtual void Update() = 0;      // called every frame to update entire wm
+  virtual void SwapBuffers() = 0; // called at end of each frame
+  virtual void PollEvents() = 0;  // called at beginning of each frame
   virtual bool IsWindowOpen() const = 0;
   virtual const Input* GetInput() const = 0;
 
