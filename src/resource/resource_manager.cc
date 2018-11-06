@@ -1,185 +1,57 @@
+/*------------------------------------------------------------------------------
+   Copyright (C) 2018 Ross Maspero <rossmaspero@gmail.com>
+   All rights reserved.
+
+   This software is licensed as described in the file LICENSE.md, which
+   you should have received as part of this distribution.
+
+   Author: Ross Maspero <rossmaspero@gmail.com>
+------------------------------------------------------------------------------*/
+
 #include "resource/resource_manager.h"
-
-
-#include "resource/resource.h"
-#include "utils/memory_manager.h"
-
-
 
 namespace quasi_game_engine {
 
-   ResourceManager::ResourceManager(LogWorker* log_worker)
-      : logger_("[ Resource Manager ]", "logs/ResourceManager.log", log_worker),
-        file_manager_(&logger_) {
+ResourceManager::ResourceManager(LogWorker* log_worker)
+    : logger_("Resource", "logs/ResourceManager.log", log_worker),
+      file_manager_(&logger_) {
+  // Pass logger to all resources
+  ResourceBase::SetLogger(&logger_);
+}
 
-      // Pass logger to all resources
-      Resource::SetLogger(&logger_);
 
-      //need to start by creating memory for resources
+// get resource from DB, if not there either throw an error or load the resource
+std::shared_ptr<Resource> ResourceManager::GetResource(Asset asset) {
+  // check to see if it is loaded, if so return pointer
+  std::shared_ptr<Resource> db_resource = GetResourceFromDB(asset.guid);
+  if (db_resource != NULL) return db_resource;
 
-      //then initialise file manager for resources
+  LOG(LOG_TRACE, &logger_)
+      << "Resource has not been loaded yet! "
+      << "In release mode, this will cause the game to exit";
 
-      //then initialise the graphics manager if it hasn't already
+  return LoadResource(asset);
+}
 
-      //initialise queue if needed
 
-      //start thread for async loading
-   }
+// Maybe delete all children with parent count of 1?
+void ResourceManager::DeleteResource(Asset asset) {
+  // will probably need to do some checks
+  // then just call destructor for resource
+}
 
 
+std::shared_ptr<Resource> ResourceManager::GetResourceFromDB(int guid) const {
+  // get the rosource from the db...
 
+  return NULL;
+}
 
-   ResourceManager::~ResourceManager() {
-      //run through map deleting all resources
 
-      //delete memory
+std::shared_ptr<Resource> ResourceManager::LoadResource(Asset asset) {
+  //TODO: This will break when using own memory allocator (because it will call delete on destruction)
+  std::shared_ptr<Resource> resource(file_manager_.LoadFile(asset));
+  return resource;
+}
 
-      //delete resource file manager
-   }
-
-
-
-
-
-   Resource* ResourceManager::GetResourceFromDB(int guid) {
-      //get the rosource from the db...
-
-      return NULL;
-   }
-
-
-
-
-   // (check if has been loaded, if not load)
-   /*Model* ResourceManager::getModel(int guid, std::string fileLocation) {
-
-      Model* modelPointer;
-
-      //check to see if it has been loaded yet - if so return reference
-
-      //if not we will load it given certain circumstances (maybe resources have already been loaded or in development mode)
-      //we need to then load all resources and send some to the graphics card
-
-      //if not we are going to throw an assertion
-
-      return modelPointer;
-   }*/
-
-
-
-
-
-   Resource* ResourceManager::GetResource(int guid) {
-
-      return GetResourceFromDB(guid);
-
-   }
-
-   //get resource from DB, if not there either throw an error or load the resource
-   Resource* ResourceManager::GetResource(Asset asset) {
-
-      //check to see if it is loaded, if so return pointer
-      Resource* db_resource = GetResourceFromDB(asset.guid);
-      if (db_resource != NULL)
-         return db_resource;
-
-
-      LOG(LOG_TRACE, &logger_) << "Resource has not been loaded yet! "
-                  << "In release mode, this will cause the game to exit";
-
-      return LoadResource(asset);
-   }
-
-
-   Resource* ResourceManager::GetResource(const char* file_location,
-                                          const char* asset_name)
-   {
-      std::string name;
-      if (asset_name == NULL)
-         name = "";
-      else
-         name = asset_name;
-
-      Asset asset(file_location, name);
-      asset.guid = file_manager_.CalcGUID(asset.file_location, asset.asset_name);
-      return GetResource(asset);
-
-   }
-
-
-
-   //Asychronous loading - will probably need a mutex for this
-   /*Model* ResourceManager::asyncLoadModel(int guid, std::string fileLocation) {
-
-      Model* modelPointer;
-
-      //check model has not already been loaded
-
-      //probablt need to mutex
-
-      //then add file to an async load queue (probably need a priority)
-
-      return modelPointer;
-   }*/
-
-
-
-
-   /*Resource* ResourceManager::asyncLoadResource(int guid, std::string fileLocation) {
-
-      Resource* resourcePointer;
-
-      //check resource has not already been loaded
-
-      //probablt need to mutex
-
-      //then add file to an async load queue (probably need a priority)
-
-      return resourcePointer;
-   }*/
-
-
-
-
-   // I assume ths will need to be asynchronous
-   //stream resource
-
-
-
-
-
-
-   // This may need other information such as filePath
-   // remove model from reference and delete all resources that haev parent count of 1
-   void ResourceManager::DeleteModel(Model* model) {
-      // will probably need to do some checks
-      //then just call destructor for model
-   }
-
-
-   //Maybe delete all children with parent count of 1?
-   void ResourceManager::DeleteResource(Resource* resource) {
-      // will probably need to do some checks
-      //then just call destructor for resource
-   }
-
-
-   /*Model* ResourceManager::loadModel(int guid, std::string fileLocation) {
-
-      Model* modelPointer;
-
-      //do stuff
-
-      return modelPointer;
-
-   }*/
-
-
-   Resource* ResourceManager::LoadResource(Asset asset) {
-
-      //This should just be an output of the reading of the file
-      return file_manager_.LoadFile(asset);
-
-   }
-
-} // namespace quasi_game_engine
+}  // namespace quasi_game_engine

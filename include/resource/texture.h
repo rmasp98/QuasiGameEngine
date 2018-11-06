@@ -1,44 +1,52 @@
+/*------------------------------------------------------------------------------
+   Copyright (C) 2018 Ross Maspero <rossmaspero@gmail.com>
+   All rights reserved.
+
+   This software is licensed as described in the file LICENSE.md, which
+   you should have received as part of this distribution.
+
+   Author: Ross Maspero <rossmaspero@gmail.com>
+------------------------------------------------------------------------------*/
+
 #ifndef QGE_TEXTURE_H
 #define QGE_TEXTURE_H
 
-
-#include "resource/resource.h"
+#include "renderer/renderer.h"
+#include "utils/logging/logger.h"
+#include "resource/resource_base.h"
 
 namespace quasi_game_engine {
-   class Renderer;
 
-   class Texture : public Resource {
-   public:
-      Texture(unsigned char* pixel_map, int width,
-              int height, Asset asset);
-      ~Texture();
+class Texture : public ResourceBase {
+/*------------------------------------------------------------------------------
+  Container class for texture information. Also contains functions to load data
+  to graphics and process image
+Notes:
+- Could include function to unload from graphics
+- Add additional funcrionality such as decompression, gamma
+- define config of image
+  - built in mipmap, number of mipmap levels
+  - filters (enum) - linear, bilinear, etc
+  - texture wrapping
+  - texture type (enum) - 2d, 3d, cubemap, etc.
+  - pixel type (enum) - RGB, RGBA, etc.
+  - bool compressed
+---------------------------------------------------------------------------*/
+ public:
+  Texture(unsigned char* pixel_map, int width, int height, Asset asset);
+  ~Texture() = default;
 
-      //Could include functions such as decompress, (un)load to graphics memory
-      //gamma stuff,
+  const int GetResource() const final { return texture_id_; };
 
-      //should probably check that it has been loaded to graphics
-      uint GetResource() { return texture_id_; };
+  virtual void LoadToGraphics(Renderer* render_manager);
 
-      virtual void LoadToGraphics(Renderer* render_manager);
+ private:
+  unsigned char* pixel_map_;
+  int width_, height_, depth_;
+  int texture_id_;
 
-      //data<byte*> pixelMap;
-      //data<uint> width, height, depth, textureID;
+};
 
-   private:
-      unsigned char *pixel_map_;
-      int width_, height_, depth_;
-      uint texture_id_;
+}  // namespace quasi_game_engine
 
-      //use data class to define config of image
-      // built in mipmap, number of mipmap levels
-      // filters (enum) - linear, bilinear, etc
-      // texture wrapping
-      // texture type (enum) - 2d, 3d, cubemap, etc.
-      // pixel type (enum) - RGB, RGBA, etc.
-      // bool compressed
-
-   };
-} // namespace quasi_game_engine
-
-
-#endif // QGE_TEXTURE_H
+#endif  // QGE_TEXTURE_H

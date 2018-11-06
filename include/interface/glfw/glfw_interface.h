@@ -1,3 +1,13 @@
+/*------------------------------------------------------------------------------
+   Copyright (C) 2018 Ross Maspero <rossmaspero@gmail.com>
+   All rights reserved.
+
+   This software is licensed as described in the file LICENSE.md, which
+   you should have received as part of this distribution.
+
+   Author: Ross Maspero <rossmaspero@gmail.com>
+------------------------------------------------------------------------------*/
+
 #ifndef QGE_GLFW_INTERFACE_H
 #define QGE_GLFW_INTERFACE_H
 
@@ -24,7 +34,7 @@ Notes:
   - need to read in config from file
 - Might need to split option settings in APIs but unlikely
 - Need to think about an initial pop up window to define final window settings
----------------------------------------------------------------------------*/
+------------------------------------------------------------------------------*/
  public:
   GlfwInterface(LogWorker* log_worker, const char* config_file_name);
   ~GlfwInterface();
@@ -48,10 +58,10 @@ Notes:
 
  private:
   Logger logger_;
-  Input* input_;       // This is a pointer to a GlfwInput class
+  GlfwInput* input_;       // This is a pointer to a GlfwInput class
   GLFWwindow* window_; // GLFW requires this being a pointer and is managed by GLFW
 
-  void CreateWindow(const char* name, int width, int height, bool full_screen);
+  void CreateWindow(const char* title, int width, int height, bool full_screen);
 };
 
 } // namespace quasi_game_engine

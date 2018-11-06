@@ -1,3 +1,12 @@
+/*------------------------------------------------------------------------------
+   Copyright (C) 2018 Ross Maspero <rossmaspero@gmail.com>
+   All rights reserved.
+
+   This software is licensed as described in the file LICENSE.md, which
+   you should have received as part of this distribution.
+
+   Author: Ross Maspero <rossmaspero@gmail.com>
+------------------------------------------------------------------------------*/
 #include "interface/glfw/glfw_interface.h"
 
 #include "utils/logging/logger.h"
@@ -6,7 +15,7 @@
 namespace quasi_game_engine {
 
 GlfwInterface::GlfwInterface(LogWorker* log_worker, const char* config_file_name)
-    : logger_("[Interface  Manager]", "logs/DeviceInterfaceManager.log",
+    : logger_("Interface", "logs/DeviceInterfaceManager.log",
               log_worker) {
   LOG(LOG_INFO, &logger_) << "Initialising GLFW";
   if (!glfwInit()) {
@@ -40,7 +49,7 @@ GlfwInterface::~GlfwInterface() {
 }
 
 
-void GlfwInterface::CreateWindow(const char* name, int width, int height,
+void GlfwInterface::CreateWindow(const char* title, int width, int height,
                                  bool full_screen) {
   LOG(LOG_INFO, &logger_) << "Creating GLFW window";
   if (full_screen) {
@@ -53,9 +62,9 @@ void GlfwInterface::CreateWindow(const char* name, int width, int height,
     glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
 
     //Creates the window
-    window_ = glfwCreateWindow(width, height, name, monitor, nullptr);
+    window_ = glfwCreateWindow(width, height, title, monitor, nullptr);
   } else {
-    window_ = glfwCreateWindow(width, height, name, nullptr, nullptr);
+    window_ = glfwCreateWindow(width, height, title, nullptr, nullptr);
   }
 
   //Checks to ensure a window was created properly

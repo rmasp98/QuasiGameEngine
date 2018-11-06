@@ -23,7 +23,7 @@ class Input {
 Notes
 - Do I need to GetActionList?
 ------------------------------------------------------------------------------*/
-  friend class GlfwInputHelper;
+  friend class GlfwInputHelper; // Allows GlfwInterface to delete this class
  public:
   virtual ~Input() = default;
 
@@ -35,9 +35,8 @@ Notes
 
   virtual void Update() = 0; // called every frame. Updates user input
   virtual const double* GetMouseMovement() const = 0; //diff from position last frame
-  virtual const double* GetMousePosition() const = 0;
+  virtual const double* GetMousePosition() const = 0; // current cursor position
   virtual bool IsActionActive(ActionEnum action) const = 0;
-  virtual const ActionList* GetActionList() const = 0;
 
  protected:
   Input() = default; // Doubly ensure no one can directly create this object

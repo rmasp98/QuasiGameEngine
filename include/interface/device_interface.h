@@ -1,13 +1,22 @@
+/*------------------------------------------------------------------------------
+   Copyright (C) 2018 Ross Maspero <rossmaspero@gmail.com>
+   All rights reserved.
+
+   This software is licensed as described in the file LICENSE.md, which
+   you should have received as part of this distribution.
+
+   Author: Ross Maspero <rossmaspero@gmail.com>
+------------------------------------------------------------------------------*/
 #ifndef QGE_DEVICE_INTERFACE_H
 #define QGE_DEVICE_INTERFACE_H
 
-#include "interface/input.h"
-
-#include <memory>
-
+// TODO: remove when sorted imgui stuff!
 #include <GLFW/glfw3.h>
 
 namespace quasi_game_engine {
+
+//As input is not really used here, we will just forward declare it
+class Input;
 
 class DeviceInterface {
 /*------------------------------------------------------------------------------
@@ -28,7 +37,7 @@ Notes
 
   virtual void Update() = 0;      // called every frame to update entire wm
   virtual void SwapBuffers() = 0; // called at end of each frame
-  virtual void PollEvents() = 0;  // called at beginning of each frame
+  virtual void PollEvents() = 0;  // called at beginning of each frame to get user input
   virtual bool IsWindowOpen() const = 0;
   virtual const Input* GetInput() const = 0;
 

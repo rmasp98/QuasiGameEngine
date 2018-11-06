@@ -1,3 +1,12 @@
+/*------------------------------------------------------------------------------
+   Copyright (C) 2018 Ross Maspero <rossmaspero@gmail.com>
+   All rights reserved.
+
+   This software is licensed as described in the file LICENSE.md, which
+   you should have received as part of this distribution.
+
+   Author: Ross Maspero <rossmaspero@gmail.com>
+------------------------------------------------------------------------------*/
 #ifndef QGE_ACTION_H
 #define QGE_ACTION_H
 
@@ -16,6 +25,7 @@ enum ButtonTypeEnum {
   BUTTON_NULL
 };
 
+// Stores all information of a physical button for example a key or gamepad button
 struct Button {
   Button(int value_in, ButtonTypeEnum type_in)
     : button_value(value_in), button_type(type_in) {};
@@ -25,15 +35,21 @@ struct Button {
   ButtonTypeEnum button_type;
 };
 
-// All used buttons must have an associated action defined in this struct
-// Each action is then mapped to a bit-chain - its location is defined by bit_location
+
 class Action {
+/*------------------------------------------------------------------------------
+Responsible storing the information for a single action. This will be a
+component to the  ActionList class. An action can have multiple associated buttons
+Notes:
+- Figure out why we need a default constructor
+------------------------------------------------------------------------------*/
  public:
   Action(const char* name, bool is_hold, Button button)
     : name_(name), is_hold_(is_hold), num_buttons(0) { buttons_[num_buttons++] = button; };
   Action() {}; //TODO: need to work out why we need this?
 
-  //This class will be regularly passed between function so require these semantics. TODO: may need to set explicit functions
+  //This class will be regularly passed between function so require these semantics.
+  //TODO: may need to set explicit functions
    Action(const Action&) = default;
    Action& operator=(const Action&) = default;
    Action(Action&&) = default;

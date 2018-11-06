@@ -7,8 +7,8 @@
 
 namespace quasi_game_engine {
 
-   uint LoadShaders(std::vector<std::string> file_paths);
+uint LoadShaders(std::vector<std::string> file_paths);
 
-} // namespace quasi_game_engine
+}  // namespace quasi_game_engine
 
-#endif // QGE_SHADER_H
+#endif  // QGE_SHADER_H

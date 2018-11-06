@@ -8,8 +8,6 @@
    Author: Ross Maspero <rossmaspero@gmail.com>
 ------------------------------------------------------------------------------*/
 
-// Description of the file
-
 #include "interface/glfw/glfw_input.h"
 
 #include <cmath>
@@ -42,6 +40,7 @@ void GlfwInput::Update() {
   }
   action_list_.Update(action_state);
 
+  // Populate cursor movement
   double last_pos[2] = { cursor_[0], cursor_[1] };
   glfwGetCursorPos(window_, &cursor_[0], &cursor_[1]);
   diff_pos_[0] = last_pos[0] - cursor_[0];
@@ -51,6 +50,7 @@ void GlfwInput::Update() {
 }
 
 
+// This will go if we swtich to button callback
 bool GlfwInput::IsPressed(const Action action) const {
   for (int i_button = 0; i_button < action.GetNumButtons(); ++i_button) {
     Button button = action.GetButtons(i_button);
@@ -70,6 +70,7 @@ bool GlfwInput::IsPressed(const Action action) const {
 }
 
 
+//TODO: need to write this!
 bool GlfwInput::ValidButton(int button_value) {
   //this is to check input is a valid button on the keyboard
   if (button_value)

@@ -18,7 +18,6 @@
 #include <GLFW/glfw3.h>
 
 namespace quasi_game_engine {
-class Logger;
 
 class GlfwInput : public Input {
 /*------------------------------------------------------------------------------
@@ -41,17 +40,16 @@ Notes
   //This is static to allow action list to be able to call it
   static bool ValidButton(int button_value);
 
- protected:
-  // Pass the logger and window created by the interface, config file should detail input mapping
-  GlfwInput(Logger logger, GLFWwindow* window, const char* config_file_name);
-
   void Update() final;
   bool IsActionActive(ActionEnum action) const final {
     return action_list_.IsActionActive(action);
   };
   const double* GetMouseMovement() const final { return diff_pos_; };
   const double* GetMousePosition() const final { return cursor_; };
-  const ActionList* GetActionList() const final { return &action_list_; };
+
+ protected:
+  // Pass the logger and window created by the interface, config file should detail input mapping
+  GlfwInput(Logger logger, GLFWwindow* window, const char* config_file_name);
 
  private:
   bool IsPressed(Action action) const;
@@ -72,11 +70,13 @@ Notes
  - Should probably sit inside another file
 ------------------------------------------------------------------------------*/
   friend class GlfwInterface;
+  // This is the only place you can create this class
   static GlfwInput* CreateGlfwInput(Logger logger, GLFWwindow* window,
                                     const char* config_file_name) {
     return new GlfwInput(logger, window, config_file_name);
   };
 
+  // Only this and other *InputHelper's will be able to delete this class
   static void DeleteInput(Input* input) { delete input; };
 };
 

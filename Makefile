@@ -2,7 +2,7 @@ CXX       := g++
 LD        := g++
 FLAGS	  := -std=c++17 -Wall -ggdb
 
-MODULES   := main resource utils renderer physics interface interface/glfw interface/ui interface/ui/imgui utils/jsonFileManager utils/logging
+MODULES   := main resource utils renderer renderer/opengl physics interface interface/glfw interface/ui interface/ui/imgui utils/jsonFileManager utils/logging
 SRC_DIR   := $(addprefix src/,$(MODULES))
 BUILD_DIR := $(addprefix build/,$(MODULES))
 

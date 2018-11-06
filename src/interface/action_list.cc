@@ -1,3 +1,13 @@
+/*------------------------------------------------------------------------------
+   Copyright (C) 2018 Ross Maspero <rossmaspero@gmail.com>
+   All rights reserved.
+
+   This software is licensed as described in the file LICENSE.md, which
+   you should have received as part of this distribution.
+
+   Author: Ross Maspero <rossmaspero@gmail.com>
+------------------------------------------------------------------------------*/
+
 #include "interface/input.h"
 
 #include "utils/logging/logger.h"
@@ -27,8 +37,9 @@ void ActionList::Update(int new_action_state) {
 //TODO: this should probably take input of vector of buttons
 void ActionList::SetAction(ActionEnum action, int button_value, bool is_hold,
                            const char* name) {
+  //TODO: Need to update this to check what the key type is
   actions_[action] = Action(name, is_hold,
-      Button(button_value, BUTTON_KEYBOARD));
+                            Button(button_value, BUTTON_KEYBOARD));
 
   //If this is a new button assignment, it ensures order is maintained
   SetBitOrder();
@@ -71,22 +82,21 @@ const Action ActionList::GetAction(const char* name) const {
       return action.second;
   }
 
-  //TODO: This is horrible (below). Need to fix this later
   LOG(LOG_ERROR, &logger_) << name << " action does not exist";
   return Action();
 }
 
 
 void ActionList::LoadActionMapping(const char* config_file_name) {
-  JsonFile* config_file = json_file_manager_.LoadFile(config_file_name);
-  ParseActions(config_file);
+  JsonFile config_file = json_file_manager_.LoadFile(config_file_name);
+  ParseActions(&config_file);
 }
 
 
-void ActionList::ReloadActionMapping() {
-  JsonFile* config_file = json_file_manager_.LoadFile();
-  ParseActions(config_file);
-}
+// void ActionList::ReloadActionMapping() {
+//   JsonFile config_file = json_file_manager_.LoadFile();
+//   ParseActions(&config_file);
+// }
 
 
 void ActionList::ParseActions(JsonFile* config_file) {
