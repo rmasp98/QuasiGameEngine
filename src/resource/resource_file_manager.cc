@@ -14,7 +14,6 @@ namespace quasi_game_engine {
 
 ResourceFileManager::ResourceFileManager(Logger* logger)
     : logger_(logger), object_loader(logger), image_loader(logger) {
-  FileManager::SetLogger(logger);
 
   //Eventually read from a config file
   freeimg_extensions_ = QgeArray<const char*>(2);

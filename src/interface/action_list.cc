@@ -88,8 +88,8 @@ const Action ActionList::GetAction(const char* name) const {
 
 
 void ActionList::LoadActionMapping(const char* config_file_name) {
-  JsonFile config_file = json_file_manager_.LoadFile(config_file_name);
-  ParseActions(&config_file);
+  nlohmann::json config_file_new = json_file_manager_.LoadFile(config_file_name);
+  ParseActions(config_file_new);
 }
 
 
@@ -99,27 +99,19 @@ void ActionList::LoadActionMapping(const char* config_file_name) {
 // }
 
 
-void ActionList::ParseActions(JsonFile* config_file) {
-  if (config_file != nullptr) {
-    try {
-      auto input_array = config_file->GetKey<JsonArrayObject*>("inputType");
-      for (int i_arr=0; i_arr<input_array->GetSize(); ++i_arr) {
-        auto input_type_str = input_array->GetKey<const char*>(i_arr, "type");
-        ButtonTypeEnum input_type = GetButtonEnumFromString(input_type_str);
-        if (input_type == set_input_) {
-          auto action_array = input_array->GetKey<JsonArrayObject*>(i_arr, "actions");
-          for (int j_arr=0; j_arr<action_array->GetSize(); ++j_arr) {
-            auto name = action_array->GetKey<const char*>(j_arr, "name");
-            auto button_value = action_array->GetKey<int>(j_arr, "val");
-            auto action = action_array->GetKey<int>(j_arr, "action");
-            auto is_hold = action_array->GetKey<bool>(j_arr, "hold");
+void ActionList::ParseActions(nlohmann::json config_file) {
+  auto input_array = config_file["inputType"];
+  for (auto& input : input_array) {
+    std::string input_type_string = input["type"];
+    ButtonTypeEnum input_type = GetButtonEnumFromString(input_type_string.c_str());
+    nlohmann::json action_array = input["actions"];
+    for (auto& action : action_array) {
+      std::string name = action["name"];
+      int button_value = action["val"];
+      int action_value = action["action"];
+      bool is_hold = action["hold"];
 
-            SetAction(action, button_value, is_hold, name);
-          }
-        }
-      }
-    } catch (const char* msg) {
-      //Throw a visible error in UI
+      SetAction(action_value, button_value, is_hold, name.c_str());
     }
   }
 }

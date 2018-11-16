@@ -14,11 +14,7 @@ class FileManager {
  public:
   virtual ~FileManager(){};
 
-  void SetLogger(Logger* logger) { logger_ = logger; };
-
  protected:
-  Logger* logger_;
-
   FileManager(){};
   std::string GetExtension(std::string file_loction);
   bool CompareFileType(const char* file_loction,

@@ -10,7 +10,7 @@
 #ifndef QGE_ACTION_H
 #define QGE_ACTION_H
 
-#include "utils/jsonFileManager/json_file_manager.h"
+#include "utils/json_file_manager.h"
 #include "utils/logging/logger.h"
 
 #include <string>

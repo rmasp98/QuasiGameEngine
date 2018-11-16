@@ -30,6 +30,7 @@ struct Log {
 class Logger {
  public:
   Logger(const char* prefix, const char* file, LogWorker* log_worker);
+  //Logger& operator=(const Logger& new_logger);
 
   const char* GetPrefix() { return manager_prefix_; };
   int GetFileIndex() { return file_index_; };

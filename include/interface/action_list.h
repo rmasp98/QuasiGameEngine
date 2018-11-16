@@ -11,7 +11,7 @@
 #define QGE_ACTION_LIST_H
 
 #include "interface/action.h"
-#include "utils/jsonFileManager/json_file_manager.h"
+#include "utils/json_file_manager.h"
 #include "utils/logging/logger.h"
 
 #include <map>
@@ -78,7 +78,7 @@ tries to access that button...
   Logger logger_;
   JsonFileManager json_file_manager_;
 
-  void ParseActions(JsonFile* config_file);
+  void ParseActions(nlohmann::json config_file);
   // This is called if new action is added (as it may change the bit order in state)
   void SetBitOrder();
   // Used for reading mapping from file as ButtonEnum will be in string from

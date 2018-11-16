@@ -1,0 +1,8 @@
+build
+cmake-build-debug
+docs
+googleStyleNotes
+logs
+Makefile
+obj
+.vscode

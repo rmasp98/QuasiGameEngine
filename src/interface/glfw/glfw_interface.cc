@@ -12,6 +12,8 @@
 #include "utils/logging/logger.h"
 #include "utils/logging/log_worker.h"
 
+#include <unistd.h>
+
 namespace quasi_game_engine {
 
 GlfwInterface::GlfwInterface(LogWorker* log_worker, const char* config_file_name)
@@ -33,10 +35,10 @@ GlfwInterface::GlfwInterface(LogWorker* log_worker, const char* config_file_name
   // glfwWindowHint(GLFW_SAMPLES, 4);
   // glEnable(GL_MULTISAMPLE);
 
-  CreateWindow("Quasi Game Engine", 1920, 1080, false);
-
+  CreateWindow("Quasi Game Engine", 1920, 1080, true);
+  
   glfwMakeContextCurrent(window_); //Makes this window the current window
-
+  
   //TODO: Could make input constructor dump and then initialise it here
   input_ = GlfwInputHelper::CreateGlfwInput(logger_, window_, config_file_name);
 

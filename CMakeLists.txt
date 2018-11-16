@@ -1,0 +1,40 @@
+cmake_minimum_required(VERSION 3.11)
+project(quasiGameEngine)
+
+set(CMAKE_CXX_STANDARD 14)
+
+include_directories(include)
+
+#These are added temporarily to get the engine working
+include_directories(include/ui/imgui)
+include_directories(libs)
+
+add_executable(quasiGameEngine
+        src/interface/glfw/glfw_input.cc
+        src/interface/glfw/glfw_interface.cc
+        src/ui/imgui/imgui.cc
+        src/ui/imgui/imgui_demo.cc
+        src/ui/imgui/imgui_draw.cc
+        src/ui/imgui/imgui_impl_glfw_gl3.cc
+        src/ui/ui_test.cc
+        src/interface/action_list.cc
+        src/main/main.cc
+        src/renderer/opengl/opengl_render_config.cc
+        src/renderer/opengl/opengl_renderer.cc
+        src/resource/mesh.cc
+        src/resource/resource_base.cc
+        src/resource/image_loader.cc
+        src/resource/object_loader.cc
+        src/resource/resource_file_manager.cc
+        src/resource/resource_manager.cc
+        src/resource/texture.cc
+        src/utils/json_file_manager.cc
+        src/utils/logging/log_worker.cc
+        src/utils/logging/logger.cc
+        src/utils/file_manager.cc
+        src/utils/memory_manager.cc
+        src/utils/shader.cc
+#        test/interface/device_interface_test.cc
+        )
+
+TARGET_LINK_LIBRARIES(quasiGameEngine GL glfw GLEW freeimage assimp pthread)

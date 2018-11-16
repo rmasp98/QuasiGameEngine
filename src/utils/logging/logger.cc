@@ -13,6 +13,13 @@ Logger::Logger(const char* prefix, const char* file, LogWorker* log_worker)
       file_index_(log_worker->AddLogger(file)),
       log_worker_(log_worker) {}
 
+// Logger& Logger::operator=(const Logger& new_logger) {
+//   this->manager_prefix_ = new_logger.manager_prefix_;
+//   this->file_index_ = new_logger.file_index_;
+//   this->log_worker_ = new_logger.log_worker_;
+//   return *this;
+// }
+
 void Logger::SendLog(Log log) { log_worker_->Push(log); }
 
 LogCapture::LogCapture(LogLevel level, Logger* logger)

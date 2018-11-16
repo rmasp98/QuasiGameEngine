@@ -16,7 +16,7 @@ namespace quasi_game_engine {
 
 GlfwInput::GlfwInput(Logger logger, GLFWwindow* window,
                      const char* config_file_name)
-                     : logger_(logger), window_(window), action_list_(logger_) {
+                     : logger_(logger), window_(window), action_list_(logger) {
   //Load actions from file
   action_list_.LoadActionMapping(config_file_name);
   glfwSetInputMode(window_, GLFW_STICKY_KEYS, GL_TRUE); //Allows button presses to be detected in frame
