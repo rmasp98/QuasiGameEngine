@@ -13,6 +13,9 @@
 
 #include "utils/qge_array.h"
 
+#include <vector>
+#include <string>
+
 namespace quasi_game_engine {
 
 class Renderer {
@@ -32,6 +35,8 @@ class Renderer {
 
   virtual bool InitGraphics() = 0;
   virtual void Draw() = 0;
+
+  //virtual void LoadShaders(std::vector<std::string> file_paths);
 
   virtual bool LoadImage(const unsigned char* pixel_map, int width, int height,
                          bool is_mipmap, int* texture_id) = 0;

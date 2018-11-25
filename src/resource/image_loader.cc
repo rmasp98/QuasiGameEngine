@@ -11,13 +11,13 @@
 #include "resource/image_loader.h"
 #include "resource/texture.h"
 
+#include "utils/logging/log_capture.h"
+
 #include <FreeImage.h>
 
 namespace quasi_game_engine {
 
-ImageLoader::ImageLoader(Logger* logger)
-    : logger_(logger) {
-
+ImageLoader::ImageLoader() {
   // True means extensions disabled
   FreeImage_Initialise(true);
 }
@@ -27,8 +27,8 @@ ImageLoader::~ImageLoader() { FreeImage_DeInitialise(); }
 
 
 Resource* ImageLoader::Load(Asset asset) {
-  LOG(LOG_TRACE, logger_) << "Loading image from '" << asset.file_location
-                          << "'";
+  LOG(TRACE, RESOURCE) 
+      << "Loading image from '" << asset.file_location << "'";
 
   FREE_IMAGE_FORMAT file_type =
       FreeImage_GetFileType(asset.file_location, 0);
@@ -56,9 +56,10 @@ Resource* ImageLoader::Load(Asset asset) {
     }
   }
 
-  LOG(LOG_ERROR, logger_) << "Failed to load " << asset.file_location
-                          << ". Either FreeImage does not support this filetype"
-                          << ", the file is corrupt or does not exist";
+  LOG(ERROR, RESOURCE) 
+      << "Failed to load " << asset.file_location
+      << ". Either FreeImage does not support this filetype"
+      << ", the file is corrupt or does not exist";
 
   return NULL;
 }

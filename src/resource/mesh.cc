@@ -10,6 +10,8 @@
 
 #include "resource/mesh.h"
 
+#include "utils/logging/log_capture.h"
+
 namespace quasi_game_engine {
 
 // Need to benchmark if this or just passing a reference would be quicker
@@ -21,19 +23,24 @@ Mesh::Mesh(QgeArray<float> verts, QgeArray<float> norms, QgeArray<float> uvs,
 
 
 void Mesh::LoadToGraphics(Renderer* render_manager) {
-  LOG(LOG_INFO, logger_) << "Loading mesh for '" << asset_.name
-                         << "' in '" << asset_.file_location << "' to graphics";
+  LOG(INFO, RESOURCE) 
+      << "Loading mesh for '" << asset_.name
+      << "' in '" << asset_.file_location << "' to graphics";
 
-  LOG(LOG_INFO, logger_) << "Loading verticies to graphics";
+  LOG(INFO, RESOURCE) 
+      << "Loading verticies to graphics";
+
   render_manager->LoadVertexAttribute(verts_, 0, &vao_);
 
-  LOG(LOG_INFO, logger_) << "Loading normals to graphics";
+  LOG(INFO, RESOURCE) << "Loading normals to graphics";
   render_manager->LoadVertexAttribute(norms_, 1, &vao_);
 
-  LOG(LOG_INFO, logger_) << "Loading texture coordinates to graphics";
+  LOG(INFO, RESOURCE) 
+      << "Loading texture coordinates to graphics";
   render_manager->LoadVertexAttribute(uvs_, 2, &vao_);
 
-  LOG(LOG_INFO, logger_) << "Loading VBO indices to graphics";
+  LOG(INFO, RESOURCE) 
+      << "Loading VBO indices to graphics";
   render_manager->LoadVertexIndices(faces_, &vao_);
 }
 

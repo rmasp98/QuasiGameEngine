@@ -12,9 +12,7 @@
 
 namespace quasi_game_engine {
 
-ResourceFileManager::ResourceFileManager(Logger* logger)
-    : logger_(logger), object_loader(logger), image_loader(logger) {
-
+ResourceFileManager::ResourceFileManager() {
   //Eventually read from a config file
   freeimg_extensions_ = QgeArray<const char*>(2);
   freeimg_extensions_[0] = "dds";
@@ -34,16 +32,18 @@ int ResourceFileManager::CalcGUID(const char* file_location,
 
 Resource* ResourceFileManager::LoadFile(Asset asset) {
   // determine what the file is and then call the relevant function
-  if (FileManager::CompareFileType(asset.file_location, freeimg_extensions_)) {
+  if (file_utils::CompareFileType(asset.file_location, freeimg_extensions_)) {
     return image_loader.Load(asset);
-  } else if (FileManager::CompareFileType(asset.file_location,
+  } else if (file_utils::CompareFileType(asset.file_location,
                                         assimp_extensions_))
     //return LoadObject(asset);
     return object_loader.Load(asset);
 
   // assert that this file type is not supported
-  LOG(LOG_ERROR, logger_) << "The " << asset.file_location
-                          << " file type is not supported";
+  LOG(ERROR, RESOURCE) 
+      << "The " << asset.file_location
+      << " file type is not supported";
+      
   return NULL;
 }
 

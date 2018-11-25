@@ -1,8 +1,8 @@
 
 #include "ui/ui_test.h"
-#include "ui/imgui/imgui.h"
+#include "imgui/imgui.h"
 
-#include "ui/imgui/imgui_impl_glfw_gl3.h"
+#include "ui/imgui_impl_glfw_gl3.h"
 
 //#include "renderer/renderManager.h"
 
@@ -16,16 +16,15 @@
 
 namespace quasi_game_engine {
 
-   UiTest::UiTest(LogWorker *log_worker, GLFWwindow *window, Renderer* render_manager)
-                : logger_("[    UI  Manager   ]", "logs/UI.log", log_worker),
-                  window_(window) {
+   UiTest::UiTest(GLFWwindow *window, Renderer* render_manager)
+                : window_(window) {
 
       //initialise imgui
       ImGui::CreateContext();
       ImGuiIO& io = ImGui::GetIO(); (void)io;
       //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;  // Enable Keyboard Controls
       //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;   // Enable Gamepad Controls
-      ImGui_ImplGlfwGL3_Init(window_, true, render_manager, logger_);
+      ImGui_ImplGlfwGL3_Init(window_, true, render_manager);
 
       // Setup style
       ImGui::StyleColorsDark();

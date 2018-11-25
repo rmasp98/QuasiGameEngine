@@ -13,7 +13,6 @@
 
 #include "interface/input.h"
 #include "interface/action_list.h"
-#include "utils/logging/logger.h"
 
 #include <GLFW/glfw3.h>
 
@@ -47,16 +46,20 @@ Notes
   const double* GetMouseMovement() const final { return diff_pos_; };
   const double* GetMousePosition() const final { return cursor_; };
 
+  static void key_callback(GLFWwindow* window, int key, 
+                           int scanmode, int action, int mode);
+
  protected:
   // Pass the logger and window created by the interface, config file should detail input mapping
-  GlfwInput(Logger logger, GLFWwindow* window, const char* config_file_name);
+  GlfwInput(GLFWwindow* window, const char* config_file_name);
 
  private:
   bool IsPressed(Action action) const;
 
-  Logger logger_;
+  static int pressed_keys[20];
+  static int num_pressed_keys;
   GLFWwindow* window_; // This has to be a pointer and is managed by GLFW
-  ActionList action_list_;
+  ActionList action_list_; // needs to be static for input callback
   double cursor_[2], diff_pos_[2]; // This only double because of stupid glfw!
 };
 
@@ -71,9 +74,9 @@ Notes
 ------------------------------------------------------------------------------*/
   friend class GlfwInterface;
   // This is the only place you can create this class
-  static GlfwInput* CreateGlfwInput(Logger logger, GLFWwindow* window,
+  static GlfwInput* CreateGlfwInput(GLFWwindow* window,
                                     const char* config_file_name) {
-    return new GlfwInput(logger, window, config_file_name);
+    return new GlfwInput(window, config_file_name);
   };
 
   // Only this and other *InputHelper's will be able to delete this class

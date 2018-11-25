@@ -10,13 +10,14 @@
 
 #include "interface/glfw/glfw_input.h"
 
+#include "utils/logging/log_capture.h"
+
 #include <cmath>
 
 namespace quasi_game_engine {
 
-GlfwInput::GlfwInput(Logger logger, GLFWwindow* window,
-                     const char* config_file_name)
-                     : logger_(logger), window_(window), action_list_(logger) {
+GlfwInput::GlfwInput(GLFWwindow* window, const char* config_file_name)
+                     : window_(window) {
   //Load actions from file
   action_list_.LoadActionMapping(config_file_name);
   glfwSetInputMode(window_, GLFW_STICKY_KEYS, GL_TRUE); //Allows button presses to be detected in frame
@@ -50,6 +51,13 @@ void GlfwInput::Update() {
 }
 
 
+void GlfwInput::key_callback(GLFWwindow* window, int key, int scanmode, int action, int mode) {
+  if (action == GLFW_PRESS) {}
+    //pressed_keys[num_pressed_keys++] = key;
+}
+
+
+
 // This will go if we swtich to button callback
 bool GlfwInput::IsPressed(const Action action) const {
   for (int i_button = 0; i_button < action.GetNumButtons(); ++i_button) {
@@ -61,8 +69,8 @@ bool GlfwInput::IsPressed(const Action action) const {
       if (glfwGetMouseButton(window_, button.button_value) == GLFW_PRESS)
         return true;
     } else if (button.button_type == BUTTON_NULL) {
-      LOG(LOG_WARN, &logger_) << "Action: '" << action.GetName()
-                              << "' has not been set!";
+      LOG(WARN, INTERFACE) << "Action: '" 
+          << action.GetName() << "' has not been set!";
       return false;
     }
   }

@@ -10,11 +10,9 @@
 
 #include "renderer/opengl/opengl_renderer.h"
 
+#include "utils/logging/log_capture.h"
+
 namespace quasi_game_engine {
-
-OpenGLRenderer::OpenGLRenderer(LogWorker* log_worker)
-    : logger_("Renderer", "logs/Renderer.log", log_worker) {}
-
 
 //TODO: Need to implement
 void OpenGLRenderer::Draw() {
@@ -26,8 +24,10 @@ bool OpenGLRenderer::InitGraphics() {
   glewExperimental = (GLboolean)true; //Find out what this means
   const GLenum glew_error = glewInit();
   if (glew_error != GLEW_OK) {
-    LOG(LOG_FATAL, &logger_) << "Failed to initialise GLEW. "
-                             << glewGetErrorString(glew_error);
+    LOG(FATAL, RENDERER) 
+        << "Failed to initialise GLEW. "
+        << glewGetErrorString(glew_error);
+
     return false;
   }
 
@@ -35,11 +35,15 @@ bool OpenGLRenderer::InitGraphics() {
   return true;
 }
 
+// void OpenGLRenderer::LoadShaders(std::vector<std::string> file_paths) {
+//   //shader_list.push_back(Shader());
+// }
+
 
 //TODO: Will need to implement different texparameters
 bool OpenGLRenderer::LoadImage(const unsigned char* pixel_map, int width,
                              int height, bool is_mipmap, int* texture_id) {
-  LOG(LOG_INFO, &logger_) << "Loading image to graphics";
+  LOG(INFO, RENDERER) << "Loading image to graphics";
 
   GLuint temp_id;
   glGenTextures(1, &temp_id);
@@ -75,7 +79,9 @@ bool OpenGLRenderer::LoadVertexAttribute(const QgeArray<float> attribute_data,
   if (attribute_index < 10) {
     if (tempVao == 0) {
       glGenVertexArrays(1, &tempVao);
-      LOG(LOG_INFO, &logger_) << "Generating vertex array object";
+      LOG(INFO, RENDERER) 
+          << "Generating vertex array object";
+
       *vao = (int)tempVao;
     }
 
@@ -102,8 +108,9 @@ bool OpenGLRenderer::LoadVertexAttribute(const QgeArray<float> attribute_data,
 
     return true;
   } else {
-    LOG(LOG_ERROR, &logger_) << "Cannot load Vertex attribute to graphics "
-                             << "Vertex attribute is corrupt.";
+    LOG(ERROR, RENDERER) 
+        << "Cannot load Vertex attribute to graphics "
+        << "Vertex attribute is corrupt.";
     return false;
   }
 
@@ -118,7 +125,9 @@ bool OpenGLRenderer::LoadVertexIndices(const QgeArray<int> indices, int* vao) {
   if (indices.GetNumComponents() < 5) {
     if (tempVao == 0) {
       glGenVertexArrays(1, &tempVao);
-      LOG(LOG_INFO, &logger_) << "Generating vertex array object";
+      LOG(INFO, RENDERER) 
+          << "Generating vertex array object";
+
       *vao = (int)tempVao;
     }
 
@@ -136,8 +145,10 @@ bool OpenGLRenderer::LoadVertexIndices(const QgeArray<int> indices, int* vao) {
 
     return true;
   } else {
-    LOG(LOG_ERROR, &logger_) << "Cannot load Vertex attribute to graphics "
-                             << "Vertex attribute is corrupt.";
+    LOG(ERROR, RENDERER) 
+        << "Cannot load Vertex attribute to graphics "
+        << "Vertex attribute is corrupt.";
+        
     return false;
   }
 }

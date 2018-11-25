@@ -14,7 +14,6 @@
 #include "resource/resource_file_manager.h"
 #include "resource/resource_base.h"
 #include "resource/resource.h"
-#include "utils/logging/logger.h"
 #include "utils/logging/log_worker.h"
 
 #include <memory>
@@ -35,7 +34,7 @@ Notes
 - Resource storage should be a  seperate class
 ------------------------------------------------------------------------------*/
  public:
-  explicit ResourceManager(LogWorker* log_worker);
+  ResourceManager() = default;
   ~ResourceManager() = default;
 
   //Getting rid of copy/move constructors/assignment operators (may need later)
@@ -53,7 +52,6 @@ Notes
   std::shared_ptr<Resource> GetResourceFromDB(int guid) const;
   std::shared_ptr<Resource> LoadResource(Asset asset);
 
-  Logger logger_;
   ResourceFileManager file_manager_;
 };
 

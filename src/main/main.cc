@@ -1,3 +1,12 @@
+/*------------------------------------------------------------------------------
+   Copyright (C) 2018 Ross Maspero <rossmaspero@gmail.com>
+   All rights reserved.
+
+   This software is licensed as described in the file LICENSE.md, which
+   you should have received as part of this distribution.
+
+   Author: Ross Maspero <rossmaspero@gmail.com>
+------------------------------------------------------------------------------*/
 
 #include "main/main.h"
 #include "renderer/opengl/opengl_render_config.h"
@@ -10,35 +19,32 @@
 #include "interface/glfw/glfw_interface.h"
 #include "resource/resource_manager.h"
 #include "resource/texture.h"
-#include "utils/logging/log_worker.h"
-#include "utils/logging/logger.h"
+#include "utils/logging/log_capture.h"
 #include "utils/qge_array.h"
 
 
 //temporary headers during development
 #include "ui/ui_test.h"
-#include "utils/shader.h"
+#include "renderer/shader.h"
 
 
 using namespace quasi_game_engine;
 
 int main() {
-  printf("%s\n", "It has begun!");
-
-  auto log_worker = new LogWorker();
-  log_worker->Init();
+  LOG(INFO, GENERAL) << "It has begun!";
 
   DeviceInterface* interface = new GlfwInterface(
-      log_worker,
       "/home/rmaspero/graphics/quasiGameEngine/config/action_map.cfg");
   const Input* input = interface->GetInput();
 
-  Renderer* render_manager = new OpenGLRenderer(log_worker);
+  Renderer* render_manager = new OpenGLRenderer();
   render_manager->InitGraphics();
 
-  auto ui = new UiTest(log_worker, interface->GetWindow(), render_manager);
 
-  auto resource_manager = new ResourceManager(log_worker);
+  //This sets up the UI part
+  auto ui = new UiTest(interface->GetWindow(), render_manager);
+
+  auto resource_manager = new ResourceManager();
 
   auto picture = resource_manager->GetResource(
       Asset("/home/rmaspero/graphics/quasiGameEngine/assets/Dragon_ground_color.jpg",
@@ -51,9 +57,7 @@ int main() {
       "0"));
   if (object != nullptr) object->LoadToGraphics(render_manager);
 
-  RenderConfig* main_render_config = new OpenGLRenderConfig(
-      Logger("[     Renderer     ]", "logs/Renderer.log", log_worker),
-      RC_DEFAULT);
+  RenderConfig* main_render_config = new OpenGLRenderConfig(RC_DEFAULT);
 
   // This should be in rendermanager!
   std::vector<std::string> shaders(2, "");
@@ -138,7 +142,4 @@ int main() {
   delete render_manager;
 
   delete interface;
-
-  // this should always be deleted last to ensure all logs are written
-  delete log_worker;
 }

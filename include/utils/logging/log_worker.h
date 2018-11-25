@@ -1,46 +1,62 @@
+/*------------------------------------------------------------------------------
+   Copyright (C) 2018 Ross Maspero <rossmaspero@gmail.com>
+   All rights reserved.
+
+   This software is licensed as described in the file LICENSE.md, which
+   you should have received as part of this distribution.
+
+   Author: Ross Maspero <rossmaspero@gmail.com>
+------------------------------------------------------------------------------*/
+
 #ifndef QGE_LOG_WORKER_H
 #define QGE_LOG_WORKER_H
 
+#include "utils/qge_queue.h"
+#include "utils/logging/log_utils.h"
+
+#include <map>
 #include <chrono>
 #include <condition_variable>
 #include <fstream>
 #include <mutex>
 #include <queue>
 #include <thread>
-#include <vector>
 
 namespace quasi_game_engine {
-class Log;
-class Logger;
+
+struct something {
+  QgeQueue<Log> queue;
+  const char* prefix;
+  std::ofstream file_stream;
+};
 
 class LogWorker {
-  friend Logger;
-
  public:
-  LogWorker() : is_init_(false){};
+  LogWorker();
   ~LogWorker();
 
-  // If we have a static class ths will be used to initialise the class e.g
-  // create thread
-  bool Init();
+  //Getting rid of copy/move constructors/assignment operators (may need later)
+  LogWorker(const LogWorker&) = delete;
+  LogWorker& operator=(const LogWorker&) = delete;
+  LogWorker(LogWorker&&) = delete;
+  LogWorker& operator=(LogWorker&&) = delete;
 
- protected:
-  void Push(Log log);
-  int AddLogger(const char* file_name);
+  void SendLog(Log log, EngineComponent component);
 
  private:
-  std::queue<Log> log_queue_;
-  std::mutex queue_mutex_, loop_mutex_, files_mutex_;
+  void CollectorLoop();
+
+  something logger_list_[COMPONENT_SIZE];
   std::thread* worker_thread_;
   std::condition_variable queue_wait_cv_;
-  std::vector<std::ofstream> file_streams_;
-  bool is_running_, is_init_;
-  size_t max_size_;
+  std::mutex loop_mutex_;
+  int largest_queue_size_, largest_queue_;
+  //std::vector<std::ofstream> file_streams_;
+  bool is_running_;
   std::chrono::time_point<std::chrono::high_resolution_clock> start_time_;
-
-  bool Pop(Log& log);
-  void CollectorLoop();
 };
+
+
 
 }  // namespace quasi_game_engine
 

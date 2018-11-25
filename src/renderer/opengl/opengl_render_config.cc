@@ -10,10 +10,11 @@
 
 #include "renderer/opengl/opengl_render_config.h"
 
+#include "utils/logging/log_capture.h"
+
 namespace quasi_game_engine {
 
-OpenGLRenderConfig::OpenGLRenderConfig(Logger logger, RenderConfigType type)
-    : logger_(logger) {
+OpenGLRenderConfig::OpenGLRenderConfig(RenderConfigType type) {
   //TODO: read this from a file?
   if (type == RC_DEFAULT) {
     cull_face_ = true; depth_test_ = true; scissor_test_ = false;
@@ -27,8 +28,9 @@ OpenGLRenderConfig::OpenGLRenderConfig(Logger logger, RenderConfigType type)
     cull_face_ = false; depth_test_ = false; scissor_test_ = false;
     UnsetBlend();
     SetPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    LOG(LOG_WARN, &logger_) << "Render Config has not been set so has been"
-                           << " initialised all settings to off.";
+    LOG(WARN, RENDERER) 
+        << "Render Config has not been set so has been"
+        << " initialised all settings to off.";
   }
 }
 

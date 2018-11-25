@@ -9,19 +9,16 @@
 ------------------------------------------------------------------------------*/
 #include "interface/glfw/glfw_interface.h"
 
-#include "utils/logging/logger.h"
-#include "utils/logging/log_worker.h"
+#include "utils/logging/log_capture.h"
 
 #include <unistd.h>
 
 namespace quasi_game_engine {
 
-GlfwInterface::GlfwInterface(LogWorker* log_worker, const char* config_file_name)
-    : logger_("Interface", "logs/DeviceInterfaceManager.log",
-              log_worker) {
-  LOG(LOG_INFO, &logger_) << "Initialising GLFW";
+GlfwInterface::GlfwInterface(const char* config_file_name) {
+  LOG(INFO, INTERFACE) << "Initialising GLFW";
   if (!glfwInit()) {
-    LOG(LOG_FATAL, &logger_) << "Failed to initialise GLFW";
+    LOG(FATAL, INTERFACE) << "Failed to initialise GLFW";
   }
 
   // Need to read this in from config file
@@ -40,7 +37,7 @@ GlfwInterface::GlfwInterface(LogWorker* log_worker, const char* config_file_name
   glfwMakeContextCurrent(window_); //Makes this window the current window
   
   //TODO: Could make input constructor dump and then initialise it here
-  input_ = GlfwInputHelper::CreateGlfwInput(logger_, window_, config_file_name);
+  input_ = GlfwInputHelper::CreateGlfwInput(window_, config_file_name);
 
 };
 
@@ -53,7 +50,7 @@ GlfwInterface::~GlfwInterface() {
 
 void GlfwInterface::CreateWindow(const char* title, int width, int height,
                                  bool full_screen) {
-  LOG(LOG_INFO, &logger_) << "Creating GLFW window";
+  LOG(INFO, INTERFACE) << "Creating GLFW window";
   if (full_screen) {
     //Gets information about the primary monitor. TODO: is this actually necessary
     GLFWmonitor* monitor = glfwGetPrimaryMonitor();
@@ -71,7 +68,7 @@ void GlfwInterface::CreateWindow(const char* title, int width, int height,
 
   //Checks to ensure a window was created properly
   if (window_ == nullptr) {
-    LOG(LOG_FATAL, &logger_) << "Failed to open GLFW window";
+    LOG(FATAL, INTERFACE) << "Failed to open GLFW window";
   }
 }
 

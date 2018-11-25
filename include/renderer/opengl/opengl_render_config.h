@@ -12,7 +12,6 @@
 #define QGE_OPENGL_RENDER_CONFIG_H
 
 #include "renderer/render_config.h"
-#include "utils/logging/logger.h"
 
 #include <GL/glew.h>
 
@@ -26,7 +25,7 @@ Notes
 - This overall feels a bit shit. Need to find a better way!
 ------------------------------------------------------------------------------*/
  public:
-  OpenGLRenderConfig(Logger logger, RenderConfigType type);
+  explicit OpenGLRenderConfig(RenderConfigType type);
   ~OpenGLRenderConfig() final = default;
 
   //Getting rid of copy/move constructors/assignment operators (may need later)
@@ -58,8 +57,6 @@ Notes
 
   GLenum polygon_face_;
   GLenum polygon_mode_;
-
-  Logger logger_;
 };
 
 } // namespace quasi_game_engine

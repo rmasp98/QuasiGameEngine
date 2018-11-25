@@ -12,7 +12,6 @@
 #define QGE_RESOURCE_BASE_H
 
 #include "resource/resource.h"
-#include "utils/logging/logger.h"
 
 #include <string>
 
@@ -58,15 +57,11 @@ Note
   // Calls this function if child class does not render
   virtual void LoadToGraphics(Renderer* render_manager);
 
-  //This will set the logger for all resources. Done in ResourceManager
-  static void SetLogger(Logger* logger) { logger_ = logger; };
-
  protected:
   explicit ResourceBase(Asset asset);
 
   Asset asset_;
   //This needs to be a pointer to prevent requirement for default Logger constructor
-  static Logger* logger_;
 };
 
 }  // namespace quasi_game_engine

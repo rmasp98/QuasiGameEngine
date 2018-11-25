@@ -13,7 +13,6 @@
 
 #include "resource/resource.h"
 #include "resource/resource_base.h"
-#include "utils/logging/logger.h"
 #include "utils/qge_array.h"
 
 #include <assimp/scene.h>
@@ -31,14 +30,12 @@ Notes:
 - Need to read component numbers from file if possible
 ------------------------------------------------------------------------------*/
  public:
-  explicit ObjectLoader(Logger* logger) : logger_(logger) {}
+  explicit ObjectLoader() = default;
   ~ObjectLoader() = default;
 
   Resource* Load(Asset asset);
 
  protected:
-  Logger* logger_;
-
   //Currently can be used to load verticies, normals and texture coordinates
   //Data_in should be an array of required attribute (e.g. mesh->mVertices)
   QgeArray<float> LoadAttribute(const aiVector3D* data_in, int num_vertices,

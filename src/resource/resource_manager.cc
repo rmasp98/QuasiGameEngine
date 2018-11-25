@@ -12,21 +12,13 @@
 
 namespace quasi_game_engine {
 
-ResourceManager::ResourceManager(LogWorker* log_worker)
-    : logger_("Resource", "logs/ResourceManager.log", log_worker),
-      file_manager_(&logger_) {
-  // Pass logger to all resources
-  ResourceBase::SetLogger(&logger_);
-}
-
-
 // get resource from DB, if not there either throw an error or load the resource
 std::shared_ptr<Resource> ResourceManager::GetResource(Asset asset) {
   // check to see if it is loaded, if so return pointer
   std::shared_ptr<Resource> db_resource = GetResourceFromDB(asset.guid);
   if (db_resource != NULL) return db_resource;
 
-  LOG(LOG_TRACE, &logger_)
+  LOG(TRACE, RESOURCE)
       << "Resource has not been loaded yet! "
       << "In release mode, this will cause the game to exit";
 

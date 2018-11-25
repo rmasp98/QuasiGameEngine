@@ -12,15 +12,13 @@ include_directories(libs)
 add_executable(quasiGameEngine
         src/interface/glfw/glfw_input.cc
         src/interface/glfw/glfw_interface.cc
-        src/ui/imgui/imgui.cc
-        src/ui/imgui/imgui_demo.cc
-        src/ui/imgui/imgui_draw.cc
-        src/ui/imgui/imgui_impl_glfw_gl3.cc
+        src/ui/imgui_impl_glfw_gl3.cc
         src/ui/ui_test.cc
         src/interface/action_list.cc
         src/main/main.cc
         src/renderer/opengl/opengl_render_config.cc
         src/renderer/opengl/opengl_renderer.cc
+        src/renderer/shader.cc
         src/resource/mesh.cc
         src/resource/resource_base.cc
         src/resource/image_loader.cc
@@ -28,13 +26,17 @@ add_executable(quasiGameEngine
         src/resource/resource_file_manager.cc
         src/resource/resource_manager.cc
         src/resource/texture.cc
-        src/utils/json_file_manager.cc
+        src/utils/json_file.cc
         src/utils/logging/log_worker.cc
-        src/utils/logging/logger.cc
-        src/utils/file_manager.cc
+        src/utils/logging/log_capture.cc
+        src/utils/file_utils.cc
         src/utils/memory_manager.cc
-        src/utils/shader.cc
 #        test/interface/device_interface_test.cc
+
+				#Should be moved out into a seperate library dependency
+        libs/imgui/imgui.cc
+        libs/imgui/imgui_demo.cc
+        libs/imgui/imgui_draw.cc
         )
 
 TARGET_LINK_LIBRARIES(quasiGameEngine GL glfw GLEW freeimage assimp pthread)

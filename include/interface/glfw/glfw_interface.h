@@ -36,7 +36,7 @@ Notes:
 - Need to think about an initial pop up window to define final window settings
 ------------------------------------------------------------------------------*/
  public:
-  GlfwInterface(LogWorker* log_worker, const char* config_file_name);
+  explicit GlfwInterface(const char* config_file_name);
   ~GlfwInterface();
 
   //Getting rid of copy/move constructors/assignment operators (may need later)
@@ -57,7 +57,6 @@ Notes:
   const Input* GetInput() const final { return input_; };
 
  private:
-  Logger logger_;
   GlfwInput* input_;       // This is a pointer to a GlfwInput class
   GLFWwindow* window_; // GLFW requires this being a pointer and is managed by GLFW
 

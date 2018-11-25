@@ -11,6 +11,8 @@
 #include "resource/object_loader.h"
 #include "resource/mesh.h"
 
+#include "utils/logging/log_capture.h"
+
 #include <assimp/postprocess.h>
 #include <assimp/scene.h>
 #include <assimp/Importer.hpp>
@@ -18,7 +20,8 @@
 namespace quasi_game_engine {
 
 Resource* ObjectLoader::Load(Asset asset) {
-  LOG(LOG_TRACE, logger_) << "Loading object from " << asset.file_location;
+  LOG(TRACE, RESOURCE) 
+      << "Loading object from " << asset.file_location;
 
   Assimp::Importer importer;
 
@@ -41,15 +44,16 @@ Resource* ObjectLoader::Load(Asset asset) {
         QgeArray<int> faces;
 
         if (mesh->HasFaces()) {
-          LOG(LOG_TRACE, logger_) << "Getting faces from '" << asset.name
-                                  << "', in '" << asset.file_location << "'";
+          LOG(TRACE, RESOURCE) 
+              << "Getting faces from '" << asset.name
+              << "', in '" << asset.file_location << "'";
 
           faces = LoadFaces(mesh->mFaces, mesh->mNumFaces,
               mesh->mFaces[0].mNumIndices);
         }
 
         if (mesh->HasPositions()) {
-          LOG(LOG_TRACE, logger_)
+          LOG(TRACE, RESOURCE)
               << "Getting verticies from '" << asset.name << "', in '"
               << asset.file_location << "'";
 
@@ -57,7 +61,7 @@ Resource* ObjectLoader::Load(Asset asset) {
         }
 
         if (mesh->HasNormals()) {
-          LOG(LOG_TRACE, logger_)
+          LOG(TRACE, RESOURCE)
               << "Getting normals from '" << asset.name << "', in '"
               << asset.file_location << "'";
 
@@ -65,7 +69,7 @@ Resource* ObjectLoader::Load(Asset asset) {
         }
 
         if (mesh->HasTextureCoords(0)) {
-          LOG(LOG_TRACE, logger_)
+          LOG(TRACE, RESOURCE)
               << "Getting texture coordinates from '" << asset.name
               << "', in '" << asset.file_location << "'";
 
@@ -82,9 +86,10 @@ Resource* ObjectLoader::Load(Asset asset) {
     }
   }
 
-  LOG(LOG_TRACE, logger_) << "Failed to load " << asset.file_location
-                          << ". Either AssImp does not support this filetype"
-                          << ", the file is corrupt or does not exist";
+  LOG(TRACE, RESOURCE) 
+      << "Failed to load " << asset.file_location
+      << ". Either AssImp does not support this filetype"
+      << ", the file is corrupt or does not exist";
 
   return NULL;
 }

@@ -11,27 +11,28 @@
 #ifndef QGE_ARRAY_H
 #define QGE_ARRAY_H
 
-#include "utils/logging/logger.h"
-
-#include <cassert>
-
+#include <algorithm>
 
 namespace quasi_game_engine {
 
 template<class T>
 class QgeArray {
 /*------------------------------------------------------------------------------
-  Stnadard static array array class
+  Stnadard static array array class 
 Note
+- Need to figure out why I did this and add it to the description
 - Consider making it dynamic?
-- Currently does not have a logger and only has assertions
+- Currently does not have a logger and only has exceptions
 ------------------------------------------------------------------------------*/
  public:
   QgeArray() {};
-  QgeArray(int size) {
-    assert(size > 0);
-    data_ = new T[size]();
-    size_ = size;
+  explicit QgeArray(int size) {
+    if (size > 0) {
+      data_ = new T[size]();
+      size_ = size;
+    } else {
+      throw;
+    }
   }
 
   //These are bog standard copy/assignment operators. This will need to be
@@ -72,8 +73,10 @@ Note
   }
 
   T& operator[](int index) const {
-    assert(index < size_ && index >= 0);
-    return data_[index];
+    if (index < size_ && index >= 0) {
+      return data_[index];
+    }
+    throw;
   }
 
   int Size() const { return size_; }
@@ -89,4 +92,4 @@ Note
 
 }  // namespace quasi_game_engine
 
-#endif  // QGE_RESOURCE_BASE_H
+#endif  // QGE_ARRAY_H

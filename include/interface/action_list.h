@@ -11,8 +11,7 @@
 #define QGE_ACTION_LIST_H
 
 #include "interface/action.h"
-#include "utils/json_file_manager.h"
-#include "utils/logging/logger.h"
+#include "utils/json_file.h"
 
 #include <map>
 
@@ -42,7 +41,7 @@ tries to access that button...
 - Might consider loading mapping in constructor
 ------------------------------------------------------------------------------*/
  public:
-  ActionList(Logger logger);
+  ActionList();
   ~ActionList() = default;
 
   //Getting rid of copy/move constructors/assignment operators (may need later)
@@ -73,10 +72,10 @@ tries to access that button...
  private:
   int action_state_, hold_actions_, active_actions_;
   std::map<ActionEnum, Action> actions_;
+  std::map<int, std::vector<ActionEnum>> key_map_;
   ButtonTypeEnum set_input_;
 
-  Logger logger_;
-  JsonFileManager json_file_manager_;
+  JsonFile json_file_;
 
   void ParseActions(nlohmann::json config_file);
   // This is called if new action is added (as it may change the bit order in state)

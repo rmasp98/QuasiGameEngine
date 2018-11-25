@@ -12,7 +12,6 @@
 #define QGE_TEXTURE_H
 
 #include "renderer/renderer.h"
-#include "utils/logging/logger.h"
 #include "resource/resource_base.h"
 
 namespace quasi_game_engine {

@@ -12,8 +12,9 @@
 #define QGE_OPENGL_RENDERER_H
 
 #include "renderer/renderer.h"
+#include "renderer/shader.h"
 #include "utils/qge_array.h"
-#include "utils/logging/logger.h"
+
 
 //Graphics libraries
 #include <GL/glew.h>
@@ -30,7 +31,7 @@ Notes
 - The should be a parent class with child classes for opengl and directx
 ------------------------------------------------------------------------------*/
  public:
-  explicit OpenGLRenderer(LogWorker* log_worker);
+  OpenGLRenderer() = default;
   ~OpenGLRenderer() = default;
 
   //Getting rid of copy/move constructors/assignment operators (may need later)
@@ -41,6 +42,7 @@ Notes
 
   bool InitGraphics() final;
   void Draw() final;
+  //void LoadShaders(std::vector<std::string> file_paths);
   bool LoadImage(const unsigned char *pixel_map, int width, int height,
                  bool is_mipmap, int* texture_id) final;
   bool LoadVertexAttribute(const QgeArray<float> attribute_data,
@@ -49,7 +51,7 @@ Notes
   bool LoadVertexIndices(const QgeArray<int> indices, int* vao) final;
 
  private:
-  Logger logger_;
+  std::vector<Shader> shader_list;
 };
 
 } // namespace quasi_game_engine

@@ -10,16 +10,14 @@
 
 #include "interface/input.h"
 
-#include "utils/logging/logger.h"
+#include "utils/logging/log_capture.h"
 
 #include <cmath>
 
 
 namespace quasi_game_engine {
 
-ActionList::ActionList(Logger logger) : set_input_(BUTTON_KEYBOARD),
-                                        logger_(logger),
-                                        json_file_manager_(&logger) {
+ActionList::ActionList() : set_input_(BUTTON_KEYBOARD) {
   //load from a config file
 }
 
@@ -37,16 +35,22 @@ void ActionList::Update(int new_action_state) {
 //TODO: this should probably take input of vector of buttons
 void ActionList::SetAction(ActionEnum action, int button_value, bool is_hold,
                            const char* name) {
+
+  ButtonTypeEnum button_type = BUTTON_KEYBOARD;
   //TODO: Need to update this to check what the key type is
   actions_[action] = Action(name, is_hold,
-                            Button(button_value, BUTTON_KEYBOARD));
-
+                            Button(button_value, button_type));
+  
+  if (button_type == BUTTON_KEYBOARD)                            
+    key_map_[button_value].push_back(action);
+  
   //If this is a new button assignment, it ensures order is maintained
   SetBitOrder();
 
-  LOG(LOG_TRACE, &logger_) << "Setting action: Name = " << name
-                           << "; Button Value = " << button_value
-                           << "; Action Value = " << action;
+  LOG(TRACE, INTERFACE) 
+      << "Setting action: Name = " << name
+      << "; Button Value = " << button_value
+      << "; Action Value = " << action;
 }
 
 
@@ -58,8 +62,9 @@ void ActionList::SetAction(int action, int button_value, bool is_hold,
     action_convert = (ActionEnum)action;
     SetAction(action_convert, button_value, is_hold, name);
   } else {
-    LOG(LOG_ERROR, &logger_) << "Action value " << action << " does not exist."
-                             << " The largest value is " << ACTION_MAX;
+    LOG(ERROR, INTERFACE) 
+        << "Action value " << action << " does not exist."
+        << " The largest value is " << ACTION_MAX;
   }
 }
 
@@ -68,8 +73,10 @@ const Action ActionList::GetAction(ActionEnum action) const {
   if (actions_.find(action) != actions_.end()) { // if the action already exists
     return actions_.at(action);
   } else {
-    LOG(LOG_WARN, &logger_) << "Action " << action
-                            << " has not been set yet";
+    LOG(WARN, INTERFACE) 
+        << "Action " << action
+        << " has not been set yet";
+
     return Action();
   }
 }
@@ -82,13 +89,15 @@ const Action ActionList::GetAction(const char* name) const {
       return action.second;
   }
 
-  LOG(LOG_ERROR, &logger_) << name << " action does not exist";
+  LOG(ERROR, INTERFACE) 
+      << name << " action does not exist";
+
   return Action();
 }
 
 
 void ActionList::LoadActionMapping(const char* config_file_name) {
-  nlohmann::json config_file_new = json_file_manager_.LoadFile(config_file_name);
+  nlohmann::json config_file_new = json_file_.LoadFile(config_file_name);
   ParseActions(config_file_new);
 }
 
@@ -136,15 +145,18 @@ bool ActionList::IsActionActive(const ActionEnum action) const {
 
 
 ButtonTypeEnum ActionList::GetButtonEnumFromString(const char* input_type_str) const {
-  LOG(LOG_INFO, &logger_) << "Loading button mapping for input type '"
-                          << input_type_str << "'";
+  LOG(INFO, INTERFACE) 
+      << "Loading button mapping for input type '"
+      << input_type_str << "'";
   if (!strcmp(input_type_str, "keyboard")) {
     return BUTTON_KEYBOARD;
   } else if (!strcmp(input_type_str, "gamepad")) {
     return BUTTON_GAMEPAD;
   } else {
-    LOG(LOG_WARN, &logger_) << "'" << input_type_str
-                            << "' is not a valid input type";
+    LOG(WARN, INTERFACE) 
+        << "'" << input_type_str
+        << "' is not a valid input type";
+        
     return BUTTON_NULL;
   }
 }
