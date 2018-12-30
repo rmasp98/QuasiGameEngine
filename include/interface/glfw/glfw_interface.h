@@ -14,9 +14,9 @@
 #include "interface/device_interface.h"
 #include "interface/glfw/glfw_input.h"
 
-#include <memory>
-
 #include <GLFW/glfw3.h>
+
+#include <memory>
 
 namespace quasi_game_engine {
 class LogWorker;
@@ -45,19 +45,16 @@ Notes:
   GlfwInterface(GlfwInterface&&) = delete;
   GlfwInterface& operator=(GlfwInterface&&) = delete;
 
-  //TODO: get rid of once imgui is set up
-  GLFWwindow* GetWindow() const final { return window_; };
-
  protected:
   void Update() final;
   void SwapBuffers() final;
   void PollEvents() final;
   bool IsWindowOpen() const final;
   // Input can only be deleted by this class (no need to smart pointers)
-  const Input* GetInput() const final { return input_; };
+  const std::shared_ptr<Input> GetInput() const final { return input_; };
 
  private:
-  GlfwInput* input_;       // This is a pointer to a GlfwInput class
+  std::shared_ptr<GlfwInput> input_;       // This is a pointer to a GlfwInput class
   GLFWwindow* window_; // GLFW requires this being a pointer and is managed by GLFW
 
   void CreateWindow(const char* title, int width, int height, bool full_screen);

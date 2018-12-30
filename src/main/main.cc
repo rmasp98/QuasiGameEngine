@@ -13,7 +13,6 @@
 #include "renderer/opengl/opengl_renderer.h"
 #include "renderer/render_config.h"
 #include "renderer/renderer.h"
-#include "interface/action_list.h"
 #include "interface/device_interface.h"
 //This needs to be after render files due to it containing gl.h
 #include "interface/glfw/glfw_interface.h"
@@ -21,11 +20,11 @@
 #include "resource/texture.h"
 #include "utils/logging/log_capture.h"
 #include "utils/qge_array.h"
-
+#include "ui/user_interface.h"
 
 //temporary headers during development
-#include "ui/ui_test.h"
-#include "renderer/shader.h"
+#include "renderer/opengl/opengl_shader.h"
+#include "interface/action_manager.h"
 
 
 using namespace quasi_game_engine;
@@ -35,14 +34,15 @@ int main() {
 
   DeviceInterface* interface = new GlfwInterface(
       "/home/rmaspero/graphics/quasiGameEngine/config/action_map.cfg");
-  const Input* input = interface->GetInput();
+  auto input = interface->GetInput();
 
   Renderer* render_manager = new OpenGLRenderer();
   render_manager->InitGraphics();
 
 
   //This sets up the UI part
-  auto ui = new UiTest(interface->GetWindow(), render_manager);
+  auto ui = new UserInterface(render_manager);
+  input->InitGuiIO(ImGui::GetIO());
 
   auto resource_manager = new ResourceManager();
 
@@ -63,7 +63,7 @@ int main() {
   std::vector<std::string> shaders(2, "");
   shaders[0] = "/home/rmaspero/graphics/quasiGameEngine/shaders/main.vs";
   shaders[1] = "/home/rmaspero/graphics/quasiGameEngine/shaders/main.fs";
-  unsigned int program_id = LoadShaders(shaders);
+  unsigned int program_id = render_manager->LoadShaders(shaders)->GetProgram();
 
   glm::vec3 pos = glm::vec3(0.0f, 0.0f, 20.0f);
   double mouse_speed = 0.03f, dt = 0.016;
@@ -80,15 +80,6 @@ int main() {
     interface->PollEvents();  // Check for key and mouse events
 
     // update the game
-
-    glUseProgram(program_id);
-    main_render_config->ApplyConfig();
-
-    if (picture != nullptr) {
-      glActiveTexture(GL_TEXTURE0);
-      glBindTexture(GL_TEXTURE_2D, picture->GetResource());
-    }
-
     interface->Update();
 
     // Determines the angle of the camera based on how far the cursor position
@@ -114,24 +105,35 @@ int main() {
     // glm::vec3 dir = glm::vec3(facing.x, 0, facing.z);
     glm::vec3 right = glm::vec3(facing.z, 0, -facing.x);
 
-    if (input->IsActionActive(ACTION_UP)) pos += facing * 0.1f;
-    if (input->IsActionActive(ACTION_DOWN)) pos -= facing * 0.1f;
-    if (input->IsActionActive(ACTION_LEFT)) pos += right * 0.1f;
-    if (input->IsActionActive(ACTION_RIGHT)) pos -= right * 0.1f;
+    if (ActionManager::IsActionActive(ACTION_UP)) pos += facing * 0.1f;
+    if (ActionManager::IsActionActive(ACTION_DOWN)) pos -= facing * 0.1f;
+    if (ActionManager::IsActionActive(ACTION_LEFT)) pos += right * 0.1f;
+    if (ActionManager::IsActionActive(ACTION_RIGHT)) pos -= right * 0.1f;
 
     view = glm::lookAt(pos, pos + facing, glm::vec3(0, 1, 0));
     glm::mat4 mvp = proj * view * model;
 
     // render_manager->draw();
 
+    
+
+    if (picture != nullptr) {
+      glActiveTexture(GL_TEXTURE0);
+      glBindTexture(GL_TEXTURE_2D, picture->GetResource());
+    }
+
+    glUseProgram(program_id);
+    main_render_config->ApplyConfig();
+
     glUniformMatrix4fv(glGetUniformLocation(program_id, "MVP"), 1, GL_FALSE,
                        &mvp[0][0]);
-    glBindVertexArray(object->GetResource());
+  
+    glBindVertexArray(object->GetResource());  
     glDrawElements(GL_TRIANGLES, 36656 * 3, GL_UNSIGNED_INT, (void*)0);
 
     glBindVertexArray(0);
 
-    ui->Update();
+    ui->Update(input, render_manager);
 
     // Swap second buffer
     interface->SwapBuffers();

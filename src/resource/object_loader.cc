@@ -97,6 +97,7 @@ Resource* ObjectLoader::Load(Asset asset) {
 
 QgeArray<float> ObjectLoader::LoadAttribute(const aiVector3D* data_in,
     int num_vertices, int num_components) {
+
   QgeArray<float> data_out(num_vertices * num_components);
   int offset = 0;
   for (size_t i_vert = 0; i_vert < num_vertices; ++i_vert) {
@@ -110,8 +111,8 @@ QgeArray<float> ObjectLoader::LoadAttribute(const aiVector3D* data_in,
 }
 
 
-QgeArray<int> ObjectLoader::LoadFaces(const aiFace* faces_in, int num_faces,
-    int num_indices) {
+QgeArray<int> ObjectLoader::LoadFaces(const aiFace* faces_in, 
+    int num_faces, int num_indices) {
   QgeArray<int> faces_out(num_faces * num_indices);
   int offset = 0;
   for (size_t i_face = 0; i_face < num_faces; ++i_face) {

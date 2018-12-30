@@ -10,6 +10,8 @@
 #ifndef QGE_DEVICE_INTERFACE_H
 #define QGE_DEVICE_INTERFACE_H
 
+#include <memory>
+
 // TODO: remove when sorted imgui stuff!
 #include <GLFW/glfw3.h>
 
@@ -39,10 +41,7 @@ Notes
   virtual void SwapBuffers() = 0; // called at end of each frame
   virtual void PollEvents() = 0;  // called at beginning of each frame to get user input
   virtual bool IsWindowOpen() const = 0;
-  virtual const Input* GetInput() const = 0;
-
-  //TODO: get rid of once imgui is set up
-  virtual GLFWwindow *GetWindow() const = 0;
+  virtual const std::shared_ptr<Input> GetInput() const = 0;
 
  protected:
   DeviceInterface() = default;

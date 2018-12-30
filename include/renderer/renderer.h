@@ -11,7 +11,10 @@
 #ifndef QGE_RENDERER_H
 #define QGE_RENDERER_H
 
+#include "renderer/opengl/opengl_shader.h"
 #include "utils/qge_array.h"
+
+#include "imgui/imgui.h"
 
 #include <vector>
 #include <string>
@@ -36,15 +39,19 @@ class Renderer {
   virtual bool InitGraphics() = 0;
   virtual void Draw() = 0;
 
-  //virtual void LoadShaders(std::vector<std::string> file_paths);
+  virtual Shader* LoadShaders(std::vector<std::string> file_paths) = 0;
+  virtual void ActivateShader(int program_id) = 0;
 
   virtual bool LoadImage(const unsigned char* pixel_map, int width, int height,
                          bool is_mipmap, int* texture_id) = 0;
 
   virtual bool LoadVertexAttribute(const QgeArray<float> attribute_data,
-                                   int attribute_index, int* vao) = 0;
+      int attribute_index, int* vao) = 0;
 
   virtual bool LoadVertexIndices(const QgeArray<int> indices, int* vao) = 0;
+
+  virtual bool DrawImGui(const ImDrawData* draw_list, 
+      std::vector<int> buffer_size, int* data_id, int* index_id) = 0;
 
  protected:
   Renderer() = default;

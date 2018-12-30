@@ -33,17 +33,13 @@ GlfwInterface::GlfwInterface(const char* config_file_name) {
   // glEnable(GL_MULTISAMPLE);
 
   CreateWindow("Quasi Game Engine", 1920, 1080, true);
+  glfwMakeContextCurrent(window_);
   
-  glfwMakeContextCurrent(window_); //Makes this window the current window
-  
-  //TODO: Could make input constructor dump and then initialise it here
-  input_ = GlfwInputHelper::CreateGlfwInput(window_, config_file_name);
-
+  input_ = std::make_shared<GlfwInput>(window_, config_file_name);
 };
 
 
 GlfwInterface::~GlfwInterface() {
-  GlfwInputHelper::DeleteInput(input_);
   glfwTerminate();
 }
 
@@ -60,7 +56,6 @@ void GlfwInterface::CreateWindow(const char* title, int width, int height,
     glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
     glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
 
-    //Creates the window
     window_ = glfwCreateWindow(width, height, title, monitor, nullptr);
   } else {
     window_ = glfwCreateWindow(width, height, title, nullptr, nullptr);
@@ -85,7 +80,7 @@ void GlfwInterface::PollEvents() {
 
 bool GlfwInterface::IsWindowOpen() const {
   //This is tempoary and should be changed later
-  return !input_->IsActionActive(ACTION_ESC) &&
+  return !ActionManager::IsActionActive(ACTION_ESC) &&
          glfwWindowShouldClose(window_) == 0;
 }
 

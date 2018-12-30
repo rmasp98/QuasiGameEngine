@@ -12,13 +12,12 @@ include_directories(libs)
 add_executable(quasiGameEngine
         src/interface/glfw/glfw_input.cc
         src/interface/glfw/glfw_interface.cc
-        src/ui/imgui_impl_glfw_gl3.cc
-        src/ui/ui_test.cc
-        src/interface/action_list.cc
+        src/interface/action_manager.cc
+        src/ui/user_interface.cc
         src/main/main.cc
         src/renderer/opengl/opengl_render_config.cc
         src/renderer/opengl/opengl_renderer.cc
-        src/renderer/shader.cc
+        src/renderer/opengl/opengl_shader.cc
         src/resource/mesh.cc
         src/resource/resource_base.cc
         src/resource/image_loader.cc

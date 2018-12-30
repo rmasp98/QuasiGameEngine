@@ -12,9 +12,11 @@
 #define QGE_GLFW_INPUT_H
 
 #include "interface/input.h"
-#include "interface/action_list.h"
+#include "interface/action_manager.h"
 
 #include <GLFW/glfw3.h>
+
+#include "imgui/imgui.h"
 
 namespace quasi_game_engine {
 
@@ -26,9 +28,9 @@ class GlfwInput : public Input {
 Notes
  - Should change update to a set of callbacks
 ------------------------------------------------------------------------------*/
-  friend class GlfwInputHelper; // Allow GlfwInterface to create this class
  public:
-  ~GlfwInput() final = default;
+  GlfwInput(GLFWwindow* window, const char* config_file_name);
+  ~GlfwInput() final;
 
   //Getting rid of copy/move constructors/assignment operators (may need later)
   GlfwInput(const GlfwInput&) = delete;
@@ -40,47 +42,15 @@ Notes
   static bool ValidButton(int button_value);
 
   void Update() final;
-  bool IsActionActive(ActionEnum action) const final {
-    return action_list_.IsActionActive(action);
-  };
   const double* GetMouseMovement() const final { return diff_pos_; };
   const double* GetMousePosition() const final { return cursor_; };
-
-  static void key_callback(GLFWwindow* window, int key, 
-                           int scanmode, int action, int mode);
-
- protected:
-  // Pass the logger and window created by the interface, config file should detail input mapping
-  GlfwInput(GLFWwindow* window, const char* config_file_name);
+  void InitGuiIO(ImGuiIO& io) final;
+  void UpdateGuiIO(ImGuiIO* io) final;
 
  private:
-  bool IsPressed(Action action) const;
-
-  static int pressed_keys[20];
-  static int num_pressed_keys;
+  ActionManager action_manager;
   GLFWwindow* window_; // This has to be a pointer and is managed by GLFW
-  ActionList action_list_; // needs to be static for input callback
   double cursor_[2], diff_pos_[2]; // This only double because of stupid glfw!
-};
-
-
-class GlfwInputHelper {
-/*------------------------------------------------------------------------------
-  Helper class that allows GlfwInterface to be able to create GlfwInput and
-  delete the Input class. This is a form of access control to make sure
-  GlfwInterface does not have too much access to other classes private functions
-Notes
- - Should probably sit inside another file
-------------------------------------------------------------------------------*/
-  friend class GlfwInterface;
-  // This is the only place you can create this class
-  static GlfwInput* CreateGlfwInput(GLFWwindow* window,
-                                    const char* config_file_name) {
-    return new GlfwInput(window, config_file_name);
-  };
-
-  // Only this and other *InputHelper's will be able to delete this class
-  static void DeleteInput(Input* input) { delete input; };
 };
 
 } // namespace quasi_game_engine

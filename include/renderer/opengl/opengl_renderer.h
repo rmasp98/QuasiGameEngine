@@ -12,7 +12,7 @@
 #define QGE_OPENGL_RENDERER_H
 
 #include "renderer/renderer.h"
-#include "renderer/shader.h"
+#include "renderer/opengl/opengl_shader.h"
 #include "utils/qge_array.h"
 
 
@@ -42,16 +42,23 @@ Notes
 
   bool InitGraphics() final;
   void Draw() final;
-  //void LoadShaders(std::vector<std::string> file_paths);
+  Shader* LoadShaders(std::vector<std::string> file_paths);
+  void ActivateShader(int program_id) { 
+    if (program_id >= 0 && program_id < shader_list.size()) {
+      shader_list[program_id]->SetActive();
+    }
+  };
   bool LoadImage(const unsigned char *pixel_map, int width, int height,
-                 bool is_mipmap, int* texture_id) final;
+      bool is_mipmap, int* texture_id) final;
   bool LoadVertexAttribute(const QgeArray<float> attribute_data,
-                           int attribute_index, int* vao) final;
-
+      int attribute_index, int* vao) final;
   bool LoadVertexIndices(const QgeArray<int> indices, int* vao) final;
 
+  bool DrawImGui(const ImDrawData* draw_list, std::vector<int> buffer_size, 
+      int* data_id, int* index_id) final;
+
  private:
-  std::vector<Shader> shader_list;
+  std::vector<Shader*> shader_list;
 };
 
 } // namespace quasi_game_engine
