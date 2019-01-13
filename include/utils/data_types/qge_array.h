@@ -26,7 +26,8 @@ Note
 ------------------------------------------------------------------------------*/
  public:
   QgeArray() {};
-  explicit QgeArray(int size) {
+  explicit QgeArray(const int size, const int num_components = 1) 
+      : num_components_(num_components) {
     if (size > 0) {
       data_ = new T[size]();
       size_ = size;

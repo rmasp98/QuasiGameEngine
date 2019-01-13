@@ -23,25 +23,34 @@ Mesh::Mesh(QgeArray<float> verts, QgeArray<float> norms, QgeArray<float> uvs,
 
 
 void Mesh::LoadToGraphics(Renderer* render_manager) {
-  LOG(INFO, RESOURCE) 
-      << "Loading mesh for '" << asset_.name
+  LOG(INFO, RESOURCE) << "Loading mesh for '" << asset_.name
       << "' in '" << asset_.file_location << "' to graphics";
 
-  LOG(INFO, RESOURCE) 
-      << "Loading verticies to graphics";
+  render_manager->FillVao(&vao_, [=]() {
+    LOG(INFO, RESOURCE) << "Loading verticies to graphics";
+    render_manager->LoadVertexAttribute(verts_);
+    render_manager->SetAttributePointer(
+        AttributeMetadata(ATTR_POSITION, verts_.GetNumComponents(), 
+                GL_FLOAT, 0, false), 0
+    );
 
-  render_manager->LoadVertexAttribute(verts_, 0, &vao_);
+    LOG(INFO, RESOURCE) << "Loading normals to graphics";
+    render_manager->LoadVertexAttribute(norms_);
+    render_manager->SetAttributePointer(
+        AttributeMetadata(ATTR_NORMAL, norms_.GetNumComponents(), 
+            GL_FLOAT, 0, false), 0
+    );
 
-  LOG(INFO, RESOURCE) << "Loading normals to graphics";
-  render_manager->LoadVertexAttribute(norms_, 1, &vao_);
+    LOG(INFO, RESOURCE) << "Loading texture coordinates to graphics";
+    render_manager->LoadVertexAttribute(uvs_);
+    render_manager->SetAttributePointer(
+        AttributeMetadata(ATTR_UV, uvs_.GetNumComponents(), 
+            GL_FLOAT, 0, false), 0
+    );
 
-  LOG(INFO, RESOURCE) 
-      << "Loading texture coordinates to graphics";
-  render_manager->LoadVertexAttribute(uvs_, 2, &vao_);
-
-  LOG(INFO, RESOURCE) 
-      << "Loading VBO indices to graphics";
-  render_manager->LoadVertexIndices(faces_, &vao_);
+    LOG(INFO, RESOURCE) << "Loading VBO indices to graphics";
+    render_manager->LoadVertexIndices(faces_);
+  });
 }
 
 }  // namespace quasi_game_engine

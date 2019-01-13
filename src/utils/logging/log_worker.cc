@@ -11,8 +11,6 @@
 #include "utils/logging/log_worker.h"
 #include "utils/logging/log_capture.h"
 
-#include <iostream>
-
 namespace quasi_game_engine {
 
 typedef std::chrono::high_resolution_clock timer;
@@ -21,6 +19,7 @@ LogWorker::LogWorker() : is_running_(true), start_time_(timer::now()),
     worker_thread_(new std::thread(&LogWorker::CollectorLoop, this)),
     largest_queue_(0), largest_queue_size_(0) {
 
+  //TODO: Need to read this from a file?
   logger_list_[GENERAL].prefix = "[  General  ]";
   logger_list_[GENERAL].file_stream.open("logs/General.log");
 
@@ -84,8 +83,18 @@ void LogWorker::CollectorLoop() {
   while (is_running_ || largest_queue_size_ > 0) {
     // put a block if queue empty
     if (largest_queue_size_ == 0) {
-      std::unique_lock<std::mutex> lock(loop_mutex_);
-      queue_wait_cv_.wait(lock);
+      //Check if there are any logs in other queues
+      for (int i_logs=0; i_logs<COMPONENT_SIZE; ++i_logs) {
+        if (logger_list_[i_logs].queue.Size() > largest_queue_size_) {
+          largest_queue_size_ = logger_list_[i_logs].queue.Size();
+          largest_queue_ = i_logs;   
+        }
+      }
+
+      if (largest_queue_size_ == 0) { //If still no logs in current queue wait
+        std::unique_lock<std::mutex> lock(loop_mutex_);
+        queue_wait_cv_.wait(lock);
+      }
     }
     
     QgeQueue<Log>* queue = &logger_list_[largest_queue_].queue;
@@ -100,8 +109,15 @@ void LogWorker::CollectorLoop() {
 
       largest_queue_size_ = queue->Size();
     }
+
+    // Randomly check another queue to see if any are larger (perfect randomness not really required)
+    int random_queue = rand() % COMPONENT_SIZE;
+    if (logger_list_[random_queue].queue.Size() > largest_queue_size_) {
+      largest_queue_size_ = logger_list_[random_queue].queue.Size();
+      largest_queue_ = random_queue;
+    }
   }
-  std::cout << "Closing logger\n";
+  printf("Closing logger\n");
 }
 
 }  // namespace quasi_game_engine

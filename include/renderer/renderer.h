@@ -12,14 +12,24 @@
 #define QGE_RENDERER_H
 
 #include "renderer/opengl/opengl_shader.h"
-#include "utils/qge_array.h"
+#include "utils/data_types/qge_array.h"
 
-#include "imgui/imgui.h"
-
-#include <vector>
+#include <functional>
 #include <string>
+#include <vector>
 
 namespace quasi_game_engine {
+
+enum DrawPipeline { DP_DEFAULT = 0, DP_IMGUI = 1, DP_SIZE = 2 };
+
+struct DrawConfig {
+  int vao;
+  int num_elements;
+  unsigned short* offset;
+  int texture_id;
+  std::vector<int> scissor_box;
+  std::vector<float> mvp;
+};
 
 class Renderer {
   /*------------------------------------------------------------------------------
@@ -36,22 +46,27 @@ class Renderer {
   Renderer(Renderer&&) = delete;
   Renderer& operator=(Renderer&&) = delete;
 
-  virtual bool InitGraphics() = 0;
+  virtual void LoadImage(const unsigned char* pixel_map, const int width,
+                         const int height, const bool is_mipmap,
+                         int* texture_id) = 0;
+
+  virtual void LoadVertexAttribute(const QgeArray<float> attribute_data) = 0;
+
+  virtual void SetAttributePointer(const AttributeMetadata metadata,
+                                   const int stride) = 0;
+
+  virtual void LoadVertexIndices(const QgeArray<int> indices) = 0;
+
+  virtual void LoadImGui(const ImDrawList* draw_list,
+                         const std::vector<AttributeMetadata> metadata,
+                         const BufferIds* buffer_ids) = 0;
+
+  virtual void FillVao(int* vao, const std::function<void()>& func) = 0;
+
+  virtual void PushToRenderQueue(const DrawPipeline pipeline,
+                                 const DrawConfig config) = 0;
+
   virtual void Draw() = 0;
-
-  virtual Shader* LoadShaders(std::vector<std::string> file_paths) = 0;
-  virtual void ActivateShader(int program_id) = 0;
-
-  virtual bool LoadImage(const unsigned char* pixel_map, int width, int height,
-                         bool is_mipmap, int* texture_id) = 0;
-
-  virtual bool LoadVertexAttribute(const QgeArray<float> attribute_data,
-      int attribute_index, int* vao) = 0;
-
-  virtual bool LoadVertexIndices(const QgeArray<int> indices, int* vao) = 0;
-
-  virtual bool DrawImGui(const ImDrawData* draw_list, 
-      std::vector<int> buffer_size, int* data_id, int* index_id) = 0;
 
  protected:
   Renderer() = default;

@@ -6,7 +6,6 @@ set(CMAKE_CXX_STANDARD 14)
 include_directories(include)
 
 #These are added temporarily to get the engine working
-include_directories(include/ui/imgui)
 include_directories(libs)
 
 add_executable(quasiGameEngine
@@ -15,9 +14,9 @@ add_executable(quasiGameEngine
         src/interface/action_manager.cc
         src/ui/user_interface.cc
         src/main/main.cc
-        src/renderer/opengl/opengl_render_config.cc
         src/renderer/opengl/opengl_renderer.cc
         src/renderer/opengl/opengl_shader.cc
+#        src/renderer/opengl/opengl_render_queue.cc
         src/resource/mesh.cc
         src/resource/resource_base.cc
         src/resource/image_loader.cc

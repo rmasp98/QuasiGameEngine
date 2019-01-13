@@ -9,23 +9,20 @@
 ------------------------------------------------------------------------------*/
 
 #include "main/main.h"
-#include "renderer/opengl/opengl_render_config.h"
 #include "renderer/opengl/opengl_renderer.h"
-#include "renderer/render_config.h"
 #include "renderer/renderer.h"
+// These have to be after renderer includes
 #include "interface/device_interface.h"
-//This needs to be after render files due to it containing gl.h
 #include "interface/glfw/glfw_interface.h"
 #include "resource/resource_manager.h"
 #include "resource/texture.h"
-#include "utils/logging/log_capture.h"
-#include "utils/qge_array.h"
 #include "ui/user_interface.h"
+#include "utils/logging/log_capture.h"
 
-//temporary headers during development
-#include "renderer/opengl/opengl_shader.h"
+// temporary headers during development
 #include "interface/action_manager.h"
 
+#include <unistd.h>
 
 using namespace quasi_game_engine;
 
@@ -37,33 +34,21 @@ int main() {
   auto input = interface->GetInput();
 
   Renderer* render_manager = new OpenGLRenderer();
-  render_manager->InitGraphics();
 
-
-  //This sets up the UI part
+  // This sets up the UI part
   auto ui = new UserInterface(render_manager);
   input->InitGuiIO(ImGui::GetIO());
 
   auto resource_manager = new ResourceManager();
 
-  auto picture = resource_manager->GetResource(
-      Asset("/home/rmaspero/graphics/quasiGameEngine/assets/Dragon_ground_color.jpg",
+  auto picture = resource_manager->GetResource(Asset(
+      "/home/rmaspero/graphics/quasiGameEngine/assets/Dragon_ground_color.jpg",
       ""));
   if (picture != nullptr) picture->LoadToGraphics(render_manager);
 
-
-  auto object = resource_manager->GetResource(
-      Asset("/home/rmaspero/graphics/quasiGameEngine/assets/Dragon_2.5.3ds",
-      "0"));
+  auto object = resource_manager->GetResource(Asset(
+      "/home/rmaspero/graphics/quasiGameEngine/assets/Dragon_2.5.3ds", "0"));
   if (object != nullptr) object->LoadToGraphics(render_manager);
-
-  RenderConfig* main_render_config = new OpenGLRenderConfig(RC_DEFAULT);
-
-  // This should be in rendermanager!
-  std::vector<std::string> shaders(2, "");
-  shaders[0] = "/home/rmaspero/graphics/quasiGameEngine/shaders/main.vs";
-  shaders[1] = "/home/rmaspero/graphics/quasiGameEngine/shaders/main.fs";
-  unsigned int program_id = render_manager->LoadShaders(shaders)->GetProgram();
 
   glm::vec3 pos = glm::vec3(0.0f, 0.0f, 20.0f);
   double mouse_speed = 0.03f, dt = 0.016;
@@ -76,7 +61,6 @@ int main() {
   model = glm::rotate(model, -1.55f, glm::vec3(1.0, 0.0, 0.0));
 
   do {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  // Clear screen
     interface->PollEvents();  // Check for key and mouse events
 
     // update the game
@@ -112,32 +96,28 @@ int main() {
 
     view = glm::lookAt(pos, pos + facing, glm::vec3(0, 1, 0));
     glm::mat4 mvp = proj * view * model;
+    std::vector<float> mvp_vec = {mvp[0][0], mvp[0][1], mvp[0][2], mvp[0][3],
+                                  mvp[1][0], mvp[1][1], mvp[1][2], mvp[1][3],
+                                  mvp[2][0], mvp[2][1], mvp[2][2], mvp[2][3],
+                                  mvp[3][0], mvp[3][1], mvp[3][2], mvp[3][3]};
 
-    // render_manager->draw();
-
-    
-
-    if (picture != nullptr) {
-      glActiveTexture(GL_TEXTURE0);
-      glBindTexture(GL_TEXTURE_2D, picture->GetResource());
-    }
-
-    glUseProgram(program_id);
-    main_render_config->ApplyConfig();
-
-    glUniformMatrix4fv(glGetUniformLocation(program_id, "MVP"), 1, GL_FALSE,
-                       &mvp[0][0]);
-  
-    glBindVertexArray(object->GetResource());  
-    glDrawElements(GL_TRIANGLES, 36656 * 3, GL_UNSIGNED_INT, (void*)0);
-
-    glBindVertexArray(0);
+    DrawConfig dragon_draw;
+    dragon_draw.vao = object->GetResource();
+    dragon_draw.mvp = mvp_vec;
+    dragon_draw.num_elements = 36656 * 3;
+    dragon_draw.offset = 0;
+    dragon_draw.texture_id = picture->GetResource();
+    render_manager->PushToRenderQueue(DP_DEFAULT, dragon_draw);
 
     ui->Update(input, render_manager);
 
-    // Swap second buffer
-    interface->SwapBuffers();
-
+    if (false) {
+      render_manager->Draw();
+      interface->SwapBuffers();  // Swap to second buffer
+    } else {
+      interface->SwapBuffers();  // Swap to second buffer
+      render_manager->Draw();
+    }
   } while (interface->IsWindowOpen());
 
   delete resource_manager;

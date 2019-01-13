@@ -12,13 +12,13 @@
 
 #include "utils/logging/log_capture.h"
 
+#include <algorithm>
 #include <fstream>
 #include <iostream>
-#include <algorithm>
 
 namespace quasi_game_engine {
 
-OpenGLShader::OpenGLShader(std::vector<std::string> file_paths) {
+OpenGLShader::OpenGLShader(const std::vector<std::string> file_paths) {
   GLint result = GL_FALSE;
   GLint info_log_length;
   std::vector<GLuint> ids;
@@ -43,8 +43,9 @@ OpenGLShader::OpenGLShader(std::vector<std::string> file_paths) {
              (!fragment_index++))
       shader_id = glCreateShader(GL_FRAGMENT_SHADER);
     else {
-      LogCapture(ERROR, RENDERER) << "Shaders do not have the extension: " <<
-          ".vs, .gs, or .fs; or two of the same shader is loaded";
+      LogCapture(ERROR, RENDERER)
+          << "Shaders do not have the extension: "
+          << ".vs, .gs, or .fs; or two of the same shader is loaded";
       throw;
     }
 
@@ -57,7 +58,8 @@ OpenGLShader::OpenGLShader(std::vector<std::string> file_paths) {
 
       shader_stream.close();
     } else {
-      LogCapture(ERROR, RENDERER) << "Impossible to open " << file_paths[i_shader]
+      LogCapture(ERROR, RENDERER)
+          << "Impossible to open " << file_paths[i_shader]
           << ". Are you in the right directory? Don't forget to read the FAQ!";
       throw;
     }
@@ -106,87 +108,43 @@ OpenGLShader::OpenGLShader(std::vector<std::string> file_paths) {
     ParseShaderInputs();
   } else {
     LogCapture(ERROR, RENDERER) << "You have not loaded at least a vertex "
-        << "and fragment shader";
+                                << "and fragment shader";
     throw;
   }
 }
 
-
 void OpenGLShader::ParseShaderInputs() {
-  int count;
+  int count = 0, max_length = 16;
   std::string name_str;
-  GLint size; GLenum type; GLsizei length; 
+  GLint size;
+  GLenum type;
+  GLsizei length;
 
   glGetProgramiv(program_id, GL_ACTIVE_UNIFORMS, &count);
-  for (int i_uniform=0; i_uniform < count; ++i_uniform) {
-    char name[16];
-    glGetActiveUniform(program_id, (GLuint)i_uniform, 16, &length, 
-        &size, &type, name);
+  glGetProgramiv(program_id, GL_ACTIVE_ATTRIBUTE_MAX_LENGTH, &max_length);
+  for (int i_uniform = 0; i_uniform < count; ++i_uniform) {
+    char name[max_length];
+    glGetActiveUniform(program_id, (GLuint)i_uniform, 16, &length, &size, &type,
+                       name);
 
+    // Need to do this because apparently index is not the right thing
     GLuint id = glGetUniformLocation(program_id, name);
     uniforms.insert(std::pair<std::string, Uniform>(name, Uniform(id, type)));
   }
-
-  glGetProgramiv(program_id, GL_ACTIVE_ATTRIBUTES, &count);
-  for (int i_uniform=0; i_uniform < count; ++i_uniform) {
-    char name[16];
-    glGetActiveAttrib(program_id, (GLuint)i_uniform, 16, &length,
-        &size, &type, name);
-    
-    GLuint id = glGetAttribLocation(program_id, name);
-    attributes.insert(std::pair<std::string, Uniform>(name, Uniform(id, type)));
-  }
 }
 
-
-void OpenGLShader::SetUniformInteger(std::string name, int data) {
+void OpenGLShader::SetUniformInteger(const std::string name, const int data) {
   if (uniforms.find(name) != uniforms.end() && uniforms[name].type == GL_INT) {
     glUniform1i(uniforms[name].id, data);
   }
 }
 
-
-void OpenGLShader::SetUniformMatrix4(std::string name, std::vector<float> data) {
-  if (uniforms.find(name) != uniforms.end() && 
+void OpenGLShader::SetUniformMatrix4(const std::string name,
+                                     const std::vector<float> data) {
+  if (uniforms.find(name) != uniforms.end() &&
       uniforms[name].type == GL_FLOAT_MAT4 && data.size() == 16) {
     glUniformMatrix4fv(uniforms[name].id, 1, GL_FALSE, &data[0]);
   }
 }
-
-
-bool OpenGLShader::SetAttributePointer(
-    std::vector<AttributeMetadata> metadata, int stride, int* vao) {
-
-  //OpenGL only accepts GLuint for indices but we work in integers
-  GLuint tempVao = *vao;
-
-  // Need to check max number of index and also write a check for numVets
-  if (tempVao == 0) {
-    glGenVertexArrays(1, &tempVao);
-    LOG(INFO, RENDERER) 
-        << "Generating vertex array object";
-
-    *vao = (int)tempVao;
-  }
-
-  glBindVertexArray(tempVao); //Bind VAO
-
-  for (size_t i_meta=0; i_meta < metadata.size(); ++i_meta) {
-    GLuint index = attributes[metadata[i_meta].name].id;
-    if (index >= 0 && index < 10) {
-      glEnableVertexAttribArray(index);
-      glVertexAttribPointer(index,
-                            metadata[i_meta].size,
-                            metadata[i_meta].type,
-                            metadata[i_meta].somethidgnlb,
-                            20,//total_size,
-                            (GLvoid*)metadata[i_meta].offset);
-    }
-  }
-
-  return true;
-
-}
-
 
 }  // namespace quasi_game_engine

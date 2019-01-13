@@ -11,56 +11,64 @@
 #ifndef QGE_OPENGL_RENDERER_H
 #define QGE_OPENGL_RENDERER_H
 
-#include "renderer/renderer.h"
+#include "renderer/opengl/opengl_buffer_manager.h"
 #include "renderer/opengl/opengl_shader.h"
-#include "utils/qge_array.h"
+#include "renderer/renderer.h"
+#include "utils/data_types/qge_array.h"
+#include "utils/data_types/qge_queue.h"
 
-
-//Graphics libraries
+// Graphics libraries
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+#include <functional>
+
 namespace quasi_game_engine {
-class LogWorker;
 
 class OpenGLRenderer : public Renderer {
-/*------------------------------------------------------------------------------
-  Description
-Notes
-- The should be a parent class with child classes for opengl and directx
-------------------------------------------------------------------------------*/
+  /*------------------------------------------------------------------------------
+    Description
+  Notes
+  - The should be a parent class with child classes for opengl and directx
+  ------------------------------------------------------------------------------*/
  public:
-  OpenGLRenderer() = default;
+  OpenGLRenderer();
   ~OpenGLRenderer() = default;
 
-  //Getting rid of copy/move constructors/assignment operators (may need later)
+  // Getting rid of copy/move constructors/assignment operators (may need later)
   OpenGLRenderer(const OpenGLRenderer&) = delete;
   OpenGLRenderer& operator=(const OpenGLRenderer&) = delete;
   OpenGLRenderer(OpenGLRenderer&&) = delete;
   OpenGLRenderer& operator=(OpenGLRenderer&&) = delete;
 
-  bool InitGraphics() final;
-  void Draw() final;
-  Shader* LoadShaders(std::vector<std::string> file_paths);
-  void ActivateShader(int program_id) { 
-    if (program_id >= 0 && program_id < shader_list.size()) {
-      shader_list[program_id]->SetActive();
-    }
-  };
-  bool LoadImage(const unsigned char *pixel_map, int width, int height,
-      bool is_mipmap, int* texture_id) final;
-  bool LoadVertexAttribute(const QgeArray<float> attribute_data,
-      int attribute_index, int* vao) final;
-  bool LoadVertexIndices(const QgeArray<int> indices, int* vao) final;
+  void LoadImage(const unsigned char* pixel_map, const int width,
+                 const int height, const bool is_mipmap, int* texture_id) final;
+  void LoadVertexAttribute(const QgeArray<float> attribute_data) final;
+  void SetAttributePointer(const AttributeMetadata metadata,
+                           const int stride) final;
+  void LoadVertexIndices(const QgeArray<int> indices) final;
 
-  bool DrawImGui(const ImDrawData* draw_list, std::vector<int> buffer_size, 
-      int* data_id, int* index_id) final;
+  void LoadImGui(const ImDrawList* draw_list,
+                 const std::vector<AttributeMetadata> metadata,
+                 const BufferIds* buffer_ids) final;
+
+  void FillVao(int* vao, const std::function<void()>& func);
+
+  void PushToRenderQueue(const DrawPipeline pipeline, const DrawConfig config);
+  void Draw();
 
  private:
-  std::vector<Shader*> shader_list;
+  std::vector<OpenGLShader> shader_list_;
+  BufferManager buffer_manager_;
+
+  QgeQueue<DrawConfig> draw_queue_[DP_SIZE];
+
+  void SetRenderConfig(const DrawPipeline pipeline);
+  void StandardDraw(DrawPipeline pipeline, OpenGLShader shader);
+  void DrawLoop();
 };
 
-} // namespace quasi_game_engine
+}  // namespace quasi_game_engine
 
-#endif // QGE_OPENGL_RENDERER_H
+#endif  // QGE_OPENGL_RENDERER_H

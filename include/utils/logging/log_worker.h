@@ -11,20 +11,18 @@
 #ifndef QGE_LOG_WORKER_H
 #define QGE_LOG_WORKER_H
 
-#include "utils/qge_queue.h"
+#include "utils/data_types/qge_queue.h"
 #include "utils/logging/log_utils.h"
 
-#include <map>
 #include <chrono>
 #include <condition_variable>
 #include <fstream>
 #include <mutex>
-#include <queue>
 #include <thread>
 
 namespace quasi_game_engine {
 
-struct something {
+struct LoggerComponent {
   QgeQueue<Log> queue;
   const char* prefix;
   std::ofstream file_stream;
@@ -46,7 +44,7 @@ class LogWorker {
  private:
   void CollectorLoop();
 
-  something logger_list_[COMPONENT_SIZE];
+  LoggerComponent logger_list_[COMPONENT_SIZE];
   std::thread* worker_thread_;
   std::condition_variable queue_wait_cv_;
   std::mutex loop_mutex_;

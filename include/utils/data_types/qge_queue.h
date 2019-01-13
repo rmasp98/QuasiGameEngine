@@ -40,7 +40,7 @@ Note
       queue_[(queue_pos_ + queue_count_++) % MAX_QUEUE_SIZE] = new_element;
     } else {
       //TODO: Send proper error
-      throw;
+      //throw;
     }
   };
 

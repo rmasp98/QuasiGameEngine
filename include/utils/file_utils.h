@@ -11,7 +11,7 @@
 #ifndef QGE_FILE_UTILS_H
 #define QGE_FILE_UTILS_H
 
-#include "utils/qge_array.h"
+#include "utils/data_types/qge_array.h"
 
 #include <fstream>
 #include <string>

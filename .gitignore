@@ -5,5 +5,5 @@ docs
 googleStyleNotes
 logs
 Makefile
-obj
-.vscode
+qge.sublime-project
+qge.sublime-workspace

@@ -17,7 +17,7 @@
 #include "resource/resource.h"
 #include "resource/resource_base.h"
 #include "utils/logging/log_capture.h"
-#include "utils/qge_array.h"
+#include "utils/data_types/qge_array.h"
 
 namespace quasi_game_engine {
 
