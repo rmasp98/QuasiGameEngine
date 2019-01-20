@@ -9,14 +9,14 @@ include_directories(include)
 include_directories(libs)
 
 add_executable(quasiGameEngine
-        src/interface/glfw/glfw_input.cc
-        src/interface/glfw/glfw_interface.cc
-        src/interface/action_manager.cc
+        src/device_interface/glfw/glfw_imgui.cc
+        src/device_interface/glfw/glfw_input.cc
+        src/device_interface/glfw/glfw_interface.cc
+        src/device_interface/action_manager.cc
         src/ui/user_interface.cc
         src/main/main.cc
         src/renderer/opengl/opengl_renderer.cc
         src/renderer/opengl/opengl_shader.cc
-#        src/renderer/opengl/opengl_render_queue.cc
         src/resource/mesh.cc
         src/resource/resource_base.cc
         src/resource/image_loader.cc
@@ -24,11 +24,11 @@ add_executable(quasiGameEngine
         src/resource/resource_file_manager.cc
         src/resource/resource_manager.cc
         src/resource/texture.cc
-        src/utils/json_file.cc
         src/utils/logging/log_worker.cc
         src/utils/logging/log_capture.cc
+        src/utils/memory/memory_manager.cc
+        src/utils/json_file.cc
         src/utils/file_utils.cc
-        src/utils/memory_manager.cc
 #        test/interface/device_interface_test.cc
 
 				#Should be moved out into a seperate library dependency

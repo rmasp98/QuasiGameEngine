@@ -12,17 +12,13 @@
 #include "renderer/opengl/opengl_renderer.h"
 #include "renderer/renderer.h"
 // These have to be after renderer includes
-#include "interface/device_interface.h"
-#include "interface/glfw/glfw_interface.h"
+#include "device_interface/action_manager.h"
+#include "device_interface/device_interface.h"
+#include "device_interface/glfw/glfw_interface.h"
 #include "resource/resource_manager.h"
 #include "resource/texture.h"
 #include "ui/user_interface.h"
 #include "utils/logging/log_capture.h"
-
-// temporary headers during development
-#include "interface/action_manager.h"
-
-#include <unistd.h>
 
 using namespace quasi_game_engine;
 
@@ -36,8 +32,7 @@ int main() {
   Renderer* render_manager = new OpenGLRenderer();
 
   // This sets up the UI part
-  auto ui = new UserInterface(render_manager);
-  input->InitGuiIO(ImGui::GetIO());
+  auto ui = new UserInterface(render_manager, input);
 
   auto resource_manager = new ResourceManager();
 

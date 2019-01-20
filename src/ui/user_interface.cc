@@ -20,7 +20,9 @@ std::vector<AttributeMetadata> metadata = {
     AttributeMetadata(ATTR_COLOUR, 4, GL_UNSIGNED_BYTE,
                       IM_OFFSETOF(ImDrawVert, col), true)};
 
-UserInterface::UserInterface(Renderer* render_manager) {
+UserInterface::UserInterface(Renderer* render_manager,
+                             std::shared_ptr<Input> input)
+    : input_(input) {
   // initialise imgui
   ImGui::CreateContext();
   ImGuiIO& io = ImGui::GetIO();
@@ -53,9 +55,14 @@ UserInterface::UserInterface(Renderer* render_manager) {
   render_manager->LoadImage(pixels, width, height, false, &tex_id);
 
   io.Fonts->TexID = (void*)(intptr_t)tex_id;
+
+  input_->InitGuiIO(&io);
 }
 
 UserInterface::~UserInterface() {
+  // Destroy all input reference
+  input_->DestroyGuiIO();
+
   // destroy imgui
   ImGui::DestroyContext();
 }
@@ -63,7 +70,6 @@ UserInterface::~UserInterface() {
 void UserInterface::Update(std::shared_ptr<Input> input,
                            Renderer* render_manager) {
   ImGuiIO& io = ImGui::GetIO();
-  input->UpdateGuiIO(&io);
 
   std::vector<int> buffer_size{
       (int)(io.DisplaySize.x * io.DisplayFramebufferScale.x),

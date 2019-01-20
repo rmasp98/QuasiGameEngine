@@ -1,7 +1,7 @@
 #ifndef QGE_UI_TEST_H
 #define QGE_UI_TEST_H
 
-#include "interface/input.h"
+#include "device_interface/input.h"
 #include "renderer/opengl/opengl_shader.h"
 #include "renderer/renderer.h"
 #include "utils/logging/log_capture.h"
@@ -17,13 +17,14 @@ class UserInterface {
   NOTES
   ---------------------------------------------------------------------------*/
  public:
-  UserInterface(Renderer* render_manager);
+  UserInterface(Renderer* render_manager, std::shared_ptr<Input> input);
   ~UserInterface();
 
   void Update(std::shared_ptr<Input> input, Renderer* render_manager);
 
  protected:
   std::vector<BufferIds> buffer_ids;
+  std::shared_ptr<Input> input_;  // Kept to delete GlfwImgui when destroyed
 
   void LoadToGraphics(Renderer* render_manager, int buffer_height);
 };

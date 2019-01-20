@@ -8,7 +8,7 @@
    Author: Ross Maspero <rossmaspero@gmail.com>
 ------------------------------------------------------------------------------*/
 
-#include "utils/memory_manager.h"
+#include "utils/memory/memory_manager.h"
 #include "utils/logging/log_capture.h"
 
 namespace quasi_game_engine {}

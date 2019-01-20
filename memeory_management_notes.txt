@@ -1,0 +1,5 @@
+Memeory management notes
+
+ - overall memory manager that can track global information about allocations
+ - should return shared_pointer/unique_pointer
+ - each engine component will have its own memory manager
