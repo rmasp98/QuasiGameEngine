@@ -1,5 +1,49 @@
 Memeory management notes
 
  - overall memory manager that can track global information about allocations
- - should return shared_pointer/unique_pointer
+ - should return shared_pointer/unique_pointer? This will need to explicitly state the destructor
  - each engine component will have its own memory manager
+ - Global manager should manage a heap, that the new function will be overridden to point to
+ - 
+
+
+
+
+Structure
+  //Should have ways to patch multiple blocks of memory together
+  Stack Allocator class
+  Double Stack Allocator class
+  Pool Allocator class
+  Heap Allocator class
+
+
+  Global Memeory Manager class {
+    AllocateHeap()
+
+    HeapAllocator*
+
+    int total_allocated
+    int total_size
+  }
+
+  Local Memeory Manager class
+  {
+    Constructor(size) { alloc/new(size); } 
+    Destructor() { free/delete } //Maybe check if need to free anything
+
+    // Each of these will check to see if an allocator has been created
+    AllocaateStack()
+    AllocateDoubleStack()
+    AllocatePool()
+
+    private AllocateInternal() //placement for internal allocators
+
+    static global memeory manager
+    StackAllocator* 
+    DoubleStackAllocator*
+    PoolAllocator
+
+    int current_size
+    int allocated
+    pointer memory_location
+}

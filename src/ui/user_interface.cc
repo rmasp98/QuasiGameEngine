@@ -83,12 +83,10 @@ void UserInterface::Update(std::shared_ptr<Input> input,
   // Update demo window
   bool show_demo_window_ = true;
   if (show_demo_window_) {
-    ImGui::SetNextWindowPos(
-        ImVec2(65, 20),
-        ImGuiCond_FirstUseEver);  // Normally user code doesn't need/want to
-                                  // call this because positions are saved in
-                                  // .ini file anyway. Here we just want to make
-                                  // the demo initial state a bit more friendly!
+    // Normally user code doesn't need/want to call this because positions are
+    // saved in .ini file anyway. Here we just want to make the demo initial
+    // state a bit more friendly!
+    ImGui::SetNextWindowPos(ImVec2(65, 20), ImGuiCond_FirstUseEver);
     ImGui::ShowDemoWindow(&show_demo_window_);
   }
 

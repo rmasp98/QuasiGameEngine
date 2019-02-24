@@ -28,7 +28,7 @@ class BufferManager {
  public:
   BufferManager() = default;
   ~BufferManager() {
-    for (auto elem : buffer_list_) {
+    for (auto& elem : buffer_list_) {
       DeleteVao(elem.first);
     }
   }
@@ -50,10 +50,9 @@ class BufferManager {
   }
 
   void DeleteVao(int vao) {
-    if (/*vao is in list*/ true) {
+    if (buffer_list_.find(vao) != buffer_list_.end()) {
       std::vector<int> buffers = buffer_list_[vao];
       glDeleteBuffers(buffers.size(), (GLuint*)&buffers[0]);
-      buffer_list_.erase(vao);  // Check if this is the right thing to do
     }
   }
 

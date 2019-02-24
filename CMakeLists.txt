@@ -26,7 +26,7 @@ add_executable(quasiGameEngine
         src/resource/texture.cc
         src/utils/logging/log_worker.cc
         src/utils/logging/log_capture.cc
-        src/utils/memory/memory_manager.cc
+#        src/utils/memory/memory_manager.cc
         src/utils/json_file.cc
         src/utils/file_utils.cc
 #        test/interface/device_interface_test.cc

@@ -49,7 +49,6 @@ int main() {
   double mouse_speed = 0.03f, dt = 0.016;
   glm::vec2 angle = glm::vec2(3.14f, 0.0f);
 
-  glViewport(0, 0, 1920, 1080);
   glm::mat4 proj = glm::perspective(glm::radians(45.0f),
                                     (float)(1920.0 / 1080.0), 0.1f, 100.0f);
   glm::mat4 view, model = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
@@ -106,7 +105,7 @@ int main() {
 
     ui->Update(input, render_manager);
 
-    if (false) {
+    if (true) {
       render_manager->Draw();
       interface->SwapBuffers();  // Swap to second buffer
     } else {
@@ -117,6 +116,7 @@ int main() {
 
   delete resource_manager;
   delete render_manager;
+  printf("What!\n");
 
   delete interface;
 }
