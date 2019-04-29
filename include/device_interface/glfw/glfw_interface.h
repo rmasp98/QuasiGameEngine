@@ -14,7 +14,7 @@
 #include "device_interface/device_interface.h"
 #include "device_interface/glfw/glfw_input.h"
 
-#include <GLFW/glfw3.h>
+#include "GLFW/glfw3.h"
 
 #include <memory>
 

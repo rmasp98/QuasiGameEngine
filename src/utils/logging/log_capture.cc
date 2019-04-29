@@ -12,7 +12,7 @@
 #include "utils/logging/log_worker.h"
 
 // Will get rid of this later
-#include <GLFW/glfw3.h>
+#include "GLFW/glfw3.h"
 
 namespace quasi_game_engine {
 

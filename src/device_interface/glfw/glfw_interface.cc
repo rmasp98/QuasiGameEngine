@@ -24,6 +24,7 @@ GlfwInterface::GlfwInterface(const char* config_file_name) {
   // Need to read this in from config file
   // glfwWindowHint(GLFW_SAMPLES, 4); //Antialiasing = 4 samples
   glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+  // glfwWindowHint(GLFW_SCALE_TO_MONITOR, GL_TRUE);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR,
                  3);  // Pointing to version of openGL
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -37,6 +38,10 @@ GlfwInterface::GlfwInterface(const char* config_file_name) {
 
   CreateWindow("Quasi Game Engine", 1920, 1080, true);
   glfwMakeContextCurrent(window_);
+
+	float xscale, yscale;
+	glfwGetWindowContentScale(window_, &xscale, &yscale);
+	printf("scale: %f, %f\n", xscale, yscale); 
 
   input_ = std::make_shared<GlfwInput>(window_, config_file_name);
 };

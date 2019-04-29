@@ -8,16 +8,28 @@
    Author: Ross Maspero <rossmaspero@gmail.com>
 ------------------------------------------------------------------------------*/
 
-#include "resource/resource_base.h"
-
-#include "utils/logging/log_capture.h"
+#ifndef QGE_HEAP_PAGE_LIST_H
+#define QGE_HEAP_PAGE_LIST_H
 
 namespace quasi_game_engine {
 
-ResourceBase::ResourceBase(Asset asset) : asset_(asset) {}
+class HeapPageList {
+ public:
+  HeapPageList(int page_size) : page_size_(page_size), total_memory(0) {}
+  ~HeapPageList() = default;
 
-void ResourceBase::LoadToGraphics(Renderer*) {
-  LOG(ERROR, RESOURCE) << "This resource cannot be loaded to graphics!";
-}
+  void CreatePage() { total_memory = page_size_; }
+
+  void RemovePage();
+
+  int GetTotalMemory() { return total_memory; }
+  void MergeFreeBlocksOnPages();
+
+ private:
+  int page_size_;
+  int total_memory;
+};
 
 }  // namespace quasi_game_engine
+
+#endif  // QGE_HEAP_PAGE_LIST_H

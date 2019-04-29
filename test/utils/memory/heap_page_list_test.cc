@@ -8,16 +8,29 @@
    Author: Ross Maspero <rossmaspero@gmail.com>
 ------------------------------------------------------------------------------*/
 
-#include "resource/resource_base.h"
+#include "utils/memory/heap_page_list.h"
 
-#include "utils/logging/log_capture.h"
+#include <gmock/gmock.h>
+using namespace ::testing;
 
 namespace quasi_game_engine {
 
-ResourceBase::ResourceBase(Asset asset) : asset_(asset) {}
+class HeapPageListTest : public Test {
+ public:
+  int page_size = 10;
+  HeapPageList page_list{page_size};
+};
 
-void ResourceBase::LoadToGraphics(Renderer*) {
-  LOG(ERROR, RESOURCE) << "This resource cannot be loaded to graphics!";
+TEST_F(HeapPageListTest, ReturnsZeroMemoryBeforePageCreation) {
+  ASSERT_THAT(page_list.GetTotalMemory(), Eq(0));
+}
+
+TEST_F(HeapPageListTest, ReturnsCorrectMemoryAfterPageCreation) {
+  page_list.CreatePage();
+  ASSERT_THAT(page_list.GetTotalMemory(), Eq(page_size));
 }
 
 }  // namespace quasi_game_engine
+
+// tests
+//

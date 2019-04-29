@@ -7,6 +7,17 @@ Memeory management notes
  - 
 
 
+Heap Notes:
+ - Still keep free list (determine order - either address or size)
+  - address for colencence and size for allocation
+  - Could use main list for colescence?
+ - Main list still needs a header of at least the size of block (and if allocated?)
+ - Need a lock in the metadata?
+ - Think we only need single linked list for both lists
+ - Free list header should sit where data would be in allocated block
+ - if coalese is quick, do it sync, if not in defragmentation thread
+
+
 
 
 Structure

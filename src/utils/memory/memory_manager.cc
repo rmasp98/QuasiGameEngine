@@ -14,16 +14,16 @@
 namespace quasi_game_engine {
 
 //////////////////////////////////////////////////////////////////////////////////
-MemoryManager::MemoryManager(int size) {
-  manager_allocator_.CreateBuffer(size);
-}
+// MemoryManager::MemoryManager(int size) {
+//   manager_allocator_.CreateBuffer(size);
+// }
 
-StackAllocator* MemoryManager::GetStackAllocator() {
-  if (!stack_allocator_.IsInitialised()) {
-    stack_allocator_.CreateBuffer(10, &manager_allocator_);
-  }
-  return &stack_allocator_;
-}
+// StackAllocator* MemoryManager::GetStackAllocator() {
+//   if (!stack_allocator_.IsInitialised()) {
+//     stack_allocator_.CreateBuffer(10, &manager_allocator_);
+//   }
+//   return &stack_allocator_;
+// }
 
 // DoubleStackAllocator* MemoryManager::GetDoubleStackAllocator() {
 //   if (double_stack_allocator_.IsInitialised()) {
@@ -38,17 +38,6 @@ StackAllocator* MemoryManager::GetStackAllocator() {
 //   }
 //   return &pool_allocator_;
 // }
-
-///////////////////////////////////////////////////////////////////////////////////
-
-HeapAllocator::~HeapAllocator() {
-  if (buffer_ != nullptr) free(buffer_);
-}
-
-void HeapAllocator::CreateBuffer(int size) {
-  // Need to learn how to do this properly
-  buffer_ = malloc(size);
-}
 
 //////////////////////////////////////////////////////////////////////////////////
 

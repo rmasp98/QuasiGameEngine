@@ -11,32 +11,32 @@
 #ifndef QGE_MESH_H
 #define QGE_MESH_H
 
+#include "renderer/renderer.h"
 #include "resource/resource_base.h"
 #include "utils/data_types/qge_array.h"
-#include "renderer/renderer.h"
 
 namespace quasi_game_engine {
 
 class Mesh : public ResourceBase {
-/*------------------------------------------------------------------------------
-  Container for mesh data and any auxillary functions to process that data
-Notes:
-- maybe make function to unload from graphics
----------------------------------------------------------------------------*/
+  /*------------------------------------------------------------------------------
+    Container for mesh data and any auxillary functions to process that data
+  Notes:
+  - maybe make function to unload from graphics
+  ---------------------------------------------------------------------------*/
  public:
   Mesh(QgeArray<float> verts, QgeArray<float> norms, QgeArray<float> uvs,
        QgeArray<int> faces, Asset asset);
   ~Mesh() = default;
 
-  //Getting rid of copy/move constructors/assignment operators (may need later)
+  // Getting rid of copy/move constructors/assignment operators (may need later)
   Mesh(const Mesh&) = delete;
   Mesh& operator=(const Mesh&) = delete;
   Mesh(Mesh&&) = delete;
   Mesh& operator=(Mesh&&) = delete;
 
-  const int GetResource() const final { return vao_; };
+  int GetResource() const final { return vao_; };
 
-  //Need to make sure that you cannot affect member variables from this
+  // Need to make sure that you cannot affect member variables from this
   // Also do we ever need this?
   const QgeArray<float> GetVerticies() const { return verts_; }
   const QgeArray<float> GetNormals() const { return norms_; }

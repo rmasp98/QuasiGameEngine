@@ -15,7 +15,7 @@
 #include "device_interface/glfw/glfw_imgui.h"
 #include "device_interface/input.h"
 
-#include <GLFW/glfw3.h>
+#include "GLFW/glfw3.h"
 
 #include "imgui/imgui.h"
 
@@ -50,8 +50,8 @@ class GlfwInput : public Input {
   void DestroyGuiIO() final;
 
  private:
-  ActionManager action_manager;
   GLFWwindow* window_;  // This has to be a pointer and is managed by GLFW
+  ActionManager action_manager;
   double cursor_[2], diff_pos_[2];  // This only double because of stupid glfw!
   GlfwImgui* imgui_io_;
 };

@@ -8,16 +8,9 @@
    Author: Ross Maspero <rossmaspero@gmail.com>
 ------------------------------------------------------------------------------*/
 
-#include "resource/resource_base.h"
+#include <gtest/gtest.h>
 
-#include "utils/logging/log_capture.h"
-
-namespace quasi_game_engine {
-
-ResourceBase::ResourceBase(Asset asset) : asset_(asset) {}
-
-void ResourceBase::LoadToGraphics(Renderer*) {
-  LOG(ERROR, RESOURCE) << "This resource cannot be loaded to graphics!";
+int main(int argc, char* argv[]) {
+  testing::InitGoogleTest(&argc, argv);
+  return RUN_ALL_TESTS();
 }
-
-}  // namespace quasi_game_engine

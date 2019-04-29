@@ -20,6 +20,8 @@
 #include "ui/user_interface.h"
 #include "utils/logging/log_capture.h"
 
+#include "utils/memory/heap_allocator.h"
+
 using namespace quasi_game_engine;
 
 int main() {
@@ -60,8 +62,8 @@ int main() {
     // update the game
     interface->Update();
 
-    // Determines the angle of the camera based on how far the cursor position
-    // has changed
+    // Determines the angle of the camera based on how far the cursor
+    // position has changed
     const double* mouse_diff = input->GetMouseMovement();
     angle.x += mouse_speed * dt * mouse_diff[0];
     double d_theta = mouse_speed * dt * mouse_diff[1];
@@ -103,7 +105,7 @@ int main() {
     dragon_draw.texture_id = picture->GetResource();
     render_manager->PushToRenderQueue(DP_DEFAULT, dragon_draw);
 
-    ui->Update(input, render_manager);
+    ui->Update(render_manager);
 
     if (true) {
       render_manager->Draw();
@@ -117,6 +119,4 @@ int main() {
   delete resource_manager;
   delete render_manager;
   printf("What!\n");
-
-  delete interface;
 }

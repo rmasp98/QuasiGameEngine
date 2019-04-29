@@ -1,6 +1,6 @@
 assets
 build
-cmake-build-debug
+build-debug
 docs
 googleStyleNotes
 logs
@@ -8,3 +8,5 @@ Makefile
 qge.sublime-project
 qge.sublime-workspace
 memory_management_notes.txt
+compile_commands.json
+libs/glfw

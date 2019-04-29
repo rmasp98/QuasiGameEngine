@@ -20,7 +20,7 @@ class UserInterface {
   UserInterface(Renderer* render_manager, std::shared_ptr<Input> input);
   ~UserInterface();
 
-  void Update(std::shared_ptr<Input> input, Renderer* render_manager);
+  void Update(Renderer* render_manager);
 
  protected:
   std::vector<BufferIds> buffer_ids;

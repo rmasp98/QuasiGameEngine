@@ -18,30 +18,20 @@ std::shared_ptr<Resource> ResourceManager::GetResource(Asset asset) {
   std::shared_ptr<Resource> db_resource = GetResourceFromDB(asset.guid);
   if (db_resource != NULL) return db_resource;
 
-  LOG(TRACE, RESOURCE)
-      << "Resource has not been loaded yet! "
-      << "In release mode, this will cause the game to exit";
+  LOG(TRACE, RESOURCE) << "Resource has not been loaded yet! "
+                       << "In release mode, this will cause the game to exit";
 
   return LoadResource(asset);
 }
 
-
-// Maybe delete all children with parent count of 1?
-void ResourceManager::DeleteResource(Asset asset) {
-  // will probably need to do some checks
-  // then just call destructor for resource
+// TODO: Implement
+std::shared_ptr<Resource> ResourceManager::GetResourceFromDB(int) const {
+  return nullptr;
 }
-
-
-std::shared_ptr<Resource> ResourceManager::GetResourceFromDB(int guid) const {
-  // get the rosource from the db...
-
-  return NULL;
-}
-
 
 std::shared_ptr<Resource> ResourceManager::LoadResource(Asset asset) {
-  //TODO: This will break when using own memory allocator (because it will call delete on destruction)
+  // TODO: This will break when using own memory allocator (because it will call
+  // delete on destruction)
   std::shared_ptr<Resource> resource(file_manager_.LoadFile(asset));
   return resource;
 }

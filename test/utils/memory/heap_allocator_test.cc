@@ -8,16 +8,22 @@
    Author: Ross Maspero <rossmaspero@gmail.com>
 ------------------------------------------------------------------------------*/
 
-#include "resource/resource_base.h"
+#include "utils/memory/heap_allocator.h"
 
-#include "utils/logging/log_capture.h"
+#include <gtest/gtest.h>
 
 namespace quasi_game_engine {
 
-ResourceBase::ResourceBase(Asset asset) : asset_(asset) {}
-
-void ResourceBase::LoadToGraphics(Renderer*) {
-  LOG(ERROR, RESOURCE) << "This resource cannot be loaded to graphics!";
-}
+TEST(HeapAllocatorTest, constructor_test) { HeapAllocator allocator(); }
 
 }  // namespace quasi_game_engine
+
+// tests
+// allocate works
+// allocate with constructor
+// Allocate too large
+// Allocate too small
+
+// Deallocate works
+// Deallocate null pointer?
+// Deallocate twice

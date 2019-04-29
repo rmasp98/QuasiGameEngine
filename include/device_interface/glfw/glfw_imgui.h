@@ -11,7 +11,7 @@
 #ifndef QGE_GLFW_IMGUI_H
 #define QGE_GLFW_IMGUI_H
 
-#include <GLFW/glfw3.h>
+#include "GLFW/glfw3.h"
 
 #include "imgui/imgui.h"
 

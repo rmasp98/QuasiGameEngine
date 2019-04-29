@@ -8,16 +8,17 @@
    Author: Ross Maspero <rossmaspero@gmail.com>
 ------------------------------------------------------------------------------*/
 
-#include "resource/resource_base.h"
-
-#include "utils/logging/log_capture.h"
+#ifndef QGE_HEAP_MANAGER_H
+#define QGE_HEAP_MANAGER_H
 
 namespace quasi_game_engine {
 
-ResourceBase::ResourceBase(Asset asset) : asset_(asset) {}
-
-void ResourceBase::LoadToGraphics(Renderer*) {
-  LOG(ERROR, RESOURCE) << "This resource cannot be loaded to graphics!";
-}
+class HeapManager {
+ public:
+  HeapManager();
+  ~HeapManager();
+};
 
 }  // namespace quasi_game_engine
+
+#endif  // QGE_HEAP_ALLOCATOR_H

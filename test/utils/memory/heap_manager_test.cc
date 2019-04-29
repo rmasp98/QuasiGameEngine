@@ -8,16 +8,19 @@
    Author: Ross Maspero <rossmaspero@gmail.com>
 ------------------------------------------------------------------------------*/
 
-#include "resource/resource_base.h"
+#include "utils/memory/heap_manager.h"
 
-#include "utils/logging/log_capture.h"
+#include <gtest/gtest.h>
 
 namespace quasi_game_engine {
 
-ResourceBase::ResourceBase(Asset asset) : asset_(asset) {}
-
-void ResourceBase::LoadToGraphics(Renderer*) {
-  LOG(ERROR, RESOURCE) << "This resource cannot be loaded to graphics!";
-}
+TEST(HeapManagerTest, constructor_test) { HeapManager manager(); }
 
 }  // namespace quasi_game_engine
+
+// tests
+// return pointer to free block
+//
+// Throw if request too large block
+
+//

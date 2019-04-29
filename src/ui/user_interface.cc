@@ -67,8 +67,7 @@ UserInterface::~UserInterface() {
   ImGui::DestroyContext();
 }
 
-void UserInterface::Update(std::shared_ptr<Input> input,
-                           Renderer* render_manager) {
+void UserInterface::Update(Renderer* render_manager) {
   ImGuiIO& io = ImGui::GetIO();
 
   std::vector<int> buffer_size{
@@ -108,7 +107,7 @@ void UserInterface::LoadToGraphics(Renderer* render_manager,
   draw_data->ScaleClipRects(io.DisplayFramebufferScale);
 
   // TODO: figure out how to delete these buffers
-  if (draw_data->CmdListsCount > buffer_ids.size()) {
+  if (draw_data->CmdListsCount > (int)buffer_ids.size()) {
     buffer_ids.resize(draw_data->CmdListsCount, BufferIds(0, 0, 0));
   }
 

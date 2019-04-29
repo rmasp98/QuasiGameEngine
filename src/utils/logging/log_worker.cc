@@ -15,11 +15,13 @@ namespace quasi_game_engine {
 
 typedef std::chrono::high_resolution_clock timer;
 
-LogWorker::LogWorker() : is_running_(true), start_time_(timer::now()),
-    worker_thread_(new std::thread(&LogWorker::CollectorLoop, this)),
-    largest_queue_(0), largest_queue_size_(0) {
-
-  //TODO: Need to read this from a file?
+LogWorker::LogWorker()
+    : worker_thread_(new std::thread(&LogWorker::CollectorLoop, this)),
+      largest_queue_size_(0),
+      largest_queue_(0),
+      is_running_(true),
+      start_time_(timer::now()) {
+  // TODO: Need to read this from a file?
   logger_list_[GENERAL].prefix = "[  General  ]";
   logger_list_[GENERAL].file_stream.open("logs/General.log");
 
@@ -37,38 +39,37 @@ LogWorker::LogWorker() : is_running_(true), start_time_(timer::now()),
 
   logger_list_[UI].prefix = "[     UI     ]";
   logger_list_[UI].file_stream.open("logs/UI.log");
-  
+
   logger_list_[UTILS].prefix = "[   Utils   ]";
   logger_list_[UTILS].file_stream.open("logs/Utils.log");
 }
 
 LogWorker::~LogWorker() {
   is_running_ = false;
-  
+
   // Releases collectorLoop in order to deconstruct
   queue_wait_cv_.notify_all();
-  
+
   if (worker_thread_->joinable()) {
     worker_thread_->join();
   }
   delete worker_thread_;
 }
 
-
-
 void LogWorker::SendLog(Log log, EngineComponent component) {
   QgeQueue<Log>* queue = &logger_list_[component].queue;
 
   std::chrono::duration<double> time_diff = timer::now() - start_time_;
   log.time = time_diff.count();
-  
+
   try {
     queue->Push(log);
-  } catch(...) {
-    //Do something if cannot push log (probably create another collector loop thread)
+  } catch (...) {
+    // Do something if cannot push log (probably create another collector loop
+    // thread)
   }
-  
-  //Check to see if this makes it the biggest queue
+
+  // Check to see if this makes it the biggest queue
   if (queue->Size() > largest_queue_size_) {
     largest_queue_ = component;
     largest_queue_size_ = queue->Size();
@@ -78,39 +79,39 @@ void LogWorker::SendLog(Log log, EngineComponent component) {
   queue_wait_cv_.notify_one();
 }
 
-
 void LogWorker::CollectorLoop() {
   while (is_running_ || largest_queue_size_ > 0) {
     // put a block if queue empty
     if (largest_queue_size_ == 0) {
-      //Check if there are any logs in other queues
-      for (int i_logs=0; i_logs<COMPONENT_SIZE; ++i_logs) {
+      // Check if there are any logs in other queues
+      for (int i_logs = 0; i_logs < COMPONENT_SIZE; ++i_logs) {
         if (logger_list_[i_logs].queue.Size() > largest_queue_size_) {
           largest_queue_size_ = logger_list_[i_logs].queue.Size();
-          largest_queue_ = i_logs;   
+          largest_queue_ = i_logs;
         }
       }
 
-      if (largest_queue_size_ == 0) { //If still no logs in current queue wait
+      if (largest_queue_size_ == 0) {  // If still no logs in current queue wait
         std::unique_lock<std::mutex> lock(loop_mutex_);
         queue_wait_cv_.wait(lock);
       }
     }
-    
+
     QgeQueue<Log>* queue = &logger_list_[largest_queue_].queue;
     if (!queue->Empty()) {
       Log log = queue->Pop();
-      printf("%s %f %s\n", logger_list_[largest_queue_].prefix, 
-          log.time, log.msg.c_str());
-      
-      logger_list_[largest_queue_].file_stream 
-          << logger_list_[largest_queue_].prefix << " " 
-          << log.time << " " << log.msg << std::endl;
+      printf("%s %f %s\n", logger_list_[largest_queue_].prefix, log.time,
+             log.msg.c_str());
+
+      logger_list_[largest_queue_].file_stream
+          << logger_list_[largest_queue_].prefix << " " << log.time << " "
+          << log.msg << std::endl;
 
       largest_queue_size_ = queue->Size();
     }
 
-    // Randomly check another queue to see if any are larger (perfect randomness not really required)
+    // Randomly check another queue to see if any are larger (perfect randomness
+    // not really required)
     int random_queue = rand() % COMPONENT_SIZE;
     if (logger_list_[random_queue].queue.Size() > largest_queue_size_) {
       largest_queue_size_ = logger_list_[random_queue].queue.Size();

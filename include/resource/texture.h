@@ -17,25 +17,24 @@
 namespace quasi_game_engine {
 
 class Texture : public ResourceBase {
-/*------------------------------------------------------------------------------
-  Container class for texture information. Also contains functions to load data
-  to graphics and process image
-Notes:
-- Could include function to unload from graphics
-- Add additional funcrionality such as decompression, gamma
-- define config of image
-  - built in mipmap, number of mipmap levels
-  - filters (enum) - linear, bilinear, etc
-  - texture wrapping
-  - texture type (enum) - 2d, 3d, cubemap, etc.
-  - pixel type (enum) - RGB, RGBA, etc.
-  - bool compressed
----------------------------------------------------------------------------*/
+  /*------------------------------------------------------------------------------
+    Container class for texture information. Also contains functions to load
+  data to graphics and process image Notes:
+  - Could include function to unload from graphics
+  - Add additional funcrionality such as decompression, gamma
+  - define config of image
+    - built in mipmap, number of mipmap levels
+    - filters (enum) - linear, bilinear, etc
+    - texture wrapping
+    - texture type (enum) - 2d, 3d, cubemap, etc.
+    - pixel type (enum) - RGB, RGBA, etc.
+    - bool compressed
+  ---------------------------------------------------------------------------*/
  public:
   Texture(unsigned char* pixel_map, int width, int height, Asset asset);
   ~Texture() = default;
 
-  const int GetResource() const final { return texture_id_; };
+  int GetResource() const final { return texture_id_; };
 
   virtual void LoadToGraphics(Renderer* render_manager);
 
@@ -43,7 +42,6 @@ Notes:
   unsigned char* pixel_map_;
   int width_, height_, depth_;
   int texture_id_;
-
 };
 
 }  // namespace quasi_game_engine

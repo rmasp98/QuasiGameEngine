@@ -133,8 +133,7 @@ void GlfwImgui::Update(GLFWwindow* window) {
   }
 }
 
-void GlfwImgui::KeyCallback(GLFWwindow* window, int key, int scancode,
-                            int action, int mod) {
+void GlfwImgui::KeyCallback(GLFWwindow*, int key, int, int action, int mod) {
   if (action == GLFW_PRESS) {
     pressed_keys_.insert(key);
   } else if (action == GLFW_RELEASE) {

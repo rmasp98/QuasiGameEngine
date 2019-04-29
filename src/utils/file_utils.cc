@@ -17,16 +17,17 @@ const char* file_utils::GetExtension(const char* file_location) {
   std::string file_location_str = file_location;
   size_t i = file_location_str.rfind('.', file_location_str.length());
   if (i != std::string::npos) {
-    return file_location_str.substr(i + 1, file_location_str.length() - i).c_str();
+    return file_location_str.substr(i + 1, file_location_str.length() - i)
+        .c_str();
   }
 
   throw;
 }
 
 bool file_utils::CompareFileType(const char* file_loction,
-                                  QgeArray<const char*> extensions) {
+                                 QgeArray<const char*> extensions) {
   std::string ext = GetExtension(file_loction);
-  for (size_t i_ext = 0; i_ext < extensions.Size(); ++i_ext) {
+  for (int i_ext = 0; i_ext < extensions.Size(); ++i_ext) {
     if (!ext.compare(extensions[i_ext])) return true;
   }
 

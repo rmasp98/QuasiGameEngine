@@ -1,0 +1,9 @@
+add_library(qgeResource
+						image_loader.cc
+						mesh.cc
+						object_loader.cc
+						resource_base.cc
+						resource_file_manager.cc
+						resource_manager.cc
+						texture.cc
+)

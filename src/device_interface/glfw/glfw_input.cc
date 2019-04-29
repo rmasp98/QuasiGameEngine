@@ -19,8 +19,7 @@
 namespace quasi_game_engine {
 
 std::unordered_set<int> pressed_keys;
-void KeyCallback(GLFWwindow* window, int key, int scancode, int action,
-                 int mod) {
+void KeyCallback(GLFWwindow*, int key, int, int action, int) {
   if (action == GLFW_PRESS) {
     pressed_keys.insert(key);
   } else if (action == GLFW_RELEASE) {
