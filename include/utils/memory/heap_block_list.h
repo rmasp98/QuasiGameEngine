@@ -11,42 +11,31 @@
 #ifndef QGE_HEAP_BLOCK_LIST_H
 #define QGE_HEAP_BLOCK_LIST_H
 
+#include "utils/memory/heap_free_list.h"
+
 namespace quasi_game_engine {
 
 struct BlockHeader {
   BlockHeader* next;
   bool isFree;
-
-  void* GetData() { return (this + 1); }
-};
-
-struct FreeHeader {
-  FreeHeader* next;
-  FreeHeader* previous;
-  int size;
 };
 
 class HeapBlockList {
  public:
-  HeapBlockList(int min_block_size)
-      : free_list_(nullptr), min_block_size_(min_block_size) {}
+  HeapBlockList() = default;
   ~HeapBlockList() = default;
 
-  void AddBlock(BlockHeader* new_block, int block_size, bool new_page = false);
+  void AddBlock(BlockHeader* new_block, int block_size, bool new_page);
   void* GetFreeBlock(int size);
 
-  // This will be called by the block processor
+ private:
+  BlockHeader* block_list_;
+  HeapFreeList free_list_;
+
   void MergeFreeBlocks(void* page, int page_size);
 
- private:
-  FreeHeader* free_list_;
-  BlockHeader* block_list_;
-  int min_block_size_;
-
-  void RemoveFreeBlock(FreeHeader* block);
-  void AddFreeBlock(FreeHeader* new_block);
-  void InsertFreeBlock(FreeHeader* new_block, FreeHeader* previous_block,
-                       FreeHeader* next_block);
+  // This should check if bigger the min_block_size, if so split
+  void SplitBlock(BlockHeader* block);
 };
 
 }  // namespace quasi_game_engine

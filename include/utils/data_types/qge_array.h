@@ -15,18 +15,18 @@
 
 namespace quasi_game_engine {
 
-template<class T>
+template <class T>
 class QgeArray {
-/*------------------------------------------------------------------------------
-  Stnadard static array array class 
-Note
-- Need to figure out why I did this and add it to the description
-- Consider making it dynamic?
-- Currently does not have a logger and only has exceptions
-------------------------------------------------------------------------------*/
+  /*------------------------------------------------------------------------------
+    Stnadard static array array class
+  Note
+  - Need to figure out why I did this and add it to the description
+  - Consider making it dynamic?
+  - Currently does not have a logger and only has exceptions
+  ------------------------------------------------------------------------------*/
  public:
-  QgeArray() {};
-  explicit QgeArray(const int size, const int num_components = 1) 
+  QgeArray(){};
+  explicit QgeArray(const int size, const int num_components = 1)
       : num_components_(num_components) {
     if (size > 0) {
       data_ = new T[size]();
@@ -36,8 +36,8 @@ Note
     }
   }
 
-  //These are bog standard copy/assignment operators. This will need to be
-  //updated when I have my own allocators
+  // These are bog standard copy/assignment operators. This will need to be
+  // updated when I have my own allocators
   QgeArray(const QgeArray& in) {
     this->size_ = in.size_;
     this->num_components_ = in.num_components_;
@@ -69,7 +69,7 @@ Note
   };
 
   ~QgeArray() {
-    //Needs to change this to custom deconstructor
+    // Needs to change this to custom deconstructor
     delete data_;
   }
 
@@ -82,7 +82,9 @@ Note
 
   int Size() const { return size_; }
 
-  void SetNumComponents(int num_components) { num_components_ = num_components; }
+  void SetNumComponents(int num_components) {
+    num_components_ = num_components;
+  }
   int GetNumComponents() const { return num_components_; }
 
  private:
