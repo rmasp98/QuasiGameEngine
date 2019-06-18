@@ -10,3 +10,5 @@ qge.sublime-workspace
 memory_management_notes.txt
 compile_commands.json
 libs/glfw
+*_old.cc
+*_old.h

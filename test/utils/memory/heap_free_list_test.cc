@@ -62,16 +62,6 @@ TEST_F(HeapFreeListTest, RemovesBlockWhenRetrieved) {
   ASSERT_THAT(free_list.GetBlock(normal_block_size), IsNull());
 }
 
-// TEST_F(HeapFreeListTest, ReturnsNullForSizeZero) {
-//   free_list.AddBlock(normal_block, normal_block_size);
-//   ASSERT_THAT(free_list.GetBlock(0), IsNull());
-// }
-
-// TEST_F(HeapFreeListTest, ReturnsNullForSizeLessThanZero) {
-//   free_list.AddBlock(normal_block, normal_block_size);
-//   ASSERT_THAT(free_list.GetBlock(-5), IsNull());
-// }
-
 TEST_F(HeapFreeListTest, AcceptsTwoBlocksAndReturnsBoth) {
   free_list.AddBlock(another_block, normal_block_size);
   free_list.AddBlock(normal_block, normal_block_size);
@@ -96,136 +86,136 @@ TEST_F(HeapFreeListTest, ReturnsSmallestAvailableBlock) {
   ASSERT_THAT(free_list.GetBlock(normal_block_size), Eq(normal_block));
 }
 
-TEST_F(HeapFreeListTest, PerformanceTest) {
-  int n_blocks = 20;
+// TEST_F(HeapFreeListTest, PerformanceTest) {
+//   int n_blocks = 20;
 
-  std::vector<int> block_sizes(n_blocks);
-  int total_size = 0;
-  for (auto& size : block_sizes) {
-    size = (rand() % 32) + sizeof(FreeHeader);
-    total_size += size;
-  }
+//   std::vector<int> block_sizes(n_blocks);
+//   int total_size = 0;
+//   for (auto& size : block_sizes) {
+//     size = (rand() % 32) + sizeof(FreeHeader);
+//     total_size += size;
+//   }
 
-  char* memory = reinterpret_cast<char*>(malloc(total_size));
+//   char* memory = reinterpret_cast<char*>(malloc(total_size));
 
-  int offset = 0;
-  for (auto& size : block_sizes) {
-    free_list.AddBlock(reinterpret_cast<FreeHeader*>(memory + offset), size);
-    offset += size;
-  }
+//   int offset = 0;
+//   for (auto& size : block_sizes) {
+//     free_list.AddBlock(reinterpret_cast<FreeHeader*>(memory + offset), size);
+//     offset += size;
+//   }
 
-  std::clock_t start = std::clock();
-  for (int i = 0; i < n_blocks; ++i) {
-    void* block = malloc(block_sizes[i]);
-    (void)block;
-  }
+//   std::clock_t start = std::clock();
+//   for (int i = 0; i < n_blocks; ++i) {
+//     void* block = malloc(block_sizes[i]);
+//     (void)block;
+//   }
 
-  double malloc_duration = (std::clock() - start) / (double)CLOCKS_PER_SEC;
+//   double malloc_duration = (std::clock() - start) / (double)CLOCKS_PER_SEC;
 
-  for (int i = 0; i < n_blocks; ++i) {
-    free_list.GetBlock(block_sizes[i]);
-  }
+//   for (int i = 0; i < n_blocks; ++i) {
+//     free_list.GetBlock(block_sizes[i]);
+//   }
 
-  double prealloc_duration =
-      (std::clock() - start) / (double)CLOCKS_PER_SEC - malloc_duration;
-  ASSERT_THAT(prealloc_duration * 1000, Gt(malloc_duration * 1000));
-}
+//   double prealloc_duration =
+//       (std::clock() - start) / (double)CLOCKS_PER_SEC - malloc_duration;
+//   ASSERT_THAT(prealloc_duration * 1000, Gt(malloc_duration * 1000));
+// }
 
 ///////////////////////////////////////////////////////////////////////////////
 //
 // Concurrency tests
 
-class HeapFreeListConcurrentTest : public Test {
- public:
-  HeapFreeList free_list;
-  char* memory;
+// class HeapFreeListConcurrentTest : public Test {
+//  public:
+//   HeapFreeList free_list;
+//   char* memory;
 
-  std::vector<int> block_sizes;
-  std::vector<FreeHeader*> blocks;
-  std::mutex map_lock;
+//   std::vector<int> block_sizes;
+//   std::vector<FreeHeader*> blocks;
+//   std::mutex map_lock;
 
-  void AddBlocks(int n_adds, int offset = 0) {
-    for (int i_adds = 0; i_adds < n_adds; ++i_adds) {
-      int iter = offset * n_adds + i_adds;
-      free_list.AddBlock(blocks[iter], block_sizes[iter]);
-    }
-  }
+//   void AddBlocks(int n_adds, int offset = 0) {
+//     for (int i_adds = 0; i_adds < n_adds; ++i_adds) {
+//       int iter = offset * n_adds + i_adds;
+//       free_list.AddBlock(blocks[iter], block_sizes[iter]);
+//     }
+//   }
 
-  std::unordered_map<long, int> GetBlocks(int n_gets, int offset = 0) {
-    std::unordered_map<long, int> out_blocks;
-    for (int i_gets = 0; i_gets < n_gets; ++i_gets) {
-      int iter = offset * n_gets + i_gets;
-      out_blocks.insert({(long)free_list.GetBlock(block_sizes[iter]), 0});
-    }
-    return out_blocks;
-  }
+//   std::unordered_map<long, int> GetBlocks(int n_gets, int offset = 0) {
+//     std::unordered_map<long, int> out_blocks;
+//     for (int i_gets = 0; i_gets < n_gets; ++i_gets) {
+//       int iter = offset * n_gets + i_gets;
+//       out_blocks.insert({(long)free_list.GetBlock(block_sizes[iter]), 0});
+//     }
+//     return out_blocks;
+//   }
 
-  void RunInParallel(int n_threads, std::function<void(int)>&& function) {
-    std::vector<std::shared_ptr<std::thread>> threads;
-    for (int i = 0; i < n_threads; ++i) {
-      threads.push_back(std::make_shared<std::thread>(function, i));
-    }
-    for (auto& thread : threads) {
-      thread->join();
-    }
-  }
+//   void RunInParallel(int n_threads, std::function<void(int)>&& function) {
+//     std::vector<std::shared_ptr<std::thread>> threads;
+//     for (int i = 0; i < n_threads; ++i) {
+//       threads.push_back(std::make_shared<std::thread>(function, i));
+//     }
+//     for (auto& thread : threads) {
+//       thread->join();
+//     }
+//   }
 
-  void CreateBlocks(int num_blocks) {
-    block_sizes.resize(num_blocks);
-    int total_size = 0;
-    for (auto& size : block_sizes) {
-      size = (rand() % 32) + sizeof(FreeHeader);
-      total_size += size;
-    }
+//   void CreateBlocks(int num_blocks) {
+//     block_sizes.resize(num_blocks);
+//     int total_size = 0;
+//     for (auto& size : block_sizes) {
+//       size = (rand() % 32) + sizeof(FreeHeader);
+//       total_size += size;
+//     }
 
-    memory = reinterpret_cast<char*>(malloc(total_size));
+//     memory = reinterpret_cast<char*>(malloc(total_size));
 
-    int offset = 0;
-    for (auto& size : block_sizes) {
-      blocks.push_back(reinterpret_cast<FreeHeader*>(memory + offset));
-      offset += size;
-    }
-  }
+//     int offset = 0;
+//     for (auto& size : block_sizes) {
+//       blocks.push_back(reinterpret_cast<FreeHeader*>(memory + offset));
+//       offset += size;
+//     }
+//   }
 
-  void TearDown() { free(memory); }
-};
+//   void TearDown() { free(memory); }
+// };
 
-TEST_F(HeapFreeListConcurrentTest, CanAddBlocksSafely) {
-  int n_threads = 50, n_adds = 200, n_blocks = n_threads * n_adds;
-  CreateBlocks(n_blocks);
-  RunInParallel(n_threads, [&](int thread) { AddBlocks(n_adds, thread); });
-  ASSERT_THAT(GetBlocks(n_blocks).size(), Eq(n_blocks));
-}
+// TEST_F(HeapFreeListConcurrentTest, CanAddBlocksSafely) {
+//   int n_threads = 50, n_adds = 200, n_blocks = n_threads * n_adds;
+//   CreateBlocks(n_blocks);
+//   RunInParallel(n_threads, [&](int thread) { AddBlocks(n_adds, thread); });
+//   ASSERT_THAT(GetBlocks(n_blocks).size(), Eq(n_blocks));
+// }
 
-TEST_F(HeapFreeListConcurrentTest, CanGetBlocksSafely) {
-  int n_threads = 50, n_gets = 200, n_blocks = n_threads * n_gets;
-  CreateBlocks(n_blocks);
-  AddBlocks(n_blocks);
-  std::unordered_map<long, int> final_blocks;
-  RunInParallel(n_threads, [&](int thread) {
-    auto out_blocks = GetBlocks(n_gets, thread);
-    std::unique_lock<std::mutex> lock(map_lock);
-    final_blocks.insert(out_blocks.begin(), out_blocks.end());
-  });
-  ASSERT_THAT(final_blocks.size(), Eq(n_blocks));
-}
+// TEST_F(HeapFreeListConcurrentTest, CanGetBlocksSafely) {
+//   int n_threads = 50, n_gets = 200, n_blocks = n_threads * n_gets;
+//   CreateBlocks(n_blocks);
+//   AddBlocks(n_blocks);
+//   std::unordered_map<long, int> final_blocks;
+//   RunInParallel(n_threads, [&](int thread) {
+//     auto out_blocks = GetBlocks(n_gets, thread);
+//     std::unique_lock<std::mutex> lock(map_lock);
+//     final_blocks.insert(out_blocks.begin(), out_blocks.end());
+//   });
+//   ASSERT_THAT(final_blocks.size(), Eq(n_blocks));
+// }
 
-TEST_F(HeapFreeListConcurrentTest, CanGetAndAddBlocksSafely) {
-  int n_threads = 200, n_gets = 200, n_blocks = n_threads * n_gets;
-  CreateBlocks(n_blocks);
-  std::unordered_map<long, int> final_blocks;
-  RunInParallel(n_threads, [&](int offset) {
-    std::unordered_map<long, int> out_blocks;
-    for (int i = 0; i < n_gets; ++i) {
-      int iter = offset * n_gets + i;
-      free_list.AddBlock(blocks[iter], block_sizes[iter]);
-      out_blocks.insert({(long)free_list.GetBlock(block_sizes[iter]), 0});
-    }
-    std::unique_lock<std::mutex> lock(map_lock);
-    final_blocks.insert(out_blocks.begin(), out_blocks.end());
-  });
-  ASSERT_THAT(final_blocks.size(), Eq(n_blocks));
-}
+// TEST_F(HeapFreeListConcurrentTest, CanGetAndAddBlocksSafely) {
+//   int n_threads = 200, n_gets = 200, n_blocks = n_threads * n_gets;
+//   CreateBlocks(n_blocks);
+//   std::unordered_map<long, int> final_blocks;
+//   RunInParallel(n_threads, [&](int offset) {
+//     std::unordered_map<long, int> out_blocks;
+//     for (int i = 0; i < n_gets; ++i) {
+//       int iter = offset * n_gets + i;
+//       free_list.AddBlock(blocks[iter], block_sizes[iter]);
+//       out_blocks.insert({(long)free_list.GetBlock(block_sizes[iter]), 0});
+//     }
+//     std::unique_lock<std::mutex> lock(map_lock);
+//     final_blocks.insert(out_blocks.begin(), out_blocks.end());
+//   });
+//   ASSERT_THAT(final_blocks.size(), Eq(n_blocks));
+// }
 
 }  // namespace quasi_game_engine
 

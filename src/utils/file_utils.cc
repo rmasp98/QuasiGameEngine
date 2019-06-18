@@ -9,7 +9,6 @@
 ------------------------------------------------------------------------------*/
 
 #include "utils/file_utils.h"
-#include "utils/logging/log_capture.h"
 
 namespace quasi_game_engine {
 

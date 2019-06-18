@@ -11,50 +11,39 @@
 #ifndef QGE_LOG_WORKER_H
 #define QGE_LOG_WORKER_H
 
-#include "utils/data_types/qge_queue.h"
-#include "utils/logging/log_utils.h"
+#include "utils/logging/log_data.h"
+#include "utils/logging/log_source.h"
 
-#include <chrono>
-#include <condition_variable>
-#include <fstream>
-#include <mutex>
-#include <thread>
+#include <unordered_map>
+#include <utility>
 
 namespace quasi_game_engine {
 
-struct LoggerComponent {
-  QgeQueue<Log> queue;
-  const char* prefix;
-  std::ofstream file_stream;
-};
+enum EngineComponent { TEST, GENERAL };
 
 class LogWorker {
  public:
-  LogWorker();
-  ~LogWorker();
+  void SendLog(EngineComponent component, LogData log) {
+    auto source = sources_.find(component);
+    assert(source != sources_.end());
+    source->second.AddLogToQueue(log.GetLog());
+  }
 
-  //Getting rid of copy/move constructors/assignment operators (may need later)
-  LogWorker(const LogWorker&) = delete;
-  LogWorker& operator=(const LogWorker&) = delete;
-  LogWorker(LogWorker&&) = delete;
-  LogWorker& operator=(LogWorker&&) = delete;
+  void RegisterComponent(EngineComponent component, LogSource&& source) {
+    sources_.emplace(component, std::move(source));
+  }
 
-  void SendLog(Log log, EngineComponent component);
+  void ProcessLogs() {
+    for (auto iter = sources_.begin(); iter != sources_.end(); ++iter) {
+      while (iter->second.GetNumLogsInQueue()) {
+        iter->second.ProcessNextLog();
+      }
+    }
+  }
 
  private:
-  void CollectorLoop();
-
-  LoggerComponent logger_list_[COMPONENT_SIZE];
-  std::thread* worker_thread_;
-  std::condition_variable queue_wait_cv_;
-  std::mutex loop_mutex_;
-  int largest_queue_size_, largest_queue_;
-  //std::vector<std::ofstream> file_streams_;
-  bool is_running_;
-  std::chrono::time_point<std::chrono::high_resolution_clock> start_time_;
+  std::unordered_map<EngineComponent, LogSource> sources_;
 };
-
-
 
 }  // namespace quasi_game_engine
 
